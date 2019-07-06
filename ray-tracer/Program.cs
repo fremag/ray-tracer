@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ray_tracer
+namespace raytracer
 {
     class Program
     {

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <RootNamespace>ray_tracer_tests</RootNamespace>
+    <RootNamespace>raytracer.tests</RootNamespace>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
