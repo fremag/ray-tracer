@@ -25,5 +25,11 @@ namespace raytracer
 
             return other.X == X && other.Y == Y && other.Z == Z && other.W == W;
         }
+
+        public Tuple Add(Tuple tuple) => new Tuple(X + tuple.X, Y + tuple.Y, Z + tuple.Z, W + tuple.W);
+        public static Tuple operator +(Tuple t1, Tuple t2) => t1.Add(t2);
+
+        public Tuple Sub(Tuple tuple) => new Tuple(X - tuple.X, Y - tuple.Y, Z - tuple.Z, W - tuple.W);
+        public static Tuple operator -(Tuple t1, Tuple t2) => t1.Sub(t2);
     }
 }
