@@ -2,3 +2,4 @@ ray-tracer-tests/bin
 ray-tracer-tests/obj
 ray-tracer/obj
 ray-tracer/bin
+.vscode
