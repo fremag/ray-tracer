@@ -1,3 +1,5 @@
+using System;
+
 namespace raytracer
 {
     public class Tuple
@@ -31,5 +33,13 @@ namespace raytracer
 
         public Tuple Sub(Tuple tuple) => new Tuple(X - tuple.X, Y - tuple.Y, Z - tuple.Z, W - tuple.W);
         public static Tuple operator -(Tuple t1, Tuple t2) => t1.Sub(t2);
+
+        public Tuple Neg() => new Tuple(-X, -Y, -Z, -W);
+        public static Tuple operator -(Tuple t1) => t1.Neg();
+
+        public static Tuple operator *(Tuple t1, double coeff) => new Tuple(t1.X * coeff, t1.Y * coeff, t1.Z * coeff, t1.W * coeff);
+        public static Tuple operator /(Tuple t1, double coeff) => new Tuple(t1.X / coeff, t1.Y / coeff, t1.Z / coeff, t1.W / coeff);
+
+        public double Magnitude => Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
     }
 }
