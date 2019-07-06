@@ -1,4 +1,5 @@
 using System;
+using NFluent;
 using Xunit;
 
 namespace ray_tracer_tests
@@ -8,7 +9,7 @@ namespace ray_tracer_tests
         [Fact]
         public void Test1()
         {
-
+            Check.That(1 + 1).IsEqualTo(2);
         }
     }
 }
