@@ -162,5 +162,54 @@ namespace ray_tracer_tests
             var v = Helper.CreateVector(x, y, z);
             Check.That(v.Magnitude).IsEqualTo(Math.Sqrt(magnitudeSquare));
         }
+
+        [Fact]
+        public void NormalizeTest()
+        {
+            var v = Helper.CreateVector(4, 0, 0);
+            var vNorm = v.Normalize();
+
+            var expectedVNorm = Helper.CreateVector(1, 0, 0);
+            Check.That(vNorm.X).IsEqualTo(expectedVNorm.X);
+            Check.That(vNorm.Y).IsEqualTo(expectedVNorm.Y);
+            Check.That(vNorm.Z).IsEqualTo(expectedVNorm.Z);
+            Check.That(vNorm.IsVector()).IsTrue();
+        }
+
+        [Fact]
+        public void Normalize2_Test()
+        {
+            var v = Helper.CreateVector(1, -2, 3);
+            var vNorm = v.Normalize();
+
+            var d = Math.Sqrt(14);
+            var expectedVNorm = Helper.CreateVector(1 / d, -2 / d, 3 / d);
+            Check.That(vNorm.X).IsEqualTo(expectedVNorm.X);
+            Check.That(vNorm.Y).IsEqualTo(expectedVNorm.Y);
+            Check.That(vNorm.Z).IsEqualTo(expectedVNorm.Z);
+            Check.That(vNorm.IsVector()).IsTrue();
+        }
+
+        [Fact]
+        public void DotProductTest()
+        {
+            var v1 = Helper.CreateVector(1, 2, 3);
+            var v2 = Helper.CreateVector(2, 3, 4);
+            var d = v1.DotProduct(v2);
+
+            Check.That(d).IsEqualTo(20);
+        }
+
+        [Fact]
+        public void CrossProduct()
+        {
+            var v1 = Helper.CreateVector(1, 2, 3);
+            var v2 = Helper.CreateVector(2, 3, 4);
+            var v1xv2 = Helper.CreateVector(-1, 2, -1);
+            var v2xv1 = Helper.CreateVector(1, -2, 1);
+
+            Check.That(v1.CrossProduct(v2)).IsEqualTo(v1xv2);
+            Check.That(v2.CrossProduct(v1)).IsEqualTo(v2xv1);
+        }
     }
 }

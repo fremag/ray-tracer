@@ -41,5 +41,14 @@ namespace raytracer
         public static Tuple operator /(Tuple t1, double coeff) => new Tuple(t1.X / coeff, t1.Y / coeff, t1.Z / coeff, t1.W / coeff);
 
         public double Magnitude => Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
+
+        public Tuple Normalize()
+        {
+            var magnitude = Magnitude;
+            return new Tuple(X / magnitude, Y / magnitude, Z / magnitude, W / magnitude);
+        }
+
+        public double DotProduct(Tuple v) => v.X * X + v.Y * Y + v.Z * Z + v.W * W;
+        public Tuple CrossProduct(Tuple v) => Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
     }
 }
