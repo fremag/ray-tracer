@@ -3,3 +3,5 @@ ray-tracer-tests/obj
 ray-tracer/obj
 ray-tracer/bin
 .vscode
+.idea
+.vs
