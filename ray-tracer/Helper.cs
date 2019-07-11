@@ -10,6 +10,7 @@ namespace raytracer
     {
         const double Epsilon = 1e-6;
 
+        public static Matrix CreateMatrix(int size) => new Matrix(size);
         public static Tuple CreatePoint(double x, double y, double z) => new Tuple(x, y, z, 1);
         public static Tuple CreateVector(double x, double y, double z) => new Tuple(x, y, z, 0);
         public static bool IsPoint(this Tuple tuple) => tuple.W == 1;

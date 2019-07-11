@@ -37,8 +37,11 @@ namespace raytracer
         public Tuple Neg() => new Tuple(-X, -Y, -Z, -W);
         public static Tuple operator -(Tuple t1) => t1.Neg();
 
-        public static Tuple operator *(Tuple t1, double coeff) => new Tuple(t1.X * coeff, t1.Y * coeff, t1.Z * coeff, t1.W * coeff);
-        public static Tuple operator /(Tuple t1, double coeff) => new Tuple(t1.X / coeff, t1.Y / coeff, t1.Z / coeff, t1.W / coeff);
+        public static Tuple operator *(Tuple t1, double coeff) =>
+            new Tuple(t1.X * coeff, t1.Y * coeff, t1.Z * coeff, t1.W * coeff);
+
+        public static Tuple operator /(Tuple t1, double coeff) =>
+            new Tuple(t1.X / coeff, t1.Y / coeff, t1.Z / coeff, t1.W / coeff);
 
         public double Magnitude => Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
 
@@ -49,6 +52,23 @@ namespace raytracer
         }
 
         public double DotProduct(Tuple v) => v.X * X + v.Y * Y + v.Z * Z + v.W * W;
-        public Tuple CrossProduct(Tuple v) => Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+
+        public Tuple CrossProduct(Tuple v) =>
+            Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+
+        public double this[in int i]
+        {
+            get
+            {
+                switch (i)
+                {
+                    case 0: return X;
+                    case 1: return Y;
+                    case 2: return Z;
+                    case 3: return W;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
     }
 }
