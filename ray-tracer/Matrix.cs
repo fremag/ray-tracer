@@ -115,5 +115,16 @@ namespace raytracer
         
         public static Tuple operator *(Matrix m1, Tuple t) => Multiply(m1, t);
 
+        public Matrix Transpose()
+        {
+            var m = new Matrix(Size);
+            for(int i=0; i < Size; i++)
+            for (int j = 0; j < Size; j++)
+            {
+                m[i,j] = this[j, i];
+            }
+
+            return m;
+        }
     }
 }

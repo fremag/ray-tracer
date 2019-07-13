@@ -115,5 +115,36 @@ namespace ray_tracer_tests
 
             Check.That(c).IsEqualTo(expected);
         }
+        [Fact]
+        public void MultiplyIdentityTupleTest()
+        {
+            var A = Helper.CreateIdentity(4);
+
+            var b = new Tuple(1, 2, 3, 1);
+            var c = A * b;
+
+            Check.That(c).IsEqualTo(b);
+        }
+
+        [Fact]
+        public void TransposeTest()
+        {
+            var m = new Matrix(4, new []
+            {
+                new double[]{0 , 9 , 3 , 0 },
+                new double[]{9 , 8 , 0 , 8} ,
+                new double[]{1 , 8 , 5 , 3} ,
+                new double[]{0 , 0 , 5 , 8}
+            });
+            var t = new Matrix(4, new []
+            {
+                new double[]{0 , 9 , 1 , 0 },
+                new double[]{9 , 8 , 8 , 0} ,
+                new double[]{3 , 0 , 5 , 5} ,
+                new double[]{0 , 8 , 3 , 8}
+            });
+
+            Check.That(m.Transpose()).IsEqualTo(t);
+        }
     }
 }

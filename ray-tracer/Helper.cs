@@ -17,6 +17,16 @@ namespace raytracer
         public static bool IsVector(this Tuple tuple) => tuple.W == 0;
         public static bool AreEquals(double d1, double d2) => Math.Abs(d1 - d2) < Epsilon;
 
+        public static Matrix CreateIdentity(int n = 4)
+        {
+            var m = new Matrix(n);
+            for (int i = 0; i < n; i++)
+            {
+                m[i, i] = 1;
+            }
+
+            return m;
+        } 
         public static IEnumerable<string> ToPPM(this Canvas canvas)
         {
             yield return "P3";
