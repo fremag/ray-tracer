@@ -1,4 +1,6 @@
-namespace raytracer
+using System;
+
+namespace ray_tracer
 {
     public class Matrix
     {
@@ -177,5 +179,40 @@ namespace raytracer
 
             return m;
         }
+
+        public double Determinant()
+        {
+            double det = 0;
+            if (Size == 2)
+            {
+                det = this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0];
+            }
+            else
+            {
+                for (int i = 0; i < Size; i++)
+                {
+                    det += this[0, i] * Cofactor(0, i);
+                }
+            }
+
+            return det;
+        }
+
+        public double Minor(int row, int column)
+        {
+            var subMat = SubMatrix(row, column);
+            var minor = subMat.Determinant();
+            return minor;
+        }
+
+        public double Cofactor(int row, int column)
+        {
+            var n = (row + column) % 2;
+            var coeff = 1 - 2 * n;
+            var minor = Minor(row, column);
+            return coeff * minor;
+        }
+
+        public bool Invertible() => Determinant() != 0;
     }
 }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <RootNamespace>raytracer</RootNamespace>
+    <RootNamespace>ray_tracer</RootNamespace>
   </PropertyGroup>
 
 </Project>

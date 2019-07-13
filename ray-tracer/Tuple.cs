@@ -1,6 +1,6 @@
 using System;
 
-namespace raytracer
+namespace ray_tracer
 {
     public class Tuple
     {
@@ -53,8 +53,7 @@ namespace raytracer
 
         public double DotProduct(Tuple v) => v.X * X + v.Y * Y + v.Z * Z + v.W * W;
 
-        public Tuple CrossProduct(Tuple v) =>
-            Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+        public Tuple CrossProduct(Tuple v) => Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
 
         public double this[in int i]
         {

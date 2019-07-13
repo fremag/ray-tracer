@@ -1,8 +1,7 @@
 using NFluent;
-using raytracer;
 using Xunit;
 
-namespace ray_tracer_tests
+namespace ray_tracer.tests
 {
     public class MatrixTests
     {
@@ -190,6 +189,92 @@ namespace ray_tracer_tests
                 -7, -1, 1
             );
             Check.That(subA).IsEqualTo(expectedSubA);
+        }
+
+        [Fact]
+        public void Determinant_2x2_Test()
+        {
+            var m = new Matrix(2, 
+                1, 5, 
+                -3, 2);
+            Check.That(m.Determinant()).IsEqualTo(17);
+        }
+
+        [Fact]
+        public void MinorTest()
+        {
+            var m = new Matrix(3,
+                3, 5, 0,
+                2, -1, -7,
+                6, -1, 5);
+
+            var subMat = m.SubMatrix(1, 0);
+            Check.That(subMat.Determinant()).IsEqualTo(25);
+            Check.That(m.Minor(1,0)).IsEqualTo(25);
+        }
+
+        [Fact]
+        public void CofactorTest()
+        {
+            var m = new Matrix(3,
+                3, 5, 0,
+                2, -1, -7,
+                6, -1, 5);
+            Check.That(m.Minor(0, 0)).IsEqualTo(-12);
+            Check.That(m.Cofactor(0, 0)).IsEqualTo(-12);
+            Check.That(m.Minor(1, 0)).IsEqualTo(25);
+            Check.That(m.Cofactor(1, 0)).IsEqualTo(-25);
+        }
+
+        [Fact]
+        public void Determinant_3x3_Test()
+        {
+            var m = new Matrix(3,
+                1, 2, 6,
+                -5, 8, -4,
+                2, 6, 4);
+            Check.That(m.Cofactor(0,0)).IsEqualTo(56);
+            Check.That(m.Cofactor(0,1)).IsEqualTo(12);
+            Check.That(m.Cofactor(0,2)).IsEqualTo(-46);
+            Check.That(m.Determinant()).IsEqualTo(-196);
+        }
+
+        [Fact]
+        public void Determinant_4x4_Test()
+        {
+            var m = new Matrix(4,
+                -2, -8, 3, 5,
+                -3, 1, 7, 3,
+                1, 2, -9, 6,
+                -6, 7, 7, -9);
+            Check.That(m.Cofactor(0,0)).IsEqualTo(690);
+            Check.That(m.Cofactor(0,1)).IsEqualTo(447);
+            Check.That(m.Cofactor(0,2)).IsEqualTo(210);
+            Check.That(m.Cofactor(0,3)).IsEqualTo(51);
+            Check.That(m.Determinant()).IsEqualTo(-4071);
+        }
+
+        [Fact]
+        public void InvertibleTest()
+        {
+            var m = new Matrix(4,
+                6, 4, 4, 4,
+                5, 5, 7, 6,
+                4, -9, 3, -7,
+                9, 1, 7, -6);
+            Check.That(m.Determinant()).IsEqualTo(-2120);
+            Check.That(m.Invertible()).IsTrue();
+        }
+        [Fact]
+        public void NotInvertibleTest()
+        {
+            var m = new Matrix(4,
+                -4 ,  2 , -2 , -3,
+                 9 ,  6 ,  2 ,  6,
+                 0 , -5 ,  1 , -5 ,
+                 0 ,  0 ,  0 ,  0);
+            Check.That(m.Determinant()).IsEqualTo(0);
+            Check.That(m.Invertible()).IsFalse();
         }
     }
 }

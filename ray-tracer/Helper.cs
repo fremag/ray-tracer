@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using ray_tracer;
 
-namespace raytracer
+namespace ray_tracer
 {
     public static class Helper
     {

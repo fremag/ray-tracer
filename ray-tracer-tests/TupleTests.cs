@@ -1,10 +1,8 @@
 using System;
 using NFluent;
-using raytracer;
 using Xunit;
-using Tuple = raytracer.Tuple;
 
-namespace ray_tracer_tests
+namespace ray_tracer.tests
 {
     public class TupleTests
     {

@@ -1,8 +1,6 @@
 using System.IO;
-using System.Net;
 using NFluent;
 using ray_tracer;
-using raytracer;
 using Xunit;
 
 namespace ray_tracer_tests
