@@ -6,7 +6,7 @@ namespace raytracer
 
         public Matrix(int size)
         {
-            Values = new double[4][];
+            Values = new double[size][];
             for (int i = 0; i < size; i++)
             {
                 Values[i] = new double[size];
@@ -21,6 +21,18 @@ namespace raytracer
                 for (int j = 0; j < row.Length; j++)
                 {
                     Values[i][j] = row[j];
+                }
+            }
+        }
+
+        public Matrix(int size, params double[] values) : this(size)
+        {
+            int n = 0;
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    Values[i][j] = values[n++];
                 }
             }
         }
@@ -119,9 +131,48 @@ namespace raytracer
         {
             var m = new Matrix(Size);
             for(int i=0; i < Size; i++)
-            for (int j = 0; j < Size; j++)
             {
-                m[i,j] = this[j, i];
+                for (int j = 0; j < Size; j++)
+                {
+                    m[i,j] = this[j, i];
+                }
+            }
+
+            return m;
+        }
+
+        public Matrix SubMatrix(int row, int column)
+        {
+            var m= new Matrix(Size-1);
+            for(int i=0; i < Size; i++)
+            {
+                if (i == row)
+                {
+                    continue;
+                }
+
+                int deltaRow = 0;
+                if (i > row)
+                {
+                    deltaRow = -1;
+                }
+                
+                for (int j = 0; j < Size; j++)
+                {
+                    if (j == column)
+                    {
+                        continue;
+                    }
+                    int deltaCol = 0;
+                    if (j > column)
+                    {
+                        deltaCol= -1;
+                    }
+
+                    var subRow = i+deltaRow;
+                    var subCol = j+deltaCol;
+                    m[subRow, subCol] = this[i, j];
+                }
             }
 
             return m;

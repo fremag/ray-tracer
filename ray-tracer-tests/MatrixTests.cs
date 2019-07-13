@@ -146,5 +146,50 @@ namespace ray_tracer_tests
 
             Check.That(m.Transpose()).IsEqualTo(t);
         }
+        [Fact]
+        public void TransposeIdentityTest()
+        {
+            var m = Helper.CreateIdentity(4);
+            Check.That(m.Transpose()).IsEqualTo(m);
+        }
+
+        [Fact]
+        public void SubMatrix_3x3_Test()
+        {
+            var m = new Matrix(3, new []
+            {
+                new double[]{1 , 5 , 0},
+                new double[]{-3 , 2 , 7} ,
+                new double[]{0, 6, -3} ,
+            });
+
+            var subA = m.SubMatrix(0, 2);
+            var expectedSubA = new Matrix(2, new[]
+            {
+                new double[] {-3, 2},
+                new double[] {0, 6}
+            });
+            Check.That(subA).IsEqualTo(expectedSubA);
+
+        }
+    
+        [Fact]
+        public void SubMatrix_4x4_Test()
+        {
+            var m = new Matrix(4, 
+                -6 , 1 , 1, 6,
+                -8 , 5 , 8, 6 ,
+                -1, 0, 8, 2 ,
+                -7, 1, -1, 1 
+            );
+
+            var subA = m.SubMatrix(2, 1);
+            var expectedSubA = new Matrix(3, 
+                -6, 1, 6,
+                -8, 8, 6,
+                -7, -1, 1
+            );
+            Check.That(subA).IsEqualTo(expectedSubA);
+        }
     }
 }
