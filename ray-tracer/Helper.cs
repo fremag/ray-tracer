@@ -8,7 +8,7 @@ namespace ray_tracer
 {
     public static class Helper
     {
-        const double Epsilon = 1e-6;
+        const double Epsilon = 1e-5;
 
         public static Matrix CreateMatrix(int size) => new Matrix(size);
         public static Tuple CreatePoint(double x, double y, double z) => new Tuple(x, y, z, 1);

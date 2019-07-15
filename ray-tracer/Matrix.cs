@@ -58,7 +58,7 @@ namespace ray_tracer
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    if (m[i, j] != Values[i][j])
+                    if (! Helper.AreEquals(m[i, j], Values[i][j]))
                     {
                         return false;
                     }
@@ -214,5 +214,26 @@ namespace ray_tracer
         }
 
         public bool Invertible() => Determinant() != 0;
+
+        public Matrix Inverse()
+        {
+            var det = Determinant();
+            if (det == 0)
+            {
+                throw new InvalidOperationException("Can not inverse matrix: determinant == 0 !");
+            }
+
+            var inv = new Matrix(Size);
+            for (int row = 0; row < Size; row++)
+            {
+                for (int col = 0; col < Size; col++)
+                {
+                    var cof = Cofactor(row, col);
+                    inv[col, row] = cof / det;
+                }
+            }
+
+            return inv;
+        }
     }
 }
