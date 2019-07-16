@@ -17,6 +17,8 @@ namespace ray_tracer
             W = w;
         }
 
+        public override string ToString() => $"X: {X} Y: {Y} Z: {Z} W: {W}";
+        
         public override bool Equals(object o)
         {
             var other = o as Tuple;
@@ -25,7 +27,7 @@ namespace ray_tracer
                 return false;
             }
 
-            return other.X == X && other.Y == Y && other.Z == Z && other.W == W;
+            return Helper.AreEquals(other.X, X) && Helper.AreEquals(other.Y, Y) && Helper.AreEquals(other.Z, Z) && Helper.AreEquals(other.W,  W);
         }
 
         public Tuple Add(Tuple tuple) => new Tuple(X + tuple.X, Y + tuple.Y, Z + tuple.Z, W + tuple.W);

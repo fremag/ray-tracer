@@ -92,6 +92,65 @@ namespace ray_tracer
         public static void SavePPM(this Canvas canvas, string filePath)
         {
             File.WriteAllLines(filePath, canvas.ToPPM());
-        } 
+        }
+
+        public static Matrix Translation(double x, double y, double z)
+        {
+            return new Matrix(4, 
+                1, 0, 0, x,
+                0, 1, 0, y,
+                0, 0, 1, z,
+                0, 0, 0, 1
+                );
+        }
+
+        public static Matrix Scaling(double x, double y, double z)
+        {
+            return new Matrix(4, 
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1
+            );
+        }
+        
+        public static Matrix RotationX( double a)
+        {
+            return new Matrix(4, 
+                1, 0, 0, 0,
+                0, Math.Cos(a), -Math.Sin(a), 0,
+                0, Math.Sin(a), Math.Cos(a), 0,
+                0, 0, 0, 1
+            );
+        }
+        public static Matrix RotationY( double a)
+        {
+            return new Matrix(4, 
+                Math.Cos(a), 0, Math.Sin(a), 0,
+                0, 1, 0, 0,
+                -Math.Sin(a), 0, Math.Cos(a), 0,
+                0, 0, 0, 1
+            );
+        }
+        
+        public static Matrix RotationZ( double a)
+        {
+            return new Matrix(4, 
+                Math.Cos(a), -Math.Sin(a), 0, 0,
+                Math.Sin(a),  Math.Cos(a), 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
+        }
+        
+        public static Matrix Shearing( double xy, double xz, double yx, double yz, double zx, double zy)
+        {
+            return new Matrix(4,
+                1, xy, xz, 0,
+                yx, 1, yz, 0,
+                zx, zy, 1, 0,
+                0, 0, 0, 1
+            );
+        }
     }
 }

@@ -1,9 +1,8 @@
 using System.IO;
 using NFluent;
-using ray_tracer;
 using Xunit;
 
-namespace ray_tracer_tests
+namespace ray_tracer.tests
 {
     public class CanvasTests
     {

@@ -1,8 +1,7 @@
 using NFluent;
 using Xunit;
-using Color = ray_tracer.Color;
 
-namespace ray_tracer_tests
+namespace ray_tracer.tests
 {
     public class ColorTests
     {
