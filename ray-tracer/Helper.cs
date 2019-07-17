@@ -152,5 +152,13 @@ namespace ray_tracer
                 0, 0, 0, 1
             );
         }
+
+        public static Ray Ray(Tuple origin, Tuple direction) => new Ray(origin, direction);
+        public static Sphere Sphere() => new Sphere();
+
+        public static Intersection Intersection(int t, Sphere s) => new Intersection(t, s);
+        public static Intersections Intersections() => new Intersections();
+        public static Intersections Intersections(params Intersection[] intersections) => new Intersections(intersections);
+
     }
 }
