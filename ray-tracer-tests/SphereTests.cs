@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -145,9 +144,15 @@ namespace ray_tracer.tests
         }
 
         [Fact]
-        public void ShearedSphereTest()
+        public void ShearedScaledSphereTest()
         {
             var transform = Helper.Shearing(1, 0, 0, 0, 0, 0) * Helper.Scaling(0.5, 1, 1);
+            SpherePictureTest(transform);
+        }
+        [Fact]
+        public void ScaledShearedSphereTest()
+        {
+            var transform = Helper.Scaling(0.5, 1, 1) * Helper.Shearing(1, 0, 0, 0, 0, 0);
             SpherePictureTest(transform);
         }
     }
