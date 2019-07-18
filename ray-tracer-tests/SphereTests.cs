@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -91,8 +92,7 @@ namespace ray_tracer.tests
             Check.That(xs).IsEmpty();
         }
 
-        [Fact]
-        public void SpherePictureTest()
+        public void SpherePictureTest(Matrix transform)
         {
             int size = 400;
             var rayOrigin = Helper.CreatePoint(0, 0, -5);
@@ -104,6 +104,7 @@ namespace ray_tracer.tests
             var canvas = new Canvas(size, size);
             var color = new Color(1, 0, 0);
             var sphere = Helper.Sphere();
+            sphere.Transform = transform;
 
             for (int y = 0; y < size; y++)
             {
@@ -126,9 +127,28 @@ namespace ray_tracer.tests
             var tmpFile = Path.GetTempFileName();
             var ppmFile = Path.ChangeExtension(tmpFile, "ppm");
             canvas.SavePPM(ppmFile);
-            
+ 
             File.Delete(tmpFile);
             File.Delete(ppmFile);
+        }
+
+        [Fact]
+        public void NoTransformSphereTest()
+        {
+            SpherePictureTest(Helper.CreateIdentity());
+        }
+        
+        [Fact]
+        public void ScaledSphereTest()
+        {
+            SpherePictureTest(Helper.Scaling(1, 0.5, 1));
+        }
+
+        [Fact]
+        public void ShearedSphereTest()
+        {
+            var transform = Helper.Shearing(1, 0, 0, 0, 0, 0) * Helper.Scaling(0.5, 1, 1);
+            SpherePictureTest(transform);
         }
     }
 }
