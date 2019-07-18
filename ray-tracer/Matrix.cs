@@ -128,6 +128,7 @@ namespace ray_tracer
         }
         
         public static Tuple operator *(Matrix m1, Tuple t) => Multiply(m1, t);
+        public static Tuple operator *(Tuple t, Matrix m1) => Multiply(m1, t);
 
         public Matrix Transpose()
         {

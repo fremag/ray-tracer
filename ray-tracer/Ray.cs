@@ -12,5 +12,10 @@ namespace ray_tracer
         }
 
         public Tuple Position(double t) => Origin + t * Direction;
+
+        public Ray Transform(Matrix m)
+        {
+            return new Ray(Origin * m, Direction * m);
+        }
     }
 }
