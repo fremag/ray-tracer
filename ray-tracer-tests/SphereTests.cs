@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using NFluent;
@@ -154,6 +155,61 @@ namespace ray_tracer.tests
         {
             var transform = Helper.Scaling(0.5, 1, 1) * Helper.Shearing(1, 0, 0, 0, 0, 0);
             SpherePictureTest(transform);
+        }
+
+        [Theory]
+        [InlineData(1,0,0)]
+        [InlineData(0,1,0)]
+        [InlineData(0,0,1)]
+        public void NormalAtPointOnAxisTest(double x, double y, double z)
+        {
+            var sphere = Helper.Sphere();
+            var n = sphere.NormalAt(Helper.CreatePoint(x, y, z));
+            Check.That(n).IsEqualTo(Helper.CreateVector(x,y,z));
+        }
+
+        [Fact]
+        public void NormalAtPointNotOnAxisTest()
+        {
+            double x = Math.Sqrt(3)/3;
+            double y = Math.Sqrt(3)/3;
+            double z = Math.Sqrt(3)/3;
+                
+            var sphere = Helper.Sphere();
+            var n = sphere.NormalAt(Helper.CreatePoint(x, y, z));
+            Check.That(n).IsEqualTo(Helper.CreateVector(x,y,z));
+        }
+
+        [Fact]
+        public void NormalAtPointIsNormalizedTest()
+        {
+            double x = Math.Sqrt(3)/3;
+            double y = Math.Sqrt(3)/3;
+            double z = Math.Sqrt(3)/3;
+                
+            var sphere = Helper.Sphere();
+            var n = sphere.NormalAt(Helper.CreatePoint(x, y, z));
+            Check.That(n.Normalize()).IsEqualTo(n);
+        }
+
+        [Fact]
+        public void NormalAtPointOnTranslatedSphereTest()
+        {
+            var sphere = Helper.Sphere();
+            sphere.Transform = Helper.Translation(0, 1, 0);
+            
+            var n = sphere.NormalAt(Helper.CreatePoint(0, 1.70711, -0.70711));
+            Check.That(n).IsEqualTo(Helper.CreateVector(0, 0.70711, -0.70711));
+        }
+
+        [Fact]
+        public void NormalAtPointOnTransformedSphereTest()
+        {
+            var sphere = Helper.Sphere();
+            sphere.Transform = Helper.Scaling(1, 0.5, 1) * Helper.RotationZ(Math.PI/5);
+            
+            var n = sphere.NormalAt(Helper.CreatePoint(0, Math.Sqrt(2)/2, -Math.Sqrt(2)/2));
+            Check.That(n).IsEqualTo(Helper.CreateVector(0, 0.97014, -0.24254));
         }
     }
 }

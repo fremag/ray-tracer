@@ -69,5 +69,7 @@ namespace ray_tracer
                 }
             }
         }
+
+        public Tuple Reflect(Tuple normal) => this - normal * 2 * DotProduct(normal);
     }
 }

@@ -209,5 +209,23 @@ namespace ray_tracer.tests
             Check.That(v1.CrossProduct(v2)).IsEqualTo(v1xv2);
             Check.That(v2.CrossProduct(v1)).IsEqualTo(v2xv1);
         }
+
+        [Fact]
+        public void Reflect45DegreesTest()
+        {
+            var v = Helper.CreateVector(1, -1, 0);
+            var n = Helper.CreateVector(0, 1, 0);
+            var reflected = v.Reflect(n);
+            Check.That(reflected).IsEqualTo(Helper.CreateVector(1, 1, 0));
+        }
+
+        [Fact]
+        public void ReflectVectorOffASlantedSurfaceTest()
+        {
+            var v = Helper.CreateVector(0, -1, 0);
+            var n = Helper.CreateVector(Math.Sqrt(2)/2, Math.Sqrt(2)/2, 0);
+            var reflected = v.Reflect(n);
+            Check.That(reflected).IsEqualTo(Helper.CreateVector(1, 0, 0));
+        }
     }
 }
