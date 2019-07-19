@@ -211,5 +211,12 @@ namespace ray_tracer.tests
             var n = sphere.NormalAt(Helper.CreatePoint(0, Math.Sqrt(2)/2, -Math.Sqrt(2)/2));
             Check.That(n).IsEqualTo(Helper.CreateVector(0, 0.97014, -0.24254));
         }
+
+        [Fact]
+        public void DefaultMaterialTest()
+        {
+            var sphere = Helper.Sphere();
+            Check.That(sphere.Material).IsEqualTo(new Material());
+        }
     }
 }

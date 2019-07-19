@@ -5,7 +5,8 @@ namespace ray_tracer
     public class Sphere
     {
         public Matrix Transform { get; set; } = Helper.CreateIdentity();
-
+        public Material Material { get; set; } = new Material();
+        
         public Intersections Intersect(Ray ray)
         {
             var transformedRay = ray.Transform(Transform.Inverse());

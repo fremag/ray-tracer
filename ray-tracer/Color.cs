@@ -38,5 +38,29 @@ namespace ray_tracer
 
             return (int)Math.Round(d * 255, 0);
         }
+
+        protected bool Equals(Color other)
+        {
+            return Red.Equals(other.Red) && Green.Equals(other.Green) && Blue.Equals(other.Blue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Color) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Red.GetHashCode();
+                hashCode = (hashCode * 397) ^ Green.GetHashCode();
+                hashCode = (hashCode * 397) ^ Blue.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 }
