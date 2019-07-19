@@ -92,7 +92,7 @@ namespace ray_tracer.tests
             Check.That(xs).IsEmpty();
         }
 
-        public void SpherePictureTest(Matrix transform)
+        private void SpherePictureTest(Matrix transform)
         {
             int size = 400;
             var rayOrigin = Helper.CreatePoint(0, 0, -5);
@@ -218,5 +218,57 @@ namespace ray_tracer.tests
             var sphere = Helper.Sphere();
             Check.That(sphere.Material).IsEqualTo(new Material());
         }
+        
+
+        [Fact]
+        public void LightingSpherePictureTest()
+        {
+            int size = 400;
+            var rayOrigin = Helper.CreatePoint(0, 0, -5);
+            double wallZ = 10;
+            double wallSize = 7;
+            var pixelSize = wallSize / size;
+            var half = wallSize / 2;
+
+            var canvas = new Canvas(size, size);
+            var sphere = Helper.Sphere();
+            sphere.Material.Color = new Color(1, 0.2, 1);
+            
+            var light = new PointLight(Helper.CreatePoint(-10, 10, -10), Color.White);
+            
+            for (int y = 0; y < size; y++)
+            {
+                double worldY = half - pixelSize * y;
+                for (int x = 0; x < size - 1; x++)
+                {
+                    // compute the world x coordinate (left = -half, right = half)
+                    double worldX = -half + pixelSize * x;
+                    // describe the point on the wall that the ray will target
+                    var position = Helper.CreatePoint(worldX, worldY, wallZ);
+                    var ray = Helper.Ray(rayOrigin, (position - rayOrigin).Normalize());
+                    var intersections = sphere.Intersect(ray);
+                    var hit = intersections.Hit();
+                    
+                    if (hit != null)
+                    {
+                        var point = ray.Position(hit.T);
+                        var hitObject = hit.Object;
+                        var normal = hitObject.NormalAt(point);
+                        var eye = -ray.Direction;
+                        var color = hitObject.Material.Lighting(light, point, eye, normal);
+
+                        canvas.SetPixel(x, y, color);
+                    }
+                }
+            }
+        
+            var tmpFile = Path.GetTempFileName();
+            var ppmFile = Path.ChangeExtension(tmpFile, "ppm");
+            canvas.SavePPM(ppmFile);
+ 
+            File.Delete(tmpFile);
+            File.Delete(ppmFile);
+        }
+        
     }
 }

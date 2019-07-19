@@ -62,5 +62,7 @@ namespace ray_tracer
                 return hashCode;
             }
         }
+
+        public override string ToString() => $"R: {Red} G: {Green} B: {Blue}";
     }
 }

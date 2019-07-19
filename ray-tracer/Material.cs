@@ -1,3 +1,5 @@
+using System;
+
 namespace ray_tracer
 {
     public class Material
@@ -22,6 +24,51 @@ namespace ray_tracer
                 
         }
 
+        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal)
+        {
+
+            var effectiveColor = Color * light.Intensity;
+            // find the direction to the light source
+            var lightv = (light.Position - point).Normalize();
+            // compute the ambient contribution
+            var ambient = effectiveColor * Ambient;
+            // light_dot_normal represents the cosine of the angle between the
+            // light vector and the normal vector. A negative number means the
+            // light is on the other side of the surface.
+            var lightDotNormal = lightv.DotProduct(normal);
+            Color diffuse;
+            Color specular;
+            
+            if (lightDotNormal < 0)
+            {
+                diffuse = Color.Black;
+                specular= Color.Black;
+            }
+            else
+            {
+                // compute the diffuse contribution
+                diffuse = effectiveColor * Diffuse * lightDotNormal;
+                // reflect_dot_eye represents the cosine of the angle between the
+                // reflection vector and the eye vector. A negative number means the
+                // light reflects away from the eye.
+                var reflect = -lightv.Reflect(normal);
+                var reflectDotEye = reflect.DotProduct(eye);
+                if (reflectDotEye <= 0)
+                {
+                    specular = Color.Black;
+                }
+                else
+                {
+                    // compute the specular contribution
+                    var factor = Math.Pow(reflectDotEye, Shininess);
+                    specular = light.Intensity * Specular * factor;
+                }
+            }
+            // Add the three contributions together to get the final shading
+            return ambient + diffuse + specular;
+        }
+        
+#region EqualsHashCode
         protected bool Equals(Material other)
         {
             return Equals(Color, other.Color) && Ambient.Equals(other.Ambient) && Diffuse.Equals(other.Diffuse) && Specular.Equals(other.Specular) && Shininess == other.Shininess;
@@ -48,4 +95,5 @@ namespace ray_tracer
             }
         }
     }
+#endregion    
 }

@@ -2,13 +2,13 @@ namespace ray_tracer
 {
     public class PointLight
     {
-        public Color Color { get; }
+        public Color Intensity { get; }
         public Tuple Position { get; }
 
-        public PointLight(Tuple position, Color color)
+        public PointLight(Tuple position, Color intensity)
         {
             Position = position;
-            Color = color;
+            Intensity = intensity;
         }
     }
 }
