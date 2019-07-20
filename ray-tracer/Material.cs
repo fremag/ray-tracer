@@ -10,7 +10,7 @@ namespace ray_tracer
         public double Specular { get;  set;}
         public int Shininess { get;  set;}
 
-        public Material( Color color, double ambient, double diffuse, double specular, int shininess)
+        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200)
         {
             Color = color;
             Ambient = ambient;
@@ -19,7 +19,7 @@ namespace ray_tracer
             Shininess = shininess;
         }
 
-        public Material() : this(new Color(1,1,1), 0.1, 0.9, 0.9, 200)
+        public Material() : this(new Color(1,1,1))
         {
                 
         }

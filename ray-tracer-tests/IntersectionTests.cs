@@ -14,7 +14,7 @@ namespace ray_tracer.tests
             Check.That(i.T).IsEqualTo(3.5);
             Check.That(i.Object).IsEqualTo(sphere);
         }
-        
+
         [Fact]
         public void IntersectionAggregationTest()
         {
@@ -35,10 +35,10 @@ namespace ray_tracer.tests
             var i1 = Helper.Intersection(1, s);
             var i2 = Helper.Intersection(2, s);
             var xs = Helper.Intersections(i2, i1);
-            var i  =xs.Hit();
+            var i = xs.Hit();
             Check.That(i).IsEqualTo(i1);
         }
-        
+
         [Fact]
         public void HitIntersectionPositiveNegativeTest()
         {
@@ -46,10 +46,10 @@ namespace ray_tracer.tests
             var i1 = Helper.Intersection(-1, s);
             var i2 = Helper.Intersection(1, s);
             var xs = Helper.Intersections(i2, i1);
-            var i  =xs.Hit();
+            var i = xs.Hit();
             Check.That(i).IsEqualTo(i2);
         }
-        
+
         [Fact]
         public void HitAllIntersectionNegativeTest()
         {
@@ -57,7 +57,7 @@ namespace ray_tracer.tests
             var i1 = Helper.Intersection(-2, s);
             var i2 = Helper.Intersection(-1, s);
             var xs = Helper.Intersections(i2, i1);
-            var i  =xs.Hit();
+            var i = xs.Hit();
             Check.That(i).IsNull();
         }
 
@@ -70,8 +70,44 @@ namespace ray_tracer.tests
             var i3 = Helper.Intersection(-3, s);
             var i4 = Helper.Intersection(2, s);
             var xs = Helper.Intersections(i1, i2, i3, i4);
-            var i  =xs.Hit();
+            var i = xs.Hit();
             Check.That(i).IsEqualTo(i4);
+        }
+
+        [Fact]
+        public void IntersectionDataTest()
+        {
+            var ray = new Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
+            var sphere = Helper.Sphere();
+            var intersection = Helper.Intersection(4, sphere);
+            var intersectionData = intersection.Compute(ray);
+            Check.That(intersectionData.T).IsEqualTo(4);
+            Check.That(intersectionData.Object).IsEqualTo(sphere);
+            Check.That(intersectionData.Point).IsEqualTo(Helper.CreatePoint(0, 0, -1));
+            Check.That(intersectionData.EyeVector).IsEqualTo(Helper.CreateVector(0, 0, -1));
+            Check.That(intersectionData.Normal).IsEqualTo(Helper.CreateVector(0, 0, -1));
+        }
+
+        [Fact]
+        public void IntersectionData_NotInsideTest()
+        {
+            var ray = new Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
+            var sphere = Helper.Sphere();
+            var intersection = Helper.Intersection(4, sphere);
+            var intersectionData = intersection.Compute(ray);
+            Check.That(intersectionData.Inside).IsFalse();
+        }
+
+        [Fact]
+        public void IntersectionData_Inside_Test()
+        {
+            var ray = new Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 0, 1));
+            var sphere = Helper.Sphere();
+            var intersection = Helper.Intersection(1, sphere);
+            var intersectionData = intersection.Compute(ray);
+            Check.That(intersectionData.Point).IsEqualTo(Helper.CreatePoint(0, 0, 1));
+            Check.That(intersectionData.EyeVector).IsEqualTo(Helper.CreateVector(0, 0, -1));
+            Check.That(intersectionData.Normal).IsEqualTo(Helper.CreateVector(0, 0, -1));
         }
     }
 }

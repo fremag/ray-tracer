@@ -14,5 +14,6 @@ namespace ray_tracer
         }
 
         public int CompareTo(Intersection other) => Math.Sign(T - other.T);
+        public IntersectionData Compute(Ray ray) => new IntersectionData(this, ray);
     }
 }
