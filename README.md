@@ -3,4 +3,4 @@
 
 ![My first image with Phong lighting](https://github.com/fremag/ray-tracer/blob/master/sphere.png)
 
-![My first scene](https://github.com/fremag/ray-tracer/blob/master/helloworld.png)
+![My first scene](https://github.com/fremag/ray-tracer/blob/master/helloword.png)
