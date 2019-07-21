@@ -160,5 +160,18 @@ namespace ray_tracer
         public static Intersections Intersections() => new Intersections();
         public static Intersections Intersections(params Intersection[] intersections) => new Intersections(intersections);
 
+        public static Matrix ViewTransform(Tuple from, Tuple to, Tuple up)
+        {
+            var forward = (to - from).Normalize();
+            var upNorm = up.Normalize();
+            var left = forward * upNorm;
+            var trueUp = left * forward;
+            var orientation = new Matrix(4, left.X, left.Y, left.Z, 0,
+                trueUp.X, trueUp.Y, trueUp.Z, 0,
+                -forward.X, -forward.Y, -forward.Z, 0,
+                0, 0, 0, 1);
+            var viewTransform = orientation * Translation(-from.X, -from.Y, -from.Z);
+            return viewTransform;
+        } 
     }
 }
