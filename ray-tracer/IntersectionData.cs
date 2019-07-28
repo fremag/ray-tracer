@@ -8,6 +8,7 @@ namespace ray_tracer
         public Tuple EyeVector { get; }
         public Tuple Normal { get; }
         public bool Inside { get; }
+        public Tuple OverPoint { get; }
 
         public IntersectionData(Intersection intersection, Ray ray)
         {
@@ -16,7 +17,8 @@ namespace ray_tracer
             Point = ray.Position(T);
             EyeVector = -ray.Direction;
             Normal = Object.NormalAt(Point);
-
+            OverPoint = Point + Normal * Helper.Epsilon;
+            
             if (Normal.DotProduct(EyeVector) < 0)
             {
                 Inside = true;
@@ -27,5 +29,6 @@ namespace ray_tracer
                 Inside = false;
             }            
         }
+
     }
 }

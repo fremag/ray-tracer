@@ -109,5 +109,17 @@ namespace ray_tracer.tests
             Check.That(intersectionData.EyeVector).IsEqualTo(Helper.CreateVector(0, 0, -1));
             Check.That(intersectionData.Normal).IsEqualTo(Helper.CreateVector(0, 0, -1));
         }
+
+        [Fact]
+        public void TheHitShouldOffsetThePointTest()
+        {
+            var r = Helper.Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
+            var shape = Helper.Sphere();
+            shape.Transform = Helper.Translation(0, 0, 1);
+            var intersection = new Intersection(5, shape);
+            var comps = new IntersectionData(intersection, r);
+            Check.That(comps.OverPoint.Z).Not.IsStrictlyGreaterThan(-Helper.Epsilon / 2).And.Not
+                .IsStrictlyGreaterThan(comps.Point.Z);
+        }
     }
 }

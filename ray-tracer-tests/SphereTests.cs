@@ -1,8 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using NFluent;
 using Xunit;
 
@@ -257,7 +255,7 @@ namespace ray_tracer.tests
                         var hitObject = hit.Object;
                         var normal = hitObject.NormalAt(point);
                         var eye = -ray.Direction;
-                        var color = hitObject.Material.Lighting(light, point, eye, normal);
+                        var color = hitObject.Material.Lighting(light, point, eye, normal, false);
 
                         canvas.SetPixel(x, y, color);
                     }
@@ -267,21 +265,10 @@ namespace ray_tracer.tests
             var tmpFile = Path.GetTempFileName();
             var ppmFile = Path.ChangeExtension(tmpFile, "ppm");
             canvas.SavePPM(ppmFile);
-            Stopwatch sw = Stopwatch.StartNew();
-            var p = Process.Start(@"C:\Program Files (x86)\XnView\xnview.exe", ppmFile);
-            while (!p.HasExited || sw.ElapsedMilliseconds < 10_000)
-            {
-                Thread.Sleep(100);
-            }
 
-            if (!p.HasExited)
-            {
-                p.Kill();
-            }
-            
+//            Helper.Display(ppmFile);
             File.Delete(tmpFile);
             File.Delete(ppmFile);
         }
-        
     }
 }

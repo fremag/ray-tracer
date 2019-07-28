@@ -24,14 +24,18 @@ namespace ray_tracer
                 
         }
 
-        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal)
+        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
-
             var effectiveColor = Color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
             var ambient = effectiveColor * Ambient;
+            if (isShadowed)
+            {
+                return ambient;
+            }
+            
             // light_dot_normal represents the cosine of the angle between the
             // light vector and the normal vector. A negative number means the
             // light is on the other side of the surface.

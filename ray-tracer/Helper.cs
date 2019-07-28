@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using ray_tracer;
 
 namespace ray_tracer
 {
     public static class Helper
     {
-        const double Epsilon = 1e-5;
+        public static readonly double Epsilon = 1e-5;
 
         public static Matrix CreateMatrix(int size) => new Matrix(size);
         public static Tuple CreatePoint(double x, double y, double z) => new Tuple(x, y, z, 1);
@@ -172,6 +174,22 @@ namespace ray_tracer
                 0, 0, 0, 1);
             var viewTransform = orientation * Translation(-from.X, -from.Y, -from.Z);
             return viewTransform;
-        } 
+        }
+
+        public static void Display(string file)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            var p = Process.Start(@"C:\Program Files (x86)\XnView\xnview.exe", file);
+            while (!p.HasExited || sw.ElapsedMilliseconds < 10_000)
+            {
+                Thread.Sleep(100);
+            }
+
+            if (!p.HasExited)
+            {
+                p.Kill();
+            }
+            
+        }
     }
 }
