@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using NFluent;
 using Xunit;
 
@@ -97,18 +95,7 @@ namespace ray_tracer.tests
             string file = Path.Combine(Path.GetTempPath(), "helloword.ppm");
             
             Helper.SavePPM(canvas, file);
-            Stopwatch sw = Stopwatch.StartNew();
-            var p = Process.Start(@"C:\Program Files (x86)\XnView\xnview.exe", file);
-            while (!p.HasExited || sw.ElapsedMilliseconds < 10_000)
-            {
-                Thread.Sleep(100);
-            }
-
-            if (!p.HasExited)
-            {
-                p.Kill();
-            }
-            
+            Helper.Display(file);
             File.Delete(file);
         }
     }
