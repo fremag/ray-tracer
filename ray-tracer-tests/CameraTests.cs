@@ -95,7 +95,7 @@ namespace ray_tracer.tests
             string file = Path.Combine(Path.GetTempPath(), "helloword.ppm");
             
             Helper.SavePPM(canvas, file);
-            Helper.Display(file);
+//            Helper.Display(file);
             File.Delete(file);
         }
     }

@@ -127,7 +127,7 @@ namespace ray_tracer.tests
             var tmpFile = Path.GetTempFileName();
             var ppmFile = Path.ChangeExtension(tmpFile, "ppm");
             canvas.SavePPM(ppmFile);
- 
+//            Helper.Display(ppmFile);
             File.Delete(tmpFile);
             File.Delete(ppmFile);
         }

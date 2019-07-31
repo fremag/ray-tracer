@@ -57,9 +57,9 @@ namespace ray_tracer.tests
             var intersection = Helper.Intersection(4, sphere);
             var intersectionData = intersection.Compute(ray);
             var c = world.ShadeHit(intersectionData);
-            Check.That(c.Red).IsCloseTo(0.08, 1e-5);
-            Check.That(c.Green).IsCloseTo(0.1, 1e-5);
-            Check.That(c.Blue).IsCloseTo(0.06, 1e-5);
+            Check.That(c.Red).IsCloseTo(0.38066, 1e-5);
+            Check.That(c.Green).IsCloseTo(0.47582, 1e-5);
+            Check.That(c.Blue).IsCloseTo(0.28549, 1e-5);
         }
 
         [Fact]
@@ -94,9 +94,9 @@ namespace ray_tracer.tests
             var world = GetDefaultWorld();
             var ray = new Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
             var color = world.ColorAt(ray);
-            Check.That(color.Red).IsCloseTo(0.08, 1e-5);
-            Check.That(color.Green).IsCloseTo(0.1, 1e-5);
-            Check.That(color.Blue).IsCloseTo(0.06, 1e-5);
+            Check.That(color.Red).IsCloseTo(0.38066, 1e-5);
+            Check.That(color.Green).IsCloseTo(0.47582, 1e-5);
+            Check.That(color.Blue).IsCloseTo(0.28549, 1e-5);
         }
 
         [Fact]
