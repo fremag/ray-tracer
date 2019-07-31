@@ -5,12 +5,12 @@ namespace ray_tracer
 {
     public class World
     {
-        public List<Sphere> Spheres { get; } = new List<Sphere>();
+        public List<IShape> Shapes { get; } = new List<IShape>();
         public List<PointLight> Lights { get; } = new List<PointLight>();
 
         public Intersections Intersect(Ray ray)
         {
-            var intersections = Spheres.SelectMany(sphere => sphere.Intersect(ray));
+            var intersections = Shapes.SelectMany(sphere => sphere.Intersect(ray));
             return new Intersections(intersections);
         }
 

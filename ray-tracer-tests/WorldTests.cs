@@ -10,7 +10,7 @@ namespace ray_tracer.tests
         public void EmptyWorldTest()
         {
             var world = new World();
-            Check.That(world.Spheres).IsEmpty();
+            Check.That(world.Shapes).IsEmpty();
             Check.That(world.Lights).IsEmpty();
         }
 
@@ -24,8 +24,8 @@ namespace ray_tracer.tests
             s1.Material = new Material(new Color(0.8, 1.0, 0.6), diffuse: 0.7, specular: 0.2);
             s2.Transform = Helper.Scaling(0.5, 0.5, 0.5);
 
-            world.Spheres.Add(s1);
-            world.Spheres.Add(s2);
+            world.Shapes.Add(s1);
+            world.Shapes.Add(s2);
             world.Lights.Add(l);
             return world;
         }
@@ -34,7 +34,7 @@ namespace ray_tracer.tests
         public void BasicWorldTest()
         {
             var world = GetDefaultWorld();
-            Check.That(world.Spheres).ContainsExactly(s1, s2);
+            Check.That(world.Shapes).ContainsExactly(s1, s2);
             Check.That(world.Lights).ContainsExactly(l);
         }
 
@@ -52,7 +52,7 @@ namespace ray_tracer.tests
         {
             var world = GetDefaultWorld();
             var ray = new Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
-            var sphere = world.Spheres.FirstOrDefault();
+            var sphere = world.Shapes.FirstOrDefault();
 
             var intersection = Helper.Intersection(4, sphere);
             var intersectionData = intersection.Compute(ray);
@@ -70,7 +70,7 @@ namespace ray_tracer.tests
             world.Lights.Add(new PointLight(Helper.CreatePoint(0, 0.25, 0), Color.White));
 
             var ray = new Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 0, 1));
-            var sphere = world.Spheres[1];
+            var sphere = world.Shapes[1];
 
             var intersection = Helper.Intersection(0.5, sphere);
             var intersectionData = intersection.Compute(ray);
@@ -103,9 +103,9 @@ namespace ray_tracer.tests
         public void ShadeHit_IntersectionBehindRay_Test()
         {
             var world = GetDefaultWorld();
-            var outter = world.Spheres[0];
+            var outter = world.Shapes[0];
             outter.Material.Ambient = 1;
-            var inner = world.Spheres[1];
+            var inner = world.Shapes[1];
             inner.Material.Ambient = 1;
 
             var ray = new Ray(Helper.CreatePoint(0, 0, 0.75), Helper.CreateVector(0, 0, -1));
@@ -130,10 +130,10 @@ namespace ray_tracer.tests
             var w = new World();
             w.Lights.Add(new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1)));
             var s1 = new Sphere();
-            w.Spheres.Add(s1);
+            w.Shapes.Add(s1);
             var s2 = new Sphere();
             s2.Transform = Helper.Translation(0, 0, 10);
-            w.Spheres.Add(s2);
+            w.Shapes.Add(s2);
 
             var r = Helper.Ray(Helper.CreatePoint(0, 0, 5), Helper.CreateVector(0, 0, 1));
             var i = new Intersection(4, s2);

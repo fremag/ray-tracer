@@ -5,9 +5,9 @@ namespace ray_tracer
     public class Intersection : IComparable<Intersection>
     {
         public double T { get; }
-        public Sphere Object { get; }
+        public IShape Object { get; }
 
-        public Intersection(double t, Sphere o)
+        public Intersection(double t, IShape o)
         {
             T = t;
             Object = o;

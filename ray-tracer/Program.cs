@@ -45,7 +45,7 @@ namespace ray_tracer
             left.Material = new Material(new Color(1, 0.8, 0.1), diffuse: 0.7, specular: 0.3);
 
             var world = new World();
-            world.Spheres.AddRange(new [] {floor, leftWall, rightWall, middle, left, right});
+            world.Shapes.AddRange(new [] {floor, leftWall, rightWall, middle, left, right});
             world.Lights.Add(new PointLight(Helper.CreatePoint(-10,10,-10), Color.White));
 
             var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(Helper.CreatePoint(0, 1.5, -5), Helper.CreatePoint(0, 1, 0), Helper.CreateVector(0, 1, 0)));

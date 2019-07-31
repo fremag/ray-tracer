@@ -3,7 +3,7 @@ namespace ray_tracer
     public class IntersectionData
     {
         public double T { get; }
-        public Sphere Object { get; }
+        public IShape Object { get; }
         public Tuple Point { get; }
         public Tuple EyeVector { get; }
         public Tuple Normal { get; }

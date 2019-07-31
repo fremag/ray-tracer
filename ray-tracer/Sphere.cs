@@ -2,12 +2,9 @@ using System;
 
 namespace ray_tracer
 {
-    public class Sphere
+    public class Sphere : AbstractShape
     {
-        public Matrix Transform { get; set; } = Helper.CreateIdentity();
-        public Material Material { get; set; } = new Material();
-        
-        public Intersections Intersect(Ray ray)
+        public override Intersections Intersect(Ray ray)
         {
             var transformedRay = ray.Transform(Transform.Inverse());
             var sphereToRay = transformedRay.Origin - Helper.CreatePoint(0, 0, 0);
@@ -30,7 +27,7 @@ namespace ray_tracer
             );
         }
 
-        public Tuple NormalAt(Tuple worldPoint)
+        public override Tuple NormalAt(Tuple worldPoint)
         {
             var inverseTransform = Transform.Inverse();
             var objectPoint = inverseTransform * worldPoint;
@@ -38,6 +35,6 @@ namespace ray_tracer
             var worldNormal = inverseTransform.Transpose() * objectNormal;
             worldNormal = Helper.CreateVector(worldNormal.X, worldNormal.Y, worldNormal.Z);
             return worldNormal.Normalize();
-        }
+        }        
     }
 }
