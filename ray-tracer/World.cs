@@ -10,7 +10,7 @@ namespace ray_tracer
 
         public Intersections Intersect(Ray ray)
         {
-            var intersections = Shapes.SelectMany(sphere => sphere.Intersect(ray));
+            var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
             return new Intersections(intersections);
         }
 
@@ -20,7 +20,7 @@ namespace ray_tracer
             foreach (var light in Lights)
             {
                 var isShadowed = IsShadowed(intersectionData.OverPoint, light);
-                var c = intersectionData.Object.Material.Lighting(light, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, isShadowed);
+                var c = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, isShadowed);
                 color += c;
             }
 

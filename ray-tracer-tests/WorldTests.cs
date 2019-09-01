@@ -110,7 +110,7 @@ namespace ray_tracer.tests
 
             var ray = new Ray(Helper.CreatePoint(0, 0, 0.75), Helper.CreateVector(0, 0, -1));
             var color = world.ColorAt(ray);
-            Check.That(color).IsEqualTo(inner.Material.Color);
+            Check.That(color).IsEqualTo(new Color(1));
         }
 
         [Theory]

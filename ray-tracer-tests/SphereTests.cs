@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using NFluent;
+using ray_tracer.Patterns;
 using Xunit;
 
 namespace ray_tracer.tests
@@ -232,7 +233,7 @@ namespace ray_tracer.tests
 
             var canvas = new Canvas(size, size);
             var sphere = Helper.Sphere();
-            sphere.Material.Color = new Color(1, 0.2, 1);
+            sphere.Material.Pattern = new SolidPattern(new Color(1, 0.2, 1));
             
             var light = new PointLight(Helper.CreatePoint(-10, 10, -10), Color.White);
             

@@ -1,22 +1,27 @@
 using System;
+using ray_tracer.Patterns;
 
 namespace ray_tracer
 {
     public class Material
     {
-        public Color Color { get; set; }
+        public IPattern Pattern { get; set; }
         public double Ambient { get;  set;}
         public double Diffuse { get;  set;}
         public double Specular { get;  set;}
         public int Shininess { get;  set;}
 
-        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200)
+        public Material(IPattern pattern, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, int shininess = 200)
         {
-            Color = color;
+            Pattern = pattern;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
             Shininess = shininess;
+        }
+        
+        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200) : this(new SolidPattern(color), ambient, diffuse, specular, shininess)
+        {
         }
 
         public Material() : this(new Color(1,1,1))
@@ -24,9 +29,17 @@ namespace ray_tracer
                 
         }
 
+        public Color Lighting(PointLight light, IShape shape, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
+        {
+            var objectPoint = shape.Transform.Inverse() * point;
+            var patternPoint = Pattern.Transform.Inverse() * objectPoint;
+            return Lighting(light, patternPoint, eye, normal, isShadowed);
+        }
+        
         public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
-            var effectiveColor = Color * light.Intensity;
+            var color = Pattern.GetColor(point);
+            var effectiveColor = color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
@@ -75,7 +88,7 @@ namespace ray_tracer
 #region EqualsHashCode
         protected bool Equals(Material other)
         {
-            return Equals(Color, other.Color) && Ambient.Equals(other.Ambient) && Diffuse.Equals(other.Diffuse) && Specular.Equals(other.Specular) && Shininess == other.Shininess;
+            return Equals(Pattern, other.Pattern) && Ambient.Equals(other.Ambient) && Diffuse.Equals(other.Diffuse) && Specular.Equals(other.Specular) && Shininess == other.Shininess;
         }
 
         public override bool Equals(object obj)
@@ -90,7 +103,7 @@ namespace ray_tracer
         {
             unchecked
             {
-                var hashCode = (Color != null ? Color.GetHashCode() : 0);
+                var hashCode = (Pattern != null ? Pattern.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Ambient.GetHashCode();
                 hashCode = (hashCode * 397) ^ Diffuse.GetHashCode();
                 hashCode = (hashCode * 397) ^ Specular.GetHashCode();
