@@ -2,28 +2,24 @@ using System;
 
 namespace ray_tracer.Patterns
 {
-    public class StripePattern : AbstractPattern
+    public class StripePattern : BiColorPattern
     {
-        public Color A { get;  }
-        public Color B { get;  }
-
-        public StripePattern(Color a, Color b)
+        public StripePattern(Matrix transform, Color colorA, Color colorB) : base(transform, colorA, colorB)
         {
-            A = a;
-            B = b;
         }
 
-        public StripePattern() : this(Color.White, Color.Black)
-        {}
+        public StripePattern(Color colorA, Color colorB) : base(colorA, colorB)
+        {
+        }
 
         public override Color GetColor(Tuple point)
         {
             if (Math.Abs(Math.Floor(point.X) % 2) < double.Epsilon)
             {
-                return A;
+                return ColorA;
             }
 
-            return B;
+            return ColorB;
         }
     }
 }

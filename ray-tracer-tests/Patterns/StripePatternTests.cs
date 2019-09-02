@@ -2,7 +2,7 @@ using NFluent;
 using ray_tracer.Patterns;
 using Xunit;
 
-namespace ray_tracer.tests
+namespace ray_tracer.tests.Patterns
 {
     public class StripePatternTests
     {
@@ -15,8 +15,8 @@ namespace ray_tracer.tests
         [Fact]
         public void BasicTest()
         {
-            Check.That(pattern.A).IsEqualTo(Color.White);
-            Check.That(pattern.B).IsEqualTo(Color.Black);
+            Check.That(pattern.ColorA).IsEqualTo(Color.White);
+            Check.That(pattern.ColorB).IsEqualTo(Color.Black);
         }
 
         [Theory]

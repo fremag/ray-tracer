@@ -5,7 +5,7 @@ using NFluent;
 using ray_tracer.Patterns;
 using Xunit;
 
-namespace ray_tracer.tests
+namespace ray_tracer.tests.Shapes
 {
     public class SphereTests
     {

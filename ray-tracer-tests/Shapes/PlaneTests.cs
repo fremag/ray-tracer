@@ -1,7 +1,8 @@
 using NFluent;
+using ray_tracer.Shapes;
 using Xunit;
 
-namespace ray_tracer.tests
+namespace ray_tracer.tests.Shapes
 {
     public class PlaneTests
     {

@@ -5,7 +5,8 @@ namespace ray_tracer
     public class Matrix
     {
         private double[][] Values { get; }
-
+        private Matrix Inversed { get; set; }
+        
         public Matrix(int size)
         {
             Values = new double[size][];
@@ -82,6 +83,15 @@ namespace ray_tracer
 
         public static bool operator ==(Matrix m1, Matrix m2)
         {
+            if (ReferenceEquals(m1, null) && ReferenceEquals(m2, null))
+            {
+                return true;
+            }
+            if (! ReferenceEquals(m1, null) && ReferenceEquals(m2, null))
+            {
+                return false;
+            }
+            
             return !ReferenceEquals(m1, null) && m1.Equals(m2);
         }
 
@@ -218,23 +228,29 @@ namespace ray_tracer
 
         public Matrix Inverse()
         {
+            var b = Inversed != null;
+            if (b)
+            {
+                return Inversed;
+            }
+            
             var det = Determinant();
             if (det == 0)
             {
                 throw new InvalidOperationException("Can not inverse matrix: determinant == 0 !");
             }
 
-            var inv = new Matrix(Size);
+            Inversed = new Matrix(Size);
             for (int row = 0; row < Size; row++)
             {
                 for (int col = 0; col < Size; col++)
                 {
                     var cof = Cofactor(row, col);
-                    inv[col, row] = cof / det;
+                    Inversed[col, row] = cof / det;
                 }
             }
 
-            return inv;
+            return Inversed;
         }
     }
 }

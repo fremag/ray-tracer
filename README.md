@@ -3,7 +3,7 @@
 
 <details open>
   <summary>Chapter 10: patterns</summary>
-  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/patterns_stripes.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_patterns.png"/>
 </details>
 
 <details>

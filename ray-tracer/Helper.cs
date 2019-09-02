@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using ray_tracer;
+using ray_tracer.Shapes;
 
 namespace ray_tracer
 {

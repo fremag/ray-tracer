@@ -56,6 +56,19 @@ namespace ray_tracer.tests
         }
 
         [Fact]
+        public void EqualsNullMatrixTest()
+        {
+            var matrix = new Matrix(4);
+            Check.That(matrix).IsNotEqualTo(null);
+            Check.That(matrix != null).IsTrue();
+            Check.That(matrix == null).IsFalse();
+
+            matrix = null;
+            Check.That(matrix).IsEqualTo(null);
+            Check.That(matrix).IsNull();
+        }
+
+        [Fact]
         public void EqualsMatrixTest()
         {
             var matrix1 = new Matrix(4, new[]

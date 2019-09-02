@@ -1,6 +1,6 @@
 using System;
 
-namespace ray_tracer
+namespace ray_tracer.Shapes
 {
     public class Plane : AbstractShape
     {
