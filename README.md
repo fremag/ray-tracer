@@ -2,6 +2,11 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details open>
+  <summary>Chapter 11: Reflection and Refraction</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection.png"/>
+</details>
+
+<details>
   <summary>Chapter 10: patterns</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_patterns.png"/>
 </details>
