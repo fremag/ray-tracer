@@ -9,18 +9,20 @@ namespace ray_tracer
         public double Ambient { get;  set;}
         public double Diffuse { get;  set;}
         public double Specular { get;  set;}
-        public int Shininess { get;  set;}
+        public int Shininess { get; set; }
+        public double Reflective { get;  set;}
 
-        public Material(IPattern pattern, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, int shininess = 200)
+        public Material(IPattern pattern, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, int shininess = 200, double reflective = 0)
         {
             Pattern = pattern;
             Ambient = ambient;
             Diffuse = diffuse;
             Specular = specular;
             Shininess = shininess;
+            Reflective = reflective;
         }
         
-        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200) : this(new SolidPattern(color), ambient, diffuse, specular, shininess)
+        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200, double reflective = 0.0) : this(new SolidPattern(color), ambient, diffuse, specular, shininess, reflective)
         {
         }
 
@@ -84,11 +86,11 @@ namespace ray_tracer
             // Add the three contributions together to get the final shading
             return ambient + diffuse + specular;
         }
-        
+
 #region EqualsHashCode
         protected bool Equals(Material other)
         {
-            return Equals(Pattern, other.Pattern) && Ambient.Equals(other.Ambient) && Diffuse.Equals(other.Diffuse) && Specular.Equals(other.Specular) && Shininess == other.Shininess;
+            return Equals(Pattern, other.Pattern) && Ambient.Equals(other.Ambient) && Diffuse.Equals(other.Diffuse) && Specular.Equals(other.Specular) && Shininess == other.Shininess  && Reflective.Equals(other.Reflective);
         }
 
         public override bool Equals(object obj)
@@ -107,10 +109,14 @@ namespace ray_tracer
                 hashCode = (hashCode * 397) ^ Ambient.GetHashCode();
                 hashCode = (hashCode * 397) ^ Diffuse.GetHashCode();
                 hashCode = (hashCode * 397) ^ Specular.GetHashCode();
+                hashCode = (hashCode * 397) ^ Reflective.GetHashCode();
                 hashCode = (hashCode * 397) ^ Shininess;
                 return hashCode;
             }
         }
     }
-#endregion    
+#endregion
+
+    
+
 }

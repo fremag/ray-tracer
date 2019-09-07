@@ -21,7 +21,8 @@ namespace ray_tracer
             {
                 var isShadowed = IsShadowed(intersectionData.OverPoint, light);
                 var c = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, isShadowed);
-                color += c;
+                var reflected = ReflectedColor(intersectionData); 
+                color += c + reflected;
             }
 
             return color;
@@ -60,6 +61,19 @@ namespace ray_tracer
         public bool IsShadowed(Tuple point)
         {
             return Lights.Any(light => IsShadowed(point, light));
+        }
+        
+        public Color ReflectedColor(IntersectionData intersectionData)
+        {
+            var materialReflective = intersectionData.Object.Material.Reflective;
+            if (materialReflective < double.Epsilon)
+            {
+                return Color.Black;
+            }
+
+            var reflectRay = Helper.Ray(intersectionData.OverPoint, intersectionData.ReflectionVector);
+            var color = ColorAt(reflectRay);
+            return color * materialReflective;            
         }
     }
 }

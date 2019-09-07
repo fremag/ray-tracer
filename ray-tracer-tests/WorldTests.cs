@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NFluent;
 using ray_tracer.Shapes;
@@ -141,6 +142,55 @@ namespace ray_tracer.tests
             var intersectionData = i.Compute(r);
             var c = w.ShadeHit(intersectionData);
             Check.That(c).IsEqualTo(new Color(0.1, 0.1, 0.1));
+        }
+
+        [Fact]
+        public void ReflectedColor_NonReflectiveMaterialTest()
+        {
+            var w = GetDefaultWorld();
+            var r = Helper.Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 0, 1));
+            var shape = w.Shapes[1];
+            shape.Material.Ambient = 1;
+            var i = Helper.Intersection(1, shape);
+            var comps = i.Compute(r);
+            var color = w.ReflectedColor(comps);
+            Check.That(color).IsEqualTo(Color.Black);
+        }
+        
+        [Fact]
+        public void ReflectedColor_ReflectiveMaterialTest()
+        {
+            var w = GetDefaultWorld();
+            var plane = new Plane();
+            plane.Material.Reflective = 0.5;
+            plane.Transform = Helper.Translation(0, -1, 0);
+            w.Shapes.Add(plane);
+            
+            var r = Helper.Ray(Helper.CreatePoint(0, 0, -3), Helper.CreateVector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var i = Helper.Intersection(Math.Sqrt(2), plane);
+            var comps = i.Compute(r);
+            var color = w.ReflectedColor(comps);
+            Check.That(color.Red).IsCloseTo(0.19032, 1e-4);
+            Check.That(color.Green).IsCloseTo(0.2379, 1e-4);
+            Check.That(color.Blue).IsCloseTo(0.14274, 1e-4);
+        }
+        
+        [Fact]
+        public void ShadeHit_ReflectiveMaterialTest()
+        {
+            var w = GetDefaultWorld();
+            var plane = new Plane();
+            plane.Material.Reflective = 0.5;
+            plane.Transform = Helper.Translation(0, -1, 0);
+            w.Shapes.Add(plane);
+            
+            var r = Helper.Ray(Helper.CreatePoint(0, 0, -3), Helper.CreateVector(0, -Math.Sqrt(2)/2, Math.Sqrt(2)/2));
+            var i = Helper.Intersection(Math.Sqrt(2), plane);
+            var comps = i.Compute(r);
+            var color = w.ShadeHit(comps);
+            Check.That(color.Red).IsCloseTo(0.87677, 1e-1);
+            Check.That(color.Green).IsCloseTo(0.92436, 1e-1);
+            Check.That(color.Blue).IsCloseTo(0.82918, 1e-1);
         }
     }
 }

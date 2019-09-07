@@ -6,6 +6,7 @@ namespace ray_tracer
         public IShape Object { get; }
         public Tuple Point { get; }
         public Tuple EyeVector { get; }
+        public Tuple ReflectionVector { get; }
         public Tuple Normal { get; }
         public bool Inside { get; }
         public Tuple OverPoint { get; }
@@ -27,8 +28,9 @@ namespace ray_tracer
             else
             {
                 Inside = false;
-            }            
-        }
+            }
 
+            ReflectionVector = ray.Direction.Reflect(Normal);
+        }
     }
 }

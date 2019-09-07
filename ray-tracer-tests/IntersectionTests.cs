@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using NFluent;
+using ray_tracer.Shapes;
 using Xunit;
 
 namespace ray_tracer.tests
@@ -118,8 +120,17 @@ namespace ray_tracer.tests
             shape.Transform = Helper.Translation(0, 0, 1);
             var intersection = new Intersection(5, shape);
             var comps = new IntersectionData(intersection, r);
-            Check.That(comps.OverPoint.Z).Not.IsStrictlyGreaterThan(-Helper.Epsilon / 2).And.Not
-                .IsStrictlyGreaterThan(comps.Point.Z);
+            Check.That(comps.OverPoint.Z).Not.IsStrictlyGreaterThan(-Helper.Epsilon / 2).And.Not.IsStrictlyGreaterThan(comps.Point.Z);
+        }
+
+        [Fact]
+        public void ReflectNormal()
+        {
+            var shape = new Plane();
+            var r = Helper.Ray(Helper.CreatePoint(0, 1, -1), Helper.CreateVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+            var intersection = new Intersection(Math.Sqrt(2), shape);
+            var comps = intersection.Compute(r);
+            Check.That(comps.ReflectionVector).IsEqualTo(Helper.CreateVector(0, Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         }
     }
 }
