@@ -6,9 +6,9 @@ namespace ray_tracer.Shapes
     {
         private Tuple normal = Helper.CreateVector(0, 1, 0);
 
-        public override Tuple NormalAt(Tuple worldPoint) => normal;
+        public override Tuple NormalAtLocal(Tuple worldPoint) => normal;
         
-        public override Intersections Intersect(Ray ray)
+        public override Intersections IntersectLocal(Ray ray)
         {
             // if ray is // to plane => no intersection
             if (Math.Abs(ray.Direction.Y) < Helper.Epsilon)

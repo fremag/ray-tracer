@@ -4,12 +4,11 @@ namespace ray_tracer.Shapes
 {
     public class Sphere : AbstractShape
     {
-        public override Intersections Intersect(Ray ray)
+        public override Intersections IntersectLocal(Ray ray)
         {
-            var transformedRay = ray.Transform(Transform.Inverse());
-            var sphereToRay = transformedRay.Origin - Helper.CreatePoint(0, 0, 0);
-            var a = transformedRay.Direction.DotProduct(transformedRay.Direction);
-            var b = 2 * transformedRay.Direction.DotProduct(sphereToRay);
+            var sphereToRay = ray.Origin - Helper.CreatePoint(0, 0, 0);
+            var a = ray.Direction.DotProduct(ray.Direction);
+            var b = 2 * ray.Direction.DotProduct(sphereToRay);
             var c = sphereToRay.DotProduct(sphereToRay) - 1;
             var discriminant = b * b - 4 * a * c;
 
@@ -27,14 +26,10 @@ namespace ray_tracer.Shapes
             );
         }
 
-        public override Tuple NormalAt(Tuple worldPoint)
+        public override Tuple NormalAtLocal(Tuple objectPoint)
         {
-            var inverseTransform = Transform.Inverse();
-            var objectPoint = inverseTransform * worldPoint;
             var objectNormal = objectPoint - Helper.CreatePoint(0, 0, 0);
-            var worldNormal = inverseTransform.Transpose() * objectNormal;
-            worldNormal = Helper.CreateVector(worldNormal.X, worldNormal.Y, worldNormal.Z);
-            return worldNormal.Normalize();
+            return objectNormal;
         }        
     }
 }

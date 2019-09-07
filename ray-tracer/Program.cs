@@ -89,7 +89,7 @@ namespace ray_tracer
         {
             IShape floor = new Plane();
             floor.Material = new Material(new RingPattern(Color.White, new Color(0,0,1)), specular: 0);
-
+            floor.Transform = Helper.Translation(0, 0.5, 0);
             var middle = Helper.Sphere();
             middle.Transform = Helper.Translation(-0.5, 1, 0.5);
             middle.Material = new Material(new StripePattern(new Color(0.5, 1, 0.1), new Color(1, 0.5, 0.1)) {Transform = Helper.Scaling(0.1, 1, 1)}, diffuse: 0.7, specular: 0.3);
