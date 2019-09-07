@@ -18,6 +18,7 @@ namespace ray_tracer
             Point = ray.Position(T);
             EyeVector = -ray.Direction;
             Normal = Object.NormalAt(Point);
+            ReflectionVector = ray.Direction.Reflect(Normal);
             OverPoint = Point + Normal * Helper.Epsilon;
             
             if (Normal.DotProduct(EyeVector) < 0)
@@ -30,7 +31,6 @@ namespace ray_tracer
                 Inside = false;
             }
 
-            ReflectionVector = ray.Direction.Reflect(Normal);
         }
     }
 }

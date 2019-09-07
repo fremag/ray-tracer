@@ -62,7 +62,7 @@ namespace ray_tracer
             return Helper.Ray(origin, direction);
         }
 
-        public Canvas Render(World world)
+        public Canvas Render(World world, int maxRecursion = 10)
         {
             var image = new Canvas(HSize, VSize);
             for (int y = 0; y < VSize; y++)
@@ -70,7 +70,7 @@ namespace ray_tracer
                 for (int x = 0; x < HSize; x++)
                 {
                     var ray = RayForPixel(x, y);
-                    var color = world.ColorAt(ray);
+                    var color = world.ColorAt(ray, maxRecursion);
                     image.SetPixel(x, y, color);
                 }
             }

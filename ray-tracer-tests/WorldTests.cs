@@ -192,5 +192,20 @@ namespace ray_tracer.tests
             Check.That(color.Green).IsCloseTo(0.92436, 1e-1);
             Check.That(color.Blue).IsCloseTo(0.82918, 1e-1);
         }
+
+        [Fact]
+        public void ColorAtWithMutuallyReflectiveSurfacesTest()
+        {
+            var w = new World();
+            w.Lights.Add(new PointLight(Helper.CreatePoint(0, 0, 0), Color.White));
+            var lower = new Plane {Material = {Reflective = 1}, Transform = Helper.Translation(0, -1, 0)};
+            var upper = new Plane {Material = {Reflective = 1}, Transform = Helper.Translation(0, 1, 0)};
+            w.Shapes.Add(lower);
+            w.Shapes.Add(upper);
+
+            var r = Helper.Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 1, 0));
+            var c = w.ColorAt(r);
+            Check.That(c).IsNotNull();
+        }
     }
 }
