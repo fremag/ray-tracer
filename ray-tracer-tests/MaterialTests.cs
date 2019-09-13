@@ -21,19 +21,23 @@ namespace ray_tracer.tests
             Check.That(m.Specular).IsEqualTo(0.9);
             Check.That(m.Shininess).IsEqualTo(200);
             Check.That(m.Reflective).IsEqualTo(0.0);
+            Check.That(m.RefractiveIndex).IsEqualTo(1.0);
+            Check.That(m.Transparency).IsEqualTo(0.0);
         }
 
         [Fact]
         public void MaterialTest()
         {
             var c = new Color(1, 1, 1);
-            Material m = new Material(c, 1, 2, 3, 4, 5);
+            Material m = new Material(c, 1, 2, 3, 4, 5,6,7);
             Check.That(m.Pattern).IsEqualTo(new SolidPattern(new Color(1, 1, 1)));
             Check.That(m.Ambient).IsEqualTo(1);
             Check.That(m.Diffuse).IsEqualTo(2);
             Check.That(m.Specular).IsEqualTo(3);
             Check.That(m.Shininess).IsEqualTo(4);
             Check.That(m.Reflective).IsEqualTo(5);
+            Check.That(m.Transparency).IsEqualTo(6);
+            Check.That(m.RefractiveIndex).IsEqualTo(7);
         }
 
         [Fact]
@@ -154,12 +158,12 @@ namespace ray_tracer.tests
             LightingWithStripePattern_TransformApplied(Helper.Translation(-1, 0, 0), Helper.Translation(+1, 0, 0), 0.5, 0, 0, Color.White);
             LightingWithStripePattern_TransformApplied(Helper.Translation(1, 0, 0), Helper.Translation(-1, 0, 0), 2.5, 0, 0, Color.White);
         }
-        
-        public void LightingWithStripePattern_TransformApplied(Matrix paternTransform, Matrix objectTransform, double x, double y, double z, object expectedColor)
+
+        private void LightingWithStripePattern_TransformApplied(Matrix patternTransform, Matrix objectTransform, double x, double y, double z, object expectedColor)
         {
             material.Pattern = new StripePattern(new Color(1, 1, 1), new Color(0, 0, 0))
             {
-                Transform = paternTransform 
+                Transform = patternTransform 
             };
             material.Ambient = 1;
             material.Diffuse = 0;

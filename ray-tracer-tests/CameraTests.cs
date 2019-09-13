@@ -58,7 +58,7 @@ namespace ray_tracer.tests
             Check.That(ray.Direction).IsEqualTo(Helper.CreateVector(Math.Sqrt(2) / 2, 0, -Math.Sqrt(2) / 2));
         }
 
-        [Fact]
+        [Fact(Skip = "Not today")]
         public void RenderWorldTest()
         {
             var floor = Helper.Sphere();

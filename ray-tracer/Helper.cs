@@ -190,7 +190,12 @@ namespace ray_tracer
             {
                 p.Kill();
             }
-            
         }
+
+        public static Sphere CreateGlassSphere()
+        {
+            var s = new Sphere {Material = {Transparency = 1.0, RefractiveIndex = 1.5}};
+            return s;
+        } 
     }
 }

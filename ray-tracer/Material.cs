@@ -11,8 +11,10 @@ namespace ray_tracer
         public double Specular { get;  set;}
         public int Shininess { get; set; }
         public double Reflective { get;  set;}
+        public double Transparency { get;  set;}
+        public double RefractiveIndex { get;  set;}
 
-        public Material(IPattern pattern, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, int shininess = 200, double reflective = 0)
+        public Material(IPattern pattern, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, int shininess = 200, double reflective = 0, double transparency = 0, double refractiveIndex = 1)
         {
             Pattern = pattern;
             Ambient = ambient;
@@ -20,9 +22,11 @@ namespace ray_tracer
             Specular = specular;
             Shininess = shininess;
             Reflective = reflective;
+            Transparency = transparency;
+            RefractiveIndex = refractiveIndex;
         }
         
-        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200, double reflective = 0.0) : this(new SolidPattern(color), ambient, diffuse, specular, shininess, reflective)
+        public Material( Color color, double ambient=0.1, double diffuse=0.9, double specular=0.9, int shininess=200, double reflective = 0.0, double transparency = 0, double refractiveIndex = 1) : this(new SolidPattern(color), ambient, diffuse, specular, shininess, reflective, transparency, refractiveIndex)
         {
         }
 
@@ -33,14 +37,18 @@ namespace ray_tracer
 
         public Color Lighting(PointLight light, IShape shape, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
-            var objectPoint = shape.Transform.Inverse() * point;
-            var patternPoint = Pattern.Transform.Inverse() * objectPoint;
-            return Lighting(light, patternPoint, eye, normal, isShadowed);
+            var color = Pattern.GetColorAtShape(shape, point);
+            return Lighting(light, point, eye, normal, isShadowed, color);
         }
-        
+
         public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
             var color = Pattern.GetColor(point);
+            return Lighting(light, point, eye, normal, isShadowed, color);
+        }
+        
+        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed, Color color)
+        {
             var effectiveColor = color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
@@ -70,7 +78,7 @@ namespace ray_tracer
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector. A negative number means the
                 // light reflects away from the eye.
-                var reflect = -lightv.Reflect(normal);
+                var reflect = (-lightv).Reflect(normal);
                 var reflectDotEye = reflect.DotProduct(eye);
                 if (reflectDotEye <= 0)
                 {
