@@ -1,14 +1,13 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details>
+<details open>
   <summary>Chapter 11: Reflection and Refraction</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection_refraction.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection.png"/>
-         Thanks to (Javan Makhmali)[https://github.com/javan]
+         Thanks to <a href="https://github.com/javan">Javan Makhmali</a>
           
-         I wanted to check my ray tracer was correct so I got the same scene as him to compare results.
-         https://github.com/javan/ray-tracer-challenge/blob/master/src/controllers/chapter_11_worker.js
+         I wanted to check my ray tracer was correct so I got the <a href="https://github.com/javan/ray-tracer-challenge/blob/master/src/controllers/chapter_11_worker.js">same scene as him</a> to compare results.
 </details>
 
 <details>
