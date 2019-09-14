@@ -193,7 +193,7 @@ namespace ray_tracer
             };
             var s2 = new Sphere
             {
-                Material = new Material(Color.White, transparency: 0.9, refractiveIndex: 1.5, reflective: 0.9, shininess: 300, specular:0.9, ambient: 0, diffuse: 0.4)
+                Material = new Material(Color.White, transparency: 0.9, refractiveIndex: 1.5, reflective: 1, shininess: 300, specular:0.9, ambient: 0, diffuse: 0.4)
             };
            
             var world = new World();
