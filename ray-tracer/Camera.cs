@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ray_tracer
 {
@@ -65,7 +67,8 @@ namespace ray_tracer
         public Canvas Render(World world, int maxRecursion = 10)
         {
             var image = new Canvas(HSize, VSize);
-            for (int y = 0; y < VSize; y++)
+            ThreadPool.SetMinThreads(4, 8); 
+            Parallel.For(0, VSize, y =>
             {
                 for (int x = 0; x < HSize; x++)
                 {
@@ -73,7 +76,7 @@ namespace ray_tracer
                     var color = world.ColorAt(ray, maxRecursion);
                     image.SetPixel(x, y, color);
                 }
-            }
+            });
 
             return image;
         }

@@ -4,6 +4,7 @@
 <details open>
   <summary>Chapter 11: Reflection and Refraction</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection_refraction.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection.png"/>
   <p>
          Thanks to <a href="https://github.com/javan">Javan Makhmali</a>

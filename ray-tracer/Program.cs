@@ -11,7 +11,7 @@ namespace ray_tracer
         static void Main(string[] args)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            var file = RenderWorldReflectionRefractionTest();
+            var file = RenderGlassSphereTest();
             sw.Stop();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
             Helper.Display(file);
@@ -176,10 +176,35 @@ namespace ray_tracer
             world.Shapes.AddRange(new [] {floor, s1, s2, s3, blueSphere, greenSphere});
             world.Lights.Add(new PointLight(Helper.CreatePoint(-4.9,4.9,-1), Color.White));
 
-            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(Helper.CreatePoint(-2.6, 1.5, -4.9), Helper.CreatePoint(-0.6, 1, -0.8), Helper.CreateVector(0, 1, 0)));
+            var camera = new Camera(1600, 1200, Math.PI / 3, Helper.ViewTransform(Helper.CreatePoint(-2.6, 1.5, -4.9), Helper.CreatePoint(-0.6, 1, -0.8), Helper.CreateVector(0, 1, 0)));
             var canvas = camera.Render(world, 10);
             string file = Path.Combine(Path.GetTempPath(), "world_reflection_refraction.ppm");
             
+            Helper.SavePPM(canvas, file);
+            return file;
+        }
+        public static string RenderGlassSphereTest()
+        {
+            IShape floor = new Plane()
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White) {Transform = Helper.Scaling(4, 4, 4)}, reflective: 0, specular: 0, diffuse: 0, shininess: 0, ambient: 1),
+                Transform = Helper.Translation(0, -1, 0)
+
+            };
+            var s2 = new Sphere
+            {
+                Material = new Material(Color.White, transparency: 0.9, refractiveIndex: 1.5, reflective: 0.9, shininess: 300, specular:0.9, ambient: 0, diffuse: 0.4)
+            };
+           
+            var world = new World();
+            world.Shapes.AddRange(new [] {floor, 
+                s2
+            });
+            world.Lights.Add(new PointLight(Helper.CreatePoint(-100,0,-50), Color.White));
+
+            var camera = new Camera(1200, 800, Math.PI / 3, Helper.ViewTransform(Helper.CreatePoint(0, 0, -3), Helper.CreatePoint(0,0,0), Helper.CreateVector(0, 1, 0)));
+            var canvas = camera.Render(world, 10);
+            string file = Path.Combine(Path.GetTempPath(), "glass_sphere.ppm");
             Helper.SavePPM(canvas, file);
             return file;
         }
