@@ -2,6 +2,12 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details open>
+  <summary>Pov-ray ? </summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/pov-ray/glass_sphere.png"/>
+</details>
+
+<details>
   <summary>Chapter 11: Reflection and Refraction</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection_refraction.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
