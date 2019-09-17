@@ -13,7 +13,13 @@ namespace ray_tracer
             Object = o;
         }
 
-        public int CompareTo(Intersection other) => Math.Sign(T - other.T);
+        public int CompareTo(Intersection other)
+        {
+            if (T < other.T) return -1;
+            if (T > other.T) return 1;
+            return 0;
+        }
+
         public IntersectionData Compute(Ray ray, Intersections intersections = null ) => new IntersectionData(this, ray, intersections);
     }
 }

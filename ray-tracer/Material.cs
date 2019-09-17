@@ -3,7 +3,7 @@ using ray_tracer.Patterns;
 
 namespace ray_tracer
 {
-    public class Material
+    public class Material 
     {
         public IPattern Pattern { get; set; }
         public double Ambient { get;  set;}

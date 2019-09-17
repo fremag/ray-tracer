@@ -1,8 +1,7 @@
 namespace ray_tracer
 {
-    public interface IPattern
+    public interface IPattern : ITransformable
     {
-        Matrix Transform { get; set; }
         Color GetColor(Tuple point);
         Color GetColorAtShape(IShape shape, Tuple point);
     }

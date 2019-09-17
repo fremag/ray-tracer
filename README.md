@@ -2,6 +2,11 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details open>
+  <summary>Chapter 12: cubes </summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cubes.png"/>
+</details>
+
+<details>
   <summary>Pov-ray ? </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/pov-ray/glass_sphere.png"/>

@@ -196,6 +196,52 @@ namespace ray_tracer
         {
             var s = new Sphere {Material = {Transparency = 1.0, RefractiveIndex = 1.5}};
             return s;
-        } 
+        }
+
+        public static World Add(this World w, params IShape[] shapes)
+        {
+            w.Shapes.AddRange(shapes);
+            return w;
+        }
+
+        public static IShape Scale(this IShape shape, double scale)
+        {
+            TransformScale(shape, scale, scale, scale);
+            return shape;
+        }
+        
+        public static IShape Scale(this IShape shape, double sx, double sy, double sz)
+        {
+            TransformScale(shape, sx, sy, sz);
+            return shape;
+        }
+        
+        public static IPattern Scale(this IPattern pattern, double scale)
+        {
+            TransformScale(pattern, scale, scale, scale);
+            return pattern;
+        }
+
+        private static void TransformScale( ITransformable transformable, double scaleX, double scaleY, double scaleZ)
+        {
+            transformable.Transform = Scaling(scaleX, scaleY, scaleZ) * transformable.Transform;
+        }
+        
+        public static IShape Translate(this IShape shape, double tx = 0, double ty = 0, double tz=0)
+        {
+            TransformTranslate(shape, tx, ty, tz);
+            return shape;
+        }
+        
+        public static IPattern Translate(this IPattern pattern, double tx = 0, double ty = 0, double tz=0)
+        {
+            TransformScale(pattern, tx, ty, tz);
+            return pattern;
+        }
+
+        private static void TransformTranslate( ITransformable transformable, double tx = 0, double ty = 0, double tz=0)
+        {
+            transformable.Transform = Translation(tx, ty, tz) * transformable.Transform ;
+        }
     }
 }
