@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 
@@ -10,8 +11,9 @@ namespace ray_tracer
     {
         static void Main(string[] args)
         {
+            GCSettings.LatencyMode = GCLatencyMode.Batch;
             Stopwatch sw = Stopwatch.StartNew();
-            var file = RenderCylinderAltitudeScene();
+            var file = RenderConesScene();
             sw.Stop();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
             Helper.Display(file);
@@ -296,12 +298,6 @@ namespace ray_tracer
         public static string RenderCylinderAltitudeScene()
         {
             var world = new World();
-            IShape floor = new Plane
-            {
-                Material = new Material(new CheckerPattern(Color.Black, Color.White).Scale(1), reflective: 0.3, transparency: 0.9),
-                Transform = Helper.Translation(0, -0.5, 0)
-            };
-            //world.Add(floor);
 
             const int N = 70;
             for (int i = 0; i < N; i++)
@@ -312,13 +308,13 @@ namespace ray_tracer
                 double r = Math.Sqrt(x * x + z * z);
                 double y = (1+Math.Sin(Math.PI * 2 * r*8))*2;
                 var cyl = new Cylinder(minimum:0, maximum:1, closed: true).Scale(sx: 0.5, sy: y, sz: 0.5).Translate(tx: i, tz: j);
-                cyl.Material.Pattern = new SolidPattern(Color.White*r);
+                cyl.Material.Pattern = new SolidPattern(Color.White*(1-r));
                 cyl.Material.Transparency = 0.9;
                 world.Add(cyl);
             }
             
             var d = 3 * Math.Sqrt(N);
-            var point = Helper.CreatePoint(d,  d, -d);
+            var point = Helper.CreatePoint(0,  d, -d);
             world.Lights.Add(new PointLight(2*point, Color.White));
             var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(N / 2, 0*N / 2, N / 2), Helper.CreateVector(0, 1, 0)));
             var canvas = camera.Render(world, 2);
@@ -326,6 +322,34 @@ namespace ray_tracer
             Helper.SavePPM(canvas, file);
             return file;
         }
-        
+
+        public static string RenderConesScene()
+        {
+            var world = new World();
+            IShape floor = new Plane
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White))
+            };
+            world.Add(floor);
+
+            const int N = 200;
+            for (int i = 1; i <= N; i++)
+            {
+                var t = (double)i / N;
+                var x = 4*t*Math.Cos(2 * Math.PI * t*4);
+                var z = 4*t*Math.Sin(2 * Math.PI * t*4);
+                var cone = new Cone(-1, 0, true).Translate(ty: 1).Scale(sy: 1-t+0.5).Translate(tx: x, tz: z);
+                cone.Material.Pattern = new SolidPattern(Color._Blue * t+Color._Green*(1-t));
+                world.Add(cone);
+            }
+
+            var point = Helper.CreatePoint(0, 5, -5);
+            world.Lights.Add(new PointLight(2*point, Color.White));
+            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(0,0,-2), Helper.CreateVector(0, 1, 0)));
+            var canvas = camera.Render(world);
+            string file = Path.Combine(Path.GetTempPath(), "cones.ppm");
+            Helper.SavePPM(canvas, file);
+            return file;
+        }        
     }
 }

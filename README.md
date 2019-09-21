@@ -4,6 +4,8 @@
 <details open>
   <summary>Chapter 13: cylinders </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cylinders_altitude.png"/>
+  <br/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cones.png"/>
 </details>
 
 <details>
@@ -14,13 +16,16 @@
 <details>
   <summary>Pov-ray ? </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
+  <br/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/pov-ray/glass_sphere.png"/>
 </details>
 
 <details>
   <summary>Chapter 11: Reflection and Refraction</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection_refraction.png"/>
+  <br/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/glass_sphere.png"/>
+  <br/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/world_reflection.png"/>
   <p>
          Thanks to <a href="https://github.com/javan">Javan Makhmali</a>

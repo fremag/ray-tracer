@@ -31,7 +31,7 @@ namespace ray_tracer.Shapes
                 // ray does not intersect the cylinder
                 if (disc < 0)
                 {
-                    return new Intersections();
+                    return xs;
                 }
 
                 var t0 = (-b - Math.Sqrt(disc)) / (2 * a);
