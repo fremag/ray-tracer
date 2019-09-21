@@ -1,7 +1,7 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details>
+<details open>
   <summary>Chapter 13: cylinders </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cylinders_altitude.png"/>
 </details>
