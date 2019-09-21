@@ -210,7 +210,7 @@ namespace ray_tracer
             return shape;
         }
         
-        public static IShape Scale(this IShape shape, double sx, double sy, double sz)
+        public static IShape Scale(this IShape shape, double sx=1, double sy=1, double sz=1)
         {
             TransformScale(shape, sx, sy, sz);
             return shape;
@@ -242,6 +242,23 @@ namespace ray_tracer
         private static void TransformTranslate( ITransformable transformable, double tx = 0, double ty = 0, double tz=0)
         {
             transformable.Transform = Translation(tx, ty, tz) * transformable.Transform ;
+        }
+        
+        public static IShape Rotate(this IShape shape, double rx = 0, double ry = 0, double rz=0)
+        {
+            TransformRotate(shape, rx, ry, rz);
+            return shape;
+        }
+        
+        public static IPattern Rotate(this IPattern pattern, double rx = 0, double ry = 0, double rz=0)
+        {
+            TransformScale(pattern, rx, ry, rz);
+            return pattern;
+        }
+
+        private static void TransformRotate( ITransformable transformable, double rx = 0, double ry = 0, double rz=0)
+        {
+            transformable.Transform = RotationX(rx)*RotationY(ry)*RotationZ(rz) * transformable.Transform ;
         }
     }
 }

@@ -6,6 +6,9 @@ namespace ray_tracer
     {
         public static readonly Color Black = new Color(0);
         public static readonly Color White = new Color(1);
+        public static readonly Color _Red = new Color(1,0,0);
+        public static readonly Color _Green = new Color(0,1,0);
+        public static readonly Color _Blue = new Color(0,0,1);
 
         public double Red { get; }
         public double Green { get; }

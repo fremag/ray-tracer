@@ -1,7 +1,12 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details open>
+<details>
+  <summary>Chapter 13: cylinders </summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cylinders_altitude.png"/>
+</details>
+
+<details>
   <summary>Chapter 12: cubes </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cubes.png"/>
 </details>

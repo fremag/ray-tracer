@@ -11,7 +11,7 @@ namespace ray_tracer
         static void Main(string[] args)
         {
             Stopwatch sw = Stopwatch.StartNew();
-            var file = RenderCubeScene();
+            var file = RenderCylinderAltitudeScene();
             sw.Stop();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
             Helper.Display(file);
@@ -247,5 +247,84 @@ namespace ray_tracer
             Helper.SavePPM(canvas, file);
             return file;
         }
+
+        private static void AddObject(World world, double tx, double ty, double tz, int n)
+        {
+            var sphere = new Sphere().Scale(0.3).Translate(tx, ty, tz);
+            var cyl1 = new Cylinder{Closed = true, Minimum = 0, Maximum = 1}.Scale(sx: 0.15, sz: 0.15).Rotate(ry: Math.PI / 2).Translate(tx, ty, tz);
+            var cyl2 = new Cylinder{Closed = true, Minimum = 0, Maximum = 1}.Scale(sx: 0.15, sz: 0.15).Rotate(rx: Math.PI / 2).Translate(tx, ty, tz);
+            var cyl3 = new Cylinder{Closed = true, Minimum = 0, Maximum = 1}.Scale(sx: 0.15, sz: 0.15).Rotate(rz: Math.PI / 2).Translate(tx, ty, tz);
+            
+            cyl1.Material.Pattern = new SolidPattern(Color._Red * (tx / n));
+            cyl2.Material.Pattern = new SolidPattern(Color._Green * (ty / n));
+            cyl3.Material.Pattern = new SolidPattern(Color._Blue * (tz / n));
+
+            var red = tx /  n;
+            var green = ty / n;
+            var blue = tz / n;
+            var color = new Color(red, green, blue);
+            sphere.Material.Pattern = new SolidPattern(color);
+            world.Add(sphere, cyl1,cyl2,cyl3);
+        }
+        
+        public static string RenderCylinderScene()
+        {
+            var world = new World();
+            IShape floor = new Plane
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White).Scale(1), reflective: 0.3, transparency: 0.9),
+                Transform = Helper.Translation(0, -0.5, 0)
+            };
+            world.Add(floor);
+
+            const int N = 5;
+            for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+            for (int k = 0; k < N; k++)
+                AddObject(world, i, j, k, N);
+            
+            var d = 3 * Math.Sqrt(N);
+            var point = Helper.CreatePoint(d,  d, -d);
+            world.Lights.Add(new PointLight(2*point, Color.White));
+            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(N / 2, N / 2, N / 2), Helper.CreateVector(0, 1, 0)));
+            var canvas = camera.Render(world);
+            string file = Path.Combine(Path.GetTempPath(), "cylinders.ppm");
+            Helper.SavePPM(canvas, file);
+            return file;
+        }
+        
+        public static string RenderCylinderAltitudeScene()
+        {
+            var world = new World();
+            IShape floor = new Plane
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White).Scale(1), reflective: 0.3, transparency: 0.9),
+                Transform = Helper.Translation(0, -0.5, 0)
+            };
+            world.Add(floor);
+
+            const int N = 50;
+            for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+            {
+                double x = (double)i/N - 0.5;
+                double z =  (double)j / N - 0.5;
+                double r = Math.Sqrt(x * x + z * z);
+                double y = 1+Math.Sin(Math.PI * 2 * r*5)*1/r;
+                var cyl = new Cylinder(minimum:0, maximum:1, closed: true).Scale(sx: 0.5, sy: y, sz: 0.5).Translate(tx: i, tz: j);
+                cyl.Material.Pattern = new SolidPattern(Color.White*r);
+                world.Add(cyl);
+            }
+            
+            var d = 3 * Math.Sqrt(N);
+            var point = Helper.CreatePoint(d,  d, -d);
+            world.Lights.Add(new PointLight(2*point, Color.White));
+            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(N / 2, 0*N / 2, N / 2), Helper.CreateVector(0, 1, 0)));
+            var canvas = camera.Render(world);
+            string file = Path.Combine(Path.GetTempPath(), "cylinders_altitude.ppm");
+            Helper.SavePPM(canvas, file);
+            return file;
+        }
+        
     }
 }
