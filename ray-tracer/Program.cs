@@ -301,18 +301,19 @@ namespace ray_tracer
                 Material = new Material(new CheckerPattern(Color.Black, Color.White).Scale(1), reflective: 0.3, transparency: 0.9),
                 Transform = Helper.Translation(0, -0.5, 0)
             };
-            world.Add(floor);
+            //world.Add(floor);
 
-            const int N = 50;
+            const int N = 70;
             for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
             {
                 double x = (double)i/N - 0.5;
                 double z =  (double)j / N - 0.5;
                 double r = Math.Sqrt(x * x + z * z);
-                double y = 1+Math.Sin(Math.PI * 2 * r*5)*1/r;
+                double y = (1+Math.Sin(Math.PI * 2 * r*8))*2;
                 var cyl = new Cylinder(minimum:0, maximum:1, closed: true).Scale(sx: 0.5, sy: y, sz: 0.5).Translate(tx: i, tz: j);
                 cyl.Material.Pattern = new SolidPattern(Color.White*r);
+                cyl.Material.Transparency = 0.9;
                 world.Add(cyl);
             }
             
@@ -320,7 +321,7 @@ namespace ray_tracer
             var point = Helper.CreatePoint(d,  d, -d);
             world.Lights.Add(new PointLight(2*point, Color.White));
             var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(N / 2, 0*N / 2, N / 2), Helper.CreateVector(0, 1, 0)));
-            var canvas = camera.Render(world);
+            var canvas = camera.Render(world, 2);
             string file = Path.Combine(Path.GetTempPath(), "cylinders_altitude.ppm");
             Helper.SavePPM(canvas, file);
             return file;
