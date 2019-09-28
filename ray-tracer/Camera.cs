@@ -64,10 +64,13 @@ namespace ray_tracer
             return Helper.Ray(origin, direction);
         }
 
+        public event Action<int, int> RowRendered;
+        
         public Canvas Render(World world, int maxRecursion = 10)
         {
             var image = new Canvas(HSize, VSize);
             ThreadPool.SetMinThreads(4, 8); 
+            int progress = 0;
             Parallel.For(0, VSize, y =>
             {
                 for (int x = 0; x < HSize; x++)
@@ -76,6 +79,9 @@ namespace ray_tracer
                     var color = world.ColorAt(ray, maxRecursion);
                     image.SetPixel(x, y, color);
                 }
+
+                Interlocked.Increment(ref progress);
+                RowRendered?.Invoke(progress, VSize);
             });
 
             return image;

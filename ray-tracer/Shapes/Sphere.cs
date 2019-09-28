@@ -30,6 +30,6 @@ namespace ray_tracer.Shapes
         {
             var objectNormal = objectPoint - Helper.CreatePoint(0, 0, 0);
             return objectNormal;
-        }        
-    }
+        }
+   }
 }

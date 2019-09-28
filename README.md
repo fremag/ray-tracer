@@ -1,7 +1,11 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
-
 <details open>
+  <summary>Chapter 14: groups </summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/labyrinth.png"/>
+</details>
+
+<details>
   <summary>Chapter 13: cylinders </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cylinders_altitude.png"/>
   <br/>

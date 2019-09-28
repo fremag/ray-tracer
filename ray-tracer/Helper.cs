@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using ray_tracer;
 using ray_tracer.Shapes;
 
 namespace ray_tracer
@@ -204,13 +203,13 @@ namespace ray_tracer
             return w;
         }
 
-        public static IShape Scale(this IShape shape, double scale)
+        public static T Scale<T>(this T shape, double scale) where T: IShape
         {
             TransformScale(shape, scale, scale, scale);
             return shape;
         }
         
-        public static IShape Scale(this IShape shape, double sx=1, double sy=1, double sz=1)
+        public static T Scale<T>(this T shape, double sx=1, double sy=1, double sz=1) where T : IShape
         {
             TransformScale(shape, sx, sy, sz);
             return shape;
@@ -227,7 +226,7 @@ namespace ray_tracer
             transformable.Transform = Scaling(scaleX, scaleY, scaleZ) * transformable.Transform;
         }
         
-        public static IShape Translate(this IShape shape, double tx = 0, double ty = 0, double tz=0)
+        public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz=0) where T: IShape
         {
             TransformTranslate(shape, tx, ty, tz);
             return shape;
@@ -244,7 +243,7 @@ namespace ray_tracer
             transformable.Transform = Translation(tx, ty, tz) * transformable.Transform ;
         }
         
-        public static IShape Rotate(this IShape shape, double rx = 0, double ry = 0, double rz=0)
+        public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz=0) where T: IShape 
         {
             TransformRotate(shape, rx, ry, rz);
             return shape;
@@ -256,9 +255,11 @@ namespace ray_tracer
             return pattern;
         }
 
-        private static void TransformRotate( ITransformable transformable, double rx = 0, double ry = 0, double rz=0)
+        private static void TransformRotate(ITransformable transformable, double rx = 0, double ry = 0, double rz=0)
         {
             transformable.Transform = RotationX(rx)*RotationY(ry)*RotationZ(rz) * transformable.Transform ;
         }
+
+        public static Ray Ray(double ox, double oy, double oz, double dx, double dy, double dz) => new Ray(CreatePoint(ox, oy, oz), CreateVector(dx, dy, dz));
     }
 }
