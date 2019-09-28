@@ -8,6 +8,7 @@ namespace ray_tracer
 
         public abstract Intersections IntersectLocal(Ray ray);
         public abstract Tuple NormalAtLocal(Tuple worldPoint);
+        public abstract Bounds Box { get; }
 
         public Intersections Intersect(Ray ray)
         {

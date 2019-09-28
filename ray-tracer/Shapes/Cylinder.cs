@@ -15,6 +15,8 @@ namespace ray_tracer.Shapes
             Closed = closed;
         }
 
+        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
+
         public override Intersections IntersectLocal(Ray ray)
         {
 

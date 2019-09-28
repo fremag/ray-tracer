@@ -7,6 +7,7 @@ namespace ray_tracer.Shapes
         public double Minimum { get; set; }
         public double Maximum { get; set; }
         public bool Closed { get; set; }
+        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
 
         public Cone(double minimum = double.NegativeInfinity, double maximum = double.PositiveInfinity, bool closed = false)
         {

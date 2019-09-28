@@ -8,5 +8,6 @@ namespace ray_tracer
         Tuple NormalAt(Tuple worldPoint);
         Tuple WorldToObject(Tuple point);
         Tuple NormalToWorld(Tuple normal);
+        Bounds Box { get; }
     }
 }

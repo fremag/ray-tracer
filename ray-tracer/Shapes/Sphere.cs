@@ -4,6 +4,8 @@ namespace ray_tracer.Shapes
 {
     public class Sphere : AbstractShape
     {
+        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
+
         public override Intersections IntersectLocal(Ray ray)
         {
             var sphereToRay = ray.Origin - Helper.CreatePoint(0, 0, 0);
@@ -31,5 +33,5 @@ namespace ray_tracer.Shapes
             var objectNormal = objectPoint - Helper.CreatePoint(0, 0, 0);
             return objectNormal;
         }
-   }
+    }
 }

@@ -8,6 +8,8 @@ namespace ray_tracer.Shapes
 
         public override Tuple NormalAtLocal(Tuple worldPoint) => normal;
         
+        public override Bounds Box  => new Bounds{PMin = Helper.CreatePoint(double.NegativeInfinity,0, double.NegativeInfinity), PMax = Helper.CreatePoint(double.PositiveInfinity,0, double.PositiveInfinity)}; 
+
         public override Intersections IntersectLocal(Ray ray)
         {
             // if ray is // to plane => no intersection

@@ -4,6 +4,8 @@ namespace ray_tracer.Shapes
 {
     public class Cube : AbstractShape
     {
+        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
+        
         public void CheckAxis(double origin, double direction, out double tMin, out double tMax)
         {
             var tMinNumerator = (-1 - origin);

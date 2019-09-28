@@ -13,8 +13,10 @@ namespace ray_tracer
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Stopwatch sw = Stopwatch.StartNew();
+            Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}"); 
             var file = RenderLabyrinthScene();
             sw.Stop();
+            Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
             Helper.Display(file);
             File.Delete(file);
@@ -61,7 +63,14 @@ namespace ray_tracer
 
         private static void OnRowRendered(int progress, int hSize)
         {
-            Console.WriteLine($"{(100.0*progress) / hSize }");
+            var startTime = Process.GetCurrentProcess().StartTime;
+            var now = DateTime.Now;
+            var pct = (100.0 * progress) / hSize;
+            var t = (now - startTime).TotalSeconds / pct;
+            var endTime = startTime.AddSeconds(100 * t);
+            
+            Console.SetCursorPosition(0, Console.CursorLeft);
+            Console.Write($"{startTime-now:hh\\:mm\\:ss}> {pct,5:n2} % => {endTime-startTime:hh\\:mm\\:ss}, endTime: {endTime:HH\\:mm\\:ss}");
         }
 
         public static string RenderWorldPlaneTest()
