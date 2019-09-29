@@ -420,14 +420,20 @@ namespace ray_tracer
             var lab = ComputeLabyrinth(w, w);
             for (int i = 0; i < w; i++)
             {
+                Group g = new Group();
                 for (int j = 0; j < w; j++)
                 {
                     if (lab[i][j] == 0)
                     {
-                        var cube = new Cube().Scale(0.5).Translate(tx: i-w/2, tz: j-w/2);
+                        var cube = new Cube().Scale(0.5).Translate(tz: j-w/2);
                         cube.Material.Pattern = new SolidPattern(Color.White *0.8);
-                        world.Add(cube);
+                        g.Add(cube);
                     }
+                }
+
+                if (g.Count > 0)
+                {
+                    world.Add(g.Translate(tx: i-w/2));
                 }
             }
 

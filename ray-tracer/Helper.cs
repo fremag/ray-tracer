@@ -261,5 +261,29 @@ namespace ray_tracer
         }
 
         public static Ray Ray(double ox, double oy, double oz, double dx, double dy, double dz) => new Ray(CreatePoint(ox, oy, oz), CreateVector(dx, dy, dz));
+        
+        public static void CheckAxis(double origin, double direction, out double tMin, out double tMax, double min=-1, double max=1)
+        {
+            var tMinNumerator = (min - origin);
+            var tMaxNumerator = (max - origin);
+            
+            if (Math.Abs(direction) >= double.Epsilon)
+            {
+                tMin = tMinNumerator / direction;
+                tMax = tMaxNumerator / direction;
+            }
+            else
+            {
+                tMin = tMinNumerator * double.PositiveInfinity;
+                tMax = tMaxNumerator * double.PositiveInfinity;
+            }
+
+            if (tMin > tMax)
+            {
+                var t = tMin;
+                tMin = tMax;
+                tMax = t;
+            }
+        }
     }
 }

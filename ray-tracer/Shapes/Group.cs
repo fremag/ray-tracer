@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,7 +6,7 @@ namespace ray_tracer.Shapes
 {
     public class Group : AbstractShape
     {
-        private List<IShape> Shapes { get;  } = new List<IShape>();
+        private List<IShape> Shapes { get; } = new List<IShape>();
         private Bounds box;
 
         public override Bounds Box
@@ -18,11 +19,20 @@ namespace ray_tracer.Shapes
                 }
 
                 return box;
-            }   
+            }
         }
+
+        public int Count => Shapes.Count;
 
         private void ComputeBox()
         {
+            double minX = double.PositiveInfinity;
+            double minY = double.PositiveInfinity;
+            double minZ = double.PositiveInfinity;
+            double maxX = double.NegativeInfinity;
+            double maxY = double.NegativeInfinity;
+            double maxZ = double.NegativeInfinity;
+
             foreach (var shape in Shapes)
             {
                 var b = shape.Box;
@@ -43,15 +53,15 @@ namespace ray_tracer.Shapes
                 var transformP7 = shape.Transform * p7;
                 var transformP8 = shape.Transform * p8;
                 var points = new[] {transformP1, transformP2, transformP3, transformP4, transformP5, transformP6, transformP7, transformP8};
-                var minX = points.Select(p => p.X).Min();
-                var minY = points.Select(p => p.Y).Min();
-                var minZ = points.Select(p => p.Z).Min();
-                var maxX = points.Select(p => p.X).Max();
-                var maxY = points.Select(p => p.Y).Max();
-                var maxZ = points.Select(p => p.Z).Max();
-                
-                box = new Bounds{PMin = Helper.CreatePoint(minX, minY, minZ), PMax = Helper.CreatePoint(maxX, maxY, maxZ)};
+                minX = Math.Min(minX, points.Select(p => p.X).Min());
+                minY = Math.Min(minY, points.Select(p => p.Y).Min());
+                minZ = Math.Min(minZ, points.Select(p => p.Z).Min());
+                maxX = Math.Max(maxX, points.Select(p => p.X).Max());
+                maxY = Math.Max(maxY, points.Select(p => p.Y).Max());
+                maxZ = Math.Max(maxZ, points.Select(p => p.Z).Max());
             }
+
+            box = new Bounds {PMin = Helper.CreatePoint(minX, minY, minZ), PMax = Helper.CreatePoint(maxX, maxY, maxZ)};
         }
 
         public void Add(params IShape[] shapes)
@@ -63,11 +73,16 @@ namespace ray_tracer.Shapes
                 shape.Parent = this;
             }
         }
-        
+
         public override Intersections IntersectLocal(Ray ray)
         {
-            var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
-            return new Intersections(intersections);
+            if (Box.IntersectLocal(ray))
+            {
+                var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
+                return new Intersections(intersections);
+            }
+
+            return new Intersections();
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint)
