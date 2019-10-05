@@ -5,3 +5,5 @@ ray-tracer/bin
 .vscode
 .idea
 .vs
+/ray-tracer-demos/bin/
+/ray-tracer-demos/obj/

@@ -71,8 +71,8 @@ namespace ray_tracer
             var image = new Canvas(HSize, VSize);
             ThreadPool.SetMinThreads(4, 8); 
             int progress = 0;
-            Parallel.For(0, VSize, y =>
-            //for(int y = 0; y < VSize; y++)
+            //Parallel.For(0, VSize, y =>
+            for(int y = 0; y < VSize; y++)
             {
                 for (int x = 0; x < HSize; x++)
                 {
@@ -87,7 +87,7 @@ namespace ray_tracer
                     RowRendered?.Invoke(progress, VSize);
                 }
             }
-            );
+            //);
 
             return image;
         }

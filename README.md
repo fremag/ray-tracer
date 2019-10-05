@@ -1,6 +1,12 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
+  <summary>Chapter 15: triangles </summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/teapot.png"/>
+</details>
+
+
+<details>
   <summary>Chapter 14: groups </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/labyrinth.png"/>
 </details>

@@ -8,7 +8,8 @@ namespace ray_tracer.Shapes
     {
         private List<IShape> Shapes { get; } = new List<IShape>();
         private Bounds box;
-
+        public IShape this[int i] => Shapes[i];
+        
         public override Bounds Box
         {
             get
