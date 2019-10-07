@@ -2,19 +2,20 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime;
+using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 
-namespace ray_tracer
+namespace ray_tracer_demos
 {
     class Program
     {
         static void Main()
         {
-            GCSettings.LatencyMode = GCLatencyMode.Batch;
+            //GCSettings.LatencyMode = GCLatencyMode.Batch;
             Stopwatch sw = Stopwatch.StartNew();
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}"); 
-            var file = RenderLabyrinthScene();
+            var file = RenderTeapot();
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
@@ -22,6 +23,31 @@ namespace ray_tracer
             File.Delete(file);
         }
 
+        public static string RenderTeapot()
+        {
+            var world = new World();
+            IShape floor = new Plane
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White))
+            };
+            world.Add(floor);
+
+            ObjFileReader teapotObj = new ObjFileReader("teapot.obj");
+            var teapot = teapotObj.ObjToGroup();
+            
+            world.Add(teapot);
+            
+            var point = Helper.CreatePoint(7, 5, -10);
+            world.Lights.Add(new PointLight(Helper.CreatePoint(15, 15, -15), Color.White));
+            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 1, 0)));
+            camera.RowRendered += OnRowRendered;
+            var canvas = camera.Render(world);
+            string file = Path.Combine(Path.GetTempPath(), "teapot.ppm");
+            canvas.SavePPM(file);
+            return file;
+            
+        }
+        
         public static string RenderWorldTest()
         {
             var floor = Helper.Sphere();

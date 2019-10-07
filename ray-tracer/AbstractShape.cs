@@ -1,8 +1,10 @@
+//#define OPTIM_WORLD_TO_OBJECT
+//#define OPTIM_INTERSECT
 namespace ray_tracer
 {
     public abstract class AbstractShape : IShape
     {
-        public Matrix Transform { get; set; } = Helper.CreateIdentity();
+        public Matrix Transform { get; set; } = Matrix.Identity;
         public IShape Parent { get; set; }
         public Material Material { get; set; } = new Material();
 
@@ -12,7 +14,15 @@ namespace ray_tracer
 
         public Intersections Intersect(Ray ray)
         {
-            var transformedRay = ray.Transform(Transform.Inverse());
+            Ray transformedRay = ray;
+#if OPTIM_INTERSECT            
+            if (! ReferenceEquals(Transform, Matrix.Identity))
+            {
+#endif                
+                transformedRay = ray.Transform(Transform.Inverse());
+#if OPTIM_INTERSECT                
+            }
+#endif            
             return IntersectLocal(transformedRay);
         }
         
@@ -30,8 +40,14 @@ namespace ray_tracer
             {
                 p = Parent.WorldToObject(point);
             }
-
-            return Transform.Inverse() * p;
+#if OPTIM_WORLD_TO_OBJECT
+            if (ReferenceEquals(Transform, Matrix.Identity))
+            {
+                return p;
+            }
+#endif            
+            var transfoP =  Transform.Inverse() * p;
+            return transfoP;
         }
 
         public Tuple NormalToWorld(Tuple normal)

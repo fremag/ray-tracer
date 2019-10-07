@@ -6,6 +6,15 @@ namespace ray_tracer
     {
         private double[][] Values { get; }
         private Matrix Inversed { get; set; }
+        public static Matrix Identity = new Matrix(4);
+
+        static Matrix()
+        {
+            Identity[0, 0] = 1;
+            Identity[1, 1] = 1;
+            Identity[2, 2] = 1;
+            Identity[3, 3] = 1;
+        }
         
         public Matrix(int size)
         {
