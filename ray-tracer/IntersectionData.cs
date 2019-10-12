@@ -24,13 +24,13 @@ namespace ray_tracer
             Object = intersection.Object;
             Point = ray.Position(T);
             EyeVector = -ray.Direction;
-            Normal = Object.NormalAt(Point);
+            Normal = Object.NormalAt(Point, intersection);
             ReflectionVector = ray.Direction.Reflect(Normal);
             
             if (Normal.DotProduct(EyeVector) < 0)
             {
                 Inside = true;
-                Normal = - Object.NormalAt(Point);
+                Normal = - Object.NormalAt(Point, intersection);
             } 
             else
             {

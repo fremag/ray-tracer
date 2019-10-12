@@ -60,10 +60,10 @@ namespace ray_tracer.Shapes
             }
 
             var t = f * E2.DotProduct(originCrossE1);
-            return new Intersections {new Intersection(t, this)};
+            return new Intersections {new Intersection(t, this, u, v)};
         }
 
-        public override Tuple NormalAtLocal(Tuple worldPoint)
+        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
         {
             return N;
         }

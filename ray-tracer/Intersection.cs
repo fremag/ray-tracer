@@ -6,11 +6,15 @@ namespace ray_tracer
     {
         public double T { get; }
         public IShape Object { get; }
+        public double U { get; }
+        public double V { get; }
 
-        public Intersection(double t, IShape o)
+        public Intersection(double t, IShape o, double u = double.NaN, double v = double.NaN)
         {
             T = t;
             Object = o;
+            U = u;
+            V = v;
         }
 
         public int CompareTo(Intersection other)
@@ -20,6 +24,6 @@ namespace ray_tracer
             return 0;
         }
 
-        public IntersectionData Compute(Ray ray, Intersections intersections = null ) => new IntersectionData(this, ray, intersections);
+        public IntersectionData Compute(Ray ray, Intersections intersections = null) => new IntersectionData(this, ray, intersections);
     }
 }

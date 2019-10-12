@@ -64,7 +64,7 @@ namespace ray_tracer.Shapes
             return xs;
         }
 
-        public override Tuple NormalAtLocal(Tuple worldPoint)
+        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
         {
             // compute the square of the distance from the y axis
             var dist = worldPoint.X * worldPoint.X + worldPoint.Z * worldPoint.Z;

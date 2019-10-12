@@ -28,7 +28,7 @@ namespace ray_tracer.Shapes
             );
         }
 
-        public override Tuple NormalAtLocal(Tuple objectPoint)
+        public override Tuple NormalAtLocal(Tuple objectPoint, Intersection hit=null)
         {
             var objectNormal = objectPoint - Helper.CreatePoint(0, 0, 0);
             return objectNormal;

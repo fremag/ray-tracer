@@ -9,7 +9,7 @@ namespace ray_tracer
         public Material Material { get; set; } = new Material();
 
         public abstract Intersections IntersectLocal(Ray ray);
-        public abstract Tuple NormalAtLocal(Tuple worldPoint);
+        public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
 
         public Intersections Intersect(Ray ray)
@@ -26,10 +26,10 @@ namespace ray_tracer
             return IntersectLocal(transformedRay);
         }
         
-        public Tuple NormalAt(Tuple worldPoint)
+        public Tuple NormalAt(Tuple worldPoint, Intersection hit=null)
         {
             var localPoint = WorldToObject(worldPoint);
-            var localNormal = NormalAtLocal(localPoint);
+            var localNormal = NormalAtLocal(localPoint, hit);
             return NormalToWorld(localNormal);
         }
         

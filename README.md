@@ -3,6 +3,8 @@
 <details open>
   <summary>Chapter 15: triangles </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/teapot.png"/>
+  <p>Smooth triangles</p>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/pikachu.png"/>
 </details>
 
 

@@ -21,7 +21,7 @@ namespace ray_tracer.Shapes
             return new Intersections{new Intersection(tMin, this), new Intersection(tMax, this)};
         }
 
-        public override Tuple NormalAtLocal(Tuple worldPoint)
+        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
         {
             var maxc = Math.Max(Math.Abs(worldPoint.X), Math.Max(Math.Abs(worldPoint.Y), Math.Abs(worldPoint.Z)));
             if (maxc == Math.Abs(worldPoint.X)) {

@@ -86,7 +86,7 @@ namespace ray_tracer.Shapes
             return new Intersections();
         }
 
-        public override Tuple NormalAtLocal(Tuple worldPoint)
+        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
         {
             throw new System.InvalidOperationException();
         }

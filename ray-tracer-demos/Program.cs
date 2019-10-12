@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime;
 using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
@@ -15,7 +14,7 @@ namespace ray_tracer_demos
             //GCSettings.LatencyMode = GCLatencyMode.Batch;
             Stopwatch sw = Stopwatch.StartNew();
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}"); 
-            var file = RenderTeapot();
+            var file = RenderPikachu();
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
@@ -23,6 +22,33 @@ namespace ray_tracer_demos
             File.Delete(file);
         }
 
+        public static string RenderPikachu()
+        {
+            var world = new World();
+            IShape floor = new Plane
+            {
+                Material = new Material(new CheckerPattern(Color.Black, Color.White).Scale(5))
+            };
+            world.Add(floor);
+
+            ObjFileReader pikachuObj = new ObjFileReader("pikachu.obj");
+            var pikachu = pikachuObj.ObjToGroup();
+            pikachu.Rotate(ry: Math.PI);
+            world.Add(pikachu);
+//            world.Add(new Sphere().Translate(ty: 1));
+//            world.Add(new Sphere().Translate(ty: 2));
+//            world.Add(new Sphere().Translate(ty: 3));
+            
+            var point = Helper.CreatePoint(10, 10, -10)/2;
+            world.Lights.Add(new PointLight(Helper.CreatePoint(100, 100, -100), Color.White));
+            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(0, 3, 0), Helper.CreateVector(0, 1, 0)));
+            camera.RowRendered += OnRowRendered;
+            var canvas = camera.Render(world);
+            string file = Path.Combine(Path.GetTempPath(), "pikachu.ppm");
+            canvas.SavePPM(file);
+            return file;
+        }
+        
         public static string RenderTeapot()
         {
             var world = new World();

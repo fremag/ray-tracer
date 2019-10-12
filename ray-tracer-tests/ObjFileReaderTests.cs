@@ -101,5 +101,43 @@ namespace ray_tracer.tests
             Check.That(t2.P2).IsEqualTo(reader.Vertices[2]);
             Check.That(t2.P3).IsEqualTo(reader.Vertices[3]);
         }
+        
+        [Fact]
+        public void VertexNormalRecordTest()
+        {
+            var reader = new ObjFileReader(
+                "vn 0 0 1",
+            "vn 0.707 0 -0.707",
+            "vn 1 2 3");
+            
+            Check.That(reader.Normals[0]).IsEqualTo(Helper.CreatePoint(0,0,1));
+            Check.That(reader.Normals[1]).IsEqualTo(Helper.CreatePoint(0.707, 0, -0.707));
+            Check.That(reader.Normals[2]).IsEqualTo(Helper.CreatePoint(1,2,3));
+        }
+        
+        [Fact]
+        public void TrianglesWithNormalsTest()
+        {
+            var reader = new ObjFileReader(
+                "v 0 1 0",
+                "v -1 0 0",
+                "v 1 0 0",
+                "",
+                "vn -1 0 0",
+                "vn 1 0 0",
+                "vn 0 1 0",
+                "f 1//3 2//1 3//2",
+                "f 1/0/3 2/102/1 3/14/2");
+            var t1 = reader.DefaultGroup[0] as Triangle;
+            var t2 = reader.DefaultGroup[0] as Triangle;
+
+            Check.That(t1.P1).IsEqualTo(reader.Vertices[0]);
+            Check.That(t1.P2).IsEqualTo(reader.Vertices[1]);
+            Check.That(t1.P3).IsEqualTo(reader.Vertices[2]);
+            
+            Check.That(t2.P1).IsEqualTo(reader.Vertices[0]);
+            Check.That(t2.P2).IsEqualTo(reader.Vertices[1]);
+            Check.That(t2.P3).IsEqualTo(reader.Vertices[2]);
+        }        
     }
 }
