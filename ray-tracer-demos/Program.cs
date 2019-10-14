@@ -33,12 +33,12 @@ namespace ray_tracer_demos
 
             ObjFileReader smoothPikachuObj = new ObjFileReader("pikachu.obj", true);
             var smoothPikachu = smoothPikachuObj.ObjToGroup();
-            smoothPikachu.Rotate(ry: Math.PI);
+            smoothPikachu.Rotate(ry: Math.PI).Translate(tx: 0.5);
             world.Add(smoothPikachu);
 
             ObjFileReader pikachuObj = new ObjFileReader("pikachu.obj", false);
             var pikachu = pikachuObj.ObjToGroup();
-            pikachu.Rotate(ry: Math.PI).Translate(tx: -3);
+            pikachu.Rotate(ry: Math.PI).Translate(tx: -4);
             world.Add(pikachu);
             
             var point = Helper.CreatePoint(10, 10, -10)/2;
