@@ -9,6 +9,7 @@ namespace ray_tracer
     public class ObjFileReader
     {
         public int Ignored { get; private set; }
+        public bool Smooth { get; } = true;
         public List<Tuple> Vertices { get; } = new List<Tuple>();
         public List<Tuple> Normals { get; } = new List<Tuple>();
         public List<Triangle> Triangles { get; } = new List<Triangle>();
@@ -27,8 +28,9 @@ namespace ray_tracer
             return group;
         }
 
-        public ObjFileReader(string file)
+        public ObjFileReader(string file, bool smooth)
         {
+            Smooth = smooth;
             Console.WriteLine($"Reading : {file}");
             Init(File.ReadLines(file));
             Console.WriteLine($"Triangles: {Triangles.Count} Vertices: {Vertices.Count}");
@@ -118,11 +120,20 @@ namespace ray_tracer
                 var p1 = Vertices[n1.VertexIndex];
                 var p2 = Vertices[n2.VertexIndex];
                 var p3 = Vertices[n3.VertexIndex];
-                var norm1 = Normals[n1.NormalIndex];
-                var norm2 = Normals[n2.NormalIndex];
-                var norm3 = Normals[n3.NormalIndex];
-                    
-                var triangle = new SmoothTriangle(p1, p2, p3, norm1, norm2, norm3);
+                Triangle triangle;
+                if (Smooth)
+                {
+                    var norm1 = Normals[n1.NormalIndex];
+                    var norm2 = Normals[n2.NormalIndex];
+                    var norm3 = Normals[n3.NormalIndex];
+
+                    triangle = new SmoothTriangle(p1, p2, p3, norm1, norm2, norm3);
+                }
+                else
+                {
+                    triangle = new Triangle(p1, p2, p3);
+                }
+
                 Triangles.Add(triangle);
                 group.Add(triangle);
             }

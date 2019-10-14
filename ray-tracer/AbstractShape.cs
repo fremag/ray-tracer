@@ -1,5 +1,5 @@
-//#define OPTIM_WORLD_TO_OBJECT
-//#define OPTIM_INTERSECT
+#define OPTIM_WORLD_TO_OBJECT
+#define OPTIM_INTERSECT
 namespace ray_tracer
 {
     public abstract class AbstractShape : IShape

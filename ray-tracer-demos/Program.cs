@@ -31,13 +31,15 @@ namespace ray_tracer_demos
             };
             world.Add(floor);
 
-            ObjFileReader pikachuObj = new ObjFileReader("pikachu.obj");
+            ObjFileReader smoothPikachuObj = new ObjFileReader("pikachu.obj", true);
+            var smoothPikachu = smoothPikachuObj.ObjToGroup();
+            smoothPikachu.Rotate(ry: Math.PI);
+            world.Add(smoothPikachu);
+
+            ObjFileReader pikachuObj = new ObjFileReader("pikachu.obj", false);
             var pikachu = pikachuObj.ObjToGroup();
-            pikachu.Rotate(ry: Math.PI);
+            pikachu.Rotate(ry: Math.PI).Translate(tx: -3);
             world.Add(pikachu);
-//            world.Add(new Sphere().Translate(ty: 1));
-//            world.Add(new Sphere().Translate(ty: 2));
-//            world.Add(new Sphere().Translate(ty: 3));
             
             var point = Helper.CreatePoint(10, 10, -10)/2;
             world.Lights.Add(new PointLight(Helper.CreatePoint(100, 100, -100), Color.White));
