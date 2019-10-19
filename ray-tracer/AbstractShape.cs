@@ -11,6 +11,11 @@ namespace ray_tracer
         public abstract Intersections IntersectLocal(Ray ray);
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
+        
+        public virtual bool Contains(IShape shape)
+        {
+            return ReferenceEquals(shape, this);
+        }
 
         public Intersections Intersect(Ray ray)
         {

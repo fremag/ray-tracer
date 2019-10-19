@@ -9,5 +9,6 @@ namespace ray_tracer
         Tuple WorldToObject(Tuple point);
         Tuple NormalToWorld(Tuple normal);
         Bounds Box { get; }
+        bool Contains(IShape shape);
     }
 }
