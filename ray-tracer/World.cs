@@ -29,13 +29,13 @@ namespace ray_tracer
                 if (material.Reflective > 0 && material.Transparency > 0)
                 {
                     var reflectance = intersectionData.Schlick();
-                    return surface + reflected * reflectance + refracted * (1 - reflectance);
+                    color += surface + reflected * reflectance + refracted * (1 - reflectance);
                 }
 
-                return surface + reflected + refracted;
+                color += surface + reflected + refracted;
             }
 
-            return color;
+            return color / Lights.Count;
         }
 
         public Color ColorAt(Ray ray, int remaining = 5)

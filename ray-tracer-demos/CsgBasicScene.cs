@@ -18,7 +18,7 @@ namespace ray_tracer_demos
             diff.Translate(ty: 1).Rotate(ry: Pi/4);
             Add(diff);
             Light(0, 1, 0);
-            Light(3, 3, 0, Color.White/2);
+            Light(5, 5, -5, Color.White);
         }
     }
 }
