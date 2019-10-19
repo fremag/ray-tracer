@@ -88,7 +88,13 @@ namespace ray_tracer.Shapes
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
         {
-            throw new System.InvalidOperationException();
+            throw new InvalidOperationException();
         }
+        
+        public override bool Contains(IShape shape)
+        {
+            return ReferenceEquals(shape, this) || Shapes.Contains(shape);
+        }
+
     }
 }

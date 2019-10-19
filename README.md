@@ -1,12 +1,16 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
+  <summary>Chapter 16: Constructive Solid Geometry (CSG)</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/csg.png"/>
+</details>
+
+<details>
   <summary>Chapter 15: triangles </summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/teapot.png"/>
   <p>Smooth triangles</p>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/pikachu.png"/>
 </details>
-
 
 <details>
   <summary>Chapter 14: groups </summary>
