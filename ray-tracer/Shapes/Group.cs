@@ -6,7 +6,7 @@ namespace ray_tracer.Shapes
 {
     public class Group : AbstractShape
     {
-        private List<IShape> Shapes { get; } = new List<IShape>();
+        protected List<IShape> Shapes { get; } = new List<IShape>();
         private Bounds box;
         public IShape this[int i] => Shapes[i];
         

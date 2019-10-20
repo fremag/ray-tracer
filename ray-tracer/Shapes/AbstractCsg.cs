@@ -17,46 +17,58 @@ namespace ray_tracer.Shapes
             right.Parent = this;
         }
 
-        protected AbstractCsg()
+        public override bool Contains(IShape shape)
         {
-            
+            return ReferenceEquals(shape, Right) || ReferenceEquals(shape, Left);
         }
 
         public Intersections Filter(Intersections xs)
         {
-// begin outside of both children
-            bool inl = false;
-            bool inr = false;
-// prepare a list to receive the filtered intersections
+            // begin outside of both children
+            bool inLeft = false;
+            bool inRight = false;
+            
+            // prepare a list to receive the filtered intersections
             var result = new Intersections();
             foreach (var intersection in xs)
             {
-// if i.object is part of the "left" child, then lhit is true
-                bool lhit = intersection.Object.Contains(Left);
-                if (IntersectionAllowed(lhit, inl, inr))
+                // if i.object is part of the "left" child, then lhit is true
+                bool leftHit = Left.Contains(intersection.Object);
+                if (IntersectionAllowed(leftHit, inLeft, inRight))
                 {
                     result.Add(intersection);
-
                 }
 
-// depending on which object was hit, toggle either inl or inr
-                if (lhit)
+                // depending on which object was hit, toggle either inl or inr
+                if (leftHit)
                 {
-                    inl = !inl;
+                    inLeft = !inLeft;
                 }
                 else
-                    inr = !inr;
+                {
+                    inRight = !inRight;
+                }
             }
 
+            result.Sort();
             return result;
         }
 
         public override Intersections IntersectLocal(Ray ray)
         {
-            Intersections leftxs = Left.Intersect(ray);
-            var rightxs = Right.Intersect(ray);
-            var xs = new Intersections(leftxs.Concat(rightxs));
-            var result = Filter(xs);
+            Intersections leftXs = Left.Intersect(ray);
+            var rightXs = Right.Intersect(ray);
+            Intersections result;
+            if (leftXs.Any() || rightXs.Any())
+            {
+                 var xs = new Intersections(leftXs.Concat(rightXs));
+                 result = Filter(xs);
+            }
+            else
+            {
+                result = new Intersections();
+            }
+
             return result;
         }
     }
