@@ -15,8 +15,8 @@ namespace ray_tracer_demos
             //GCSettings.LatencyMode = GCLatencyMode.Batch;
             Stopwatch sw = Stopwatch.StartNew();
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
-            var scene = new CsgBasicScene(); 
-            var file = scene.Render("csg.ppm", 0, 4, -4);
+            var scene = new MengerSpongeScene(); 
+            var file = scene.Render("menger_sponge.ppm", 3, 3, -3);
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
