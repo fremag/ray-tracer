@@ -15,11 +15,13 @@ namespace ray_tracer.Shapes
             Right = right;
             left.Parent = this;
             right.Parent = this;
+            Shapes.Add(Left);
+            Shapes.Add(Right);
         }
 
         public override bool Contains(IShape shape)
         {
-            return ReferenceEquals(shape, Right) || ReferenceEquals(shape, Left);
+            return ReferenceEquals(Right, shape) || ReferenceEquals(Left, shape) || Right.Contains(shape) || Left.Contains(shape);
         }
 
         public Intersections Filter(Intersections xs)

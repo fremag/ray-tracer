@@ -93,7 +93,7 @@ namespace ray_tracer.Shapes
         
         public override bool Contains(IShape shape)
         {
-            return ReferenceEquals(shape, this) || Shapes.Contains(shape);
+            return ReferenceEquals(shape, this) || Shapes.Any(s => s.Contains(shape));
         }
 
     }
