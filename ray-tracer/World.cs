@@ -35,7 +35,7 @@ namespace ray_tracer
                 color += surface + reflected + refracted;
             }
 
-            return color / Lights.Count;
+            return color;
         }
 
         public Color ColorAt(Ray ray, int remaining = 5)

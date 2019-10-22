@@ -2,6 +2,7 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
   <summary>Chapter 16: Constructive Solid Geometry (CSG)</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/menger_sponge.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/csg.png"/>
 </details>
 

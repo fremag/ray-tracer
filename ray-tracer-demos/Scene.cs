@@ -51,6 +51,11 @@ namespace ray_tracer_demos
             return shape;
         }
 
+        protected void Add(params IShape[] shapes)
+        {
+            world.Add(shapes);
+        }
+
         protected void Light(double x, double y, double z)
         {
             Light(x, y, z, Color.White);
