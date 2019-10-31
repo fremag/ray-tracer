@@ -18,7 +18,7 @@ namespace ray_tracer_demos
             }
 
             var mesh = new HeightField(50, 50, Altitude);
-            Add(mesh.Translate(tx: -1));
+            Add(mesh);
         }
     }
 }
