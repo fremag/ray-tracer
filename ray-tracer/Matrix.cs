@@ -146,8 +146,39 @@ namespace ray_tracer
             return v;
         }
         
+        public static Matrix operator +(Matrix m1, Matrix m2) => Add(m1, m2);
+        
+        public static Matrix Add(Matrix m1, Matrix m2)
+        {
+            var m= new Matrix(m1.Size);
+            for (int i = 0; i < m1.Size; i++)
+            {
+                for (int j = 0; j < m1.Size; j++)
+                {
+                    m[i,j] = m1[i, j] + m2[i, j];
+                }
+            }
+
+            return m;
+        }
+        public static Matrix Multiply(Matrix m, double d)
+        {
+            var result = new Matrix(m.Size);
+            for (int i = 0; i < m.Size; i++)
+            {
+                for (int j = 0; j < m.Size; j++)
+                {
+                    result[i,j] = d * m[i, j];
+                }
+            }
+
+            return result;
+        }
+        
         public static Tuple operator *(Matrix m1, Tuple t) => Multiply(m1, t);
         public static Tuple operator *(Tuple t, Matrix m1) => Multiply(m1, t);
+        public static Matrix operator *(double d, Matrix m) => Multiply(m, d);
+        public static Matrix operator *(Matrix m, double d) => Multiply(m, d);
 
         public Matrix Transpose()
         {

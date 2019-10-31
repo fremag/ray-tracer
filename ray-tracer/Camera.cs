@@ -1,4 +1,4 @@
-#define OPTIM_PARALLEL
+//#define OPTIM_PARALLEL
 using System;
 using System.Threading;
 using System.Threading.Tasks;

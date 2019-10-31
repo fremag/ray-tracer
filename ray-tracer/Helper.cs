@@ -28,7 +28,8 @@ namespace ray_tracer
             }
 
             return m;
-        } 
+        }
+        
         public static IEnumerable<string> ToPPM(this Canvas canvas)
         {
             yield return "P3";
@@ -94,6 +95,11 @@ namespace ray_tracer
         public static void SavePPM(this Canvas canvas, string filePath)
         {
             File.WriteAllLines(filePath, canvas.ToPPM());
+        }
+
+        public static Matrix Translation(Tuple t)
+        {
+            return Translation(t.X, t.Y, t.Z);
         }
 
         public static Matrix Translation(double x, double y, double z)
@@ -225,6 +231,11 @@ namespace ray_tracer
         {
             transformable.Transform = Scaling(scaleX, scaleY, scaleZ) * transformable.Transform;
         }
+
+        public static T Translate<T>(this T shape, Tuple v) where T : IShape
+        {
+            return shape.Translate(v.X, v.Y, v.Z);
+        }
         
         public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz=0) where T: IShape
         {
@@ -284,6 +295,44 @@ namespace ray_tracer
                 tMin = tMax;
                 tMax = t;
             }
+        }
+
+        public static Matrix Rotation(Tuple u, Tuple v)
+        {
+            double cosPhi = u.DotProduct(v);
+            var uv = u * v;
+            var uvMagnitude = u.Magnitude * v.Magnitude;
+            double sinPhi = uv.Magnitude / uvMagnitude;
+            Tuple n = uv / sinPhi;
+            // https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula            
+            var m1 = new Matrix(4,
+                cosPhi, 0, 0, 0,
+                0, cosPhi, 0, 0,
+                0, 0, cosPhi, 0,
+                0, 0, 0, 1
+            );
+
+            var m2 = new Matrix(4,
+                n.X * n.X, n.X*n.Y, n.X*n.Z, 0,
+                n.X * n.Y, n.Y*n.Y, n.Y*n.Z, 0,
+                n.X * n.Z, n.Z*n.Y, n.Z*n.Z, 0,
+                0, 0, 0, 0
+            );
+
+            var m3 = new Matrix(4,
+                0, -n.Z, n.Y, 0,
+                n.Z, 0, -n.X, 0,
+                -n.Y, n.X, 0, 0,
+                0, 0, 0, 0);
+
+            var m = m1 + (1 - cosPhi) * m2 + sinPhi * m3;
+            return m;
+        }
+
+        public static double Radius(double u, double v)
+        {
+            var radius = Math.Sqrt(u * u + v*v);
+            return  radius;
         }
     }
 }
