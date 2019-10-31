@@ -12,7 +12,7 @@ namespace ray_tracer.Shapes
         public Tuple P2 { get; }
         public Tuple P3 { get; }
 
-        private Bounds box;
+        public override Bounds Box{get;}
 
         public Triangle(Tuple p1, Tuple p2, Tuple p3)
         {
@@ -22,17 +22,11 @@ namespace ray_tracer.Shapes
             E1 = p2 - p1;
             E2 = p3 - p1;
             N = (E2 * E1).Normalize();
-        }
-
-        public override Bounds Box
-        {
-            get
-            {
-                if (box != null) return box;
-                box = new Bounds();
-                box.Init(P1, P2, P3);
-                return box;
-            }
+            var box = new Bounds();
+            box.Add(P1);
+            box.Add( P2);
+            box.Add(P3);
+            Box = box;
         }
 
         public override Intersections IntersectLocal(Ray ray)
