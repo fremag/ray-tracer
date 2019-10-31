@@ -5,6 +5,7 @@ namespace ray_tracer
 {
     public class Intersections : List<Intersection>
     {
+        public static Intersections Empty = new Intersections();
         public Intersections(params Intersection[] intersections) : base(intersections)
         {
             Sort();
