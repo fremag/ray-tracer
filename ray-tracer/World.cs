@@ -31,8 +31,10 @@ namespace ray_tracer
                     var reflectance = intersectionData.Schlick();
                     color += surface + reflected * reflectance + refracted * (1 - reflectance);
                 }
-
-                color += surface + reflected + refracted;
+                else
+                {
+                    color += surface + reflected + refracted;
+                }
             }
 
             return color;
