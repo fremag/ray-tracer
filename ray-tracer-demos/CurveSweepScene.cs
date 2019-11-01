@@ -1,6 +1,7 @@
 using System;
 using ray_tracer;
 using ray_tracer.Shapes;
+using ray_tracer.Shapes.Mesh;
 
 namespace ray_tracer_demos
 {
@@ -11,7 +12,9 @@ namespace ray_tracer_demos
             DefaultFloor();
             Light(0, 5, -5);
 
-            var curveSweep = new CurveSweep(36*10, 18, Path, Curve);
+            var curveSweepMesh = new CurveSweepMesh(36*10, 18, Path, Curve);
+            var triangleFactory = new TriangleMeshFactory();
+            var curveSweep = triangleFactory.Build(curveSweepMesh);
             Add(curveSweep.Rotate(rx: Pi/2).Translate(ty: 0.55));
         }
 

@@ -1,6 +1,7 @@
 using System;
 using ray_tracer;
 using ray_tracer.Shapes;
+using ray_tracer.Shapes.Mesh;
 
 namespace ray_tracer_demos
 {
@@ -18,7 +19,10 @@ namespace ray_tracer_demos
             }
 
             var mesh = new HeightField(50, 50, Altitude);
-            Add(mesh);
+            var triangleMeshFactory = new TriangleMeshFactory(false, false);
+            Add(triangleMeshFactory.Build(mesh).Translate(-0.5));
+            var sphereMeshFactory = new SphereMeshFactory(0.05);
+            Add(sphereMeshFactory.Build(mesh).Translate(0.5));
         }
     }
 }

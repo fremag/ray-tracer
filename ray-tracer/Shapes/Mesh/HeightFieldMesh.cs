@@ -1,4 +1,4 @@
-namespace ray_tracer.Shapes
+namespace ray_tracer.Shapes.Mesh
 {
     public class HeightField : AbstractMesh
     {
@@ -14,22 +14,6 @@ namespace ray_tracer.Shapes
                     double y = func(u, v);
                     double z = -0.5 + v;
                     Points[i][j] = Helper.CreatePoint(x, y, z);
-                }
-            }
-
-            Build();
-        }
-
-        private void Build()
-        {
-            for (int i = 1; i < N; i++)
-            {
-                for (int j = 1; j < M; j++)
-                {
-                    var tri1 = new Triangle(Points[i][j], Points[i-1][j-1], Points[i-1][j]);
-                    var tri2 = new Triangle(Points[i][j], Points[i-1][j-1], Points[i][j-1]);
-                    Add(tri1);
-                    Add(tri2);
                 }
             }
         }
