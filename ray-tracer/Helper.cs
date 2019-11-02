@@ -334,5 +334,16 @@ namespace ray_tracer
             var radius = Math.Sqrt(u * u + v*v);
             return  radius;
         }
+
+        public static Cylinder Cylinder(Tuple p1, Tuple p2, double radius)
+        {
+            var v = p2 - p1;
+            var m = Rotation(Helper.CreateVector(0, 1, 0), v.Normalize());
+            var cyl = new Cylinder(0, 1, true);
+            cyl.Scale(radius, v.Magnitude, radius);
+            cyl.Transform =  m * cyl.Transform;
+            cyl.Translate(p1);
+            return cyl;
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace ray_tracer_demos
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
             var scene = new SquareMeshScene();
             scene.RowRendered += OnRowRendered;
-            var file = scene.Render("height_field.ppm", 1, 1, -1, lookX: -0, lookY: 0);
+            var file = scene.Render("wireframe.ppm", 0, 1, -1, lookX: -0, lookY: 0);
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");

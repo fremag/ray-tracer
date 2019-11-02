@@ -5,6 +5,7 @@
   <summary>Chapter xx: more triangles</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/curve_sweep.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/height_field.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/wireframe.png"/>
 </details>
 
 <details>
