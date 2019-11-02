@@ -1,8 +1,10 @@
+using System;
+
 namespace ray_tracer.Shapes.Mesh
 {
-    public class HeightField : AbstractMesh
+    public class SurfaceOfRevolution : AbstractMesh
     {
-        public HeightField(int n, int m, Func1D func) : base(n, m)
+        public SurfaceOfRevolution(int n, int m, Func1D radius) : base(n, m)
         {
             for(int i=0; i < n; i++)
             {
@@ -10,9 +12,10 @@ namespace ray_tracer.Shapes.Mesh
                 for (int j = 0; j < n; j++)
                 {
                     double v = j * 1.0 / m;
-                    double x = -0.5 + u;
-                    double y = func(u, v);
-                    double z = -0.5 + v;
+                    var r = radius(u, v);
+                    double x = r * Math.Cos(2 * Math.PI * v);
+                    double y = u;
+                    double z = r * Math.Sin(2 * Math.PI * v);
                     Points[i][j] = Helper.CreatePoint(x, y, z);
                 }
             }

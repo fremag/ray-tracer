@@ -1,6 +1,6 @@
 namespace ray_tracer.Shapes.Mesh
 {
-    public delegate double Altitude(double u, double v);
+    public delegate double Func1D(double u, double v);
 
     public delegate void Curve2D(double u, double v, out double x, out double y);
     public delegate void Path3D(double t, out double x, out double y, out double z);

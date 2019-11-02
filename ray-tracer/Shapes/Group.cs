@@ -9,6 +9,7 @@ namespace ray_tracer.Shapes
         protected List<IShape> Shapes { get; } = new List<IShape>();
         private Bounds box;
         public IShape this[int i] => Shapes[i];
+        public int Count => Shapes.Count;
         
         public override Bounds Box
         {
@@ -22,8 +23,6 @@ namespace ray_tracer.Shapes
                 return box;
             }
         }
-
-        public int Count => Shapes.Count;
 
         private void ComputeBox()
         {
