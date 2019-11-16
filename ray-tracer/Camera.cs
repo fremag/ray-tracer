@@ -70,31 +70,37 @@ namespace ray_tracer
         public Canvas Render(World world, int maxRecursion = 10)
         {
             var image = new Canvas(HSize, VSize);
-            ThreadPool.SetMinThreads(4, 8); 
+            Render(image, world, maxRecursion);
+            
+            return image;
+        }
+
+        public void Render(Canvas image, World world, int maxRecursion=10)
+        {
+         //   ThreadPool.SetMinThreads(4, 8); 
             int progress = 0;
- #if OPTIM_PARALLEL            
+#if OPTIM_PARALLEL            
             Parallel.For(0, VSize, y =>
 #else                    
             for(int y = 0; y < VSize; y++)
 #endif
-            {
-                for (int x = 0; x < HSize; x++)
                 {
-                    var ray = RayForPixel(x, y);
-                    var color = world.ColorAt(ray, maxRecursion);
-                    image.SetPixel(x, y, color);
-                }
+                    for (int x = 0; x < HSize; x++)
+                    {
+                        var ray = RayForPixel(x, y);
+                        var color = world.ColorAt(ray, maxRecursion);
+                        image.SetPixel(x, y, color);
+                    }
 
-                Interlocked.Increment(ref progress);
-                lock (lockObj)
-                {
-                    RowRendered?.Invoke(progress, VSize);
+                    Interlocked.Increment(ref progress);
+                    lock (lockObj)
+                    {
+                        RowRendered?.Invoke(progress, VSize);
+                    }
                 }
-            }
 #if OPTIM_PARALLEL            
             );
 #endif
-            return image;
         }
     }
 }

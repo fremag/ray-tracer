@@ -1,0 +1,54 @@
+﻿@page "/raytracing"
+
+@using ray_tracer_demos
+@using ray_tracer_ui.Data
+@inject RayTracingService RayTracingService
+
+<EditForm Model="@sceneParameters" OnValidSubmit="@Start">
+<table>
+<tr><th/><th>Camera</th><th>Look At</th></tr>
+<tr>
+    <th>X</th>
+    <td><InputNumber id="camX" @bind-Value="sceneParameters.CameraX" /></td>
+    <td><InputNumber id="LookX" @bind-Value="sceneParameters.LookX" /></td>
+</tr><tr> 
+     <th>Y</th>
+    <td><InputNumber id="camY" @bind-Value="sceneParameters.CameraY" /></td>
+    <td><InputNumber id="LookY" @bind-Value="sceneParameters.LookY" /></td>
+</tr><tr>
+    <th>Z</th>
+    <td><InputNumber id="camZ" @bind-Value="sceneParameters.CameraZ" /></td>
+    <td><InputNumber id="LookZ" @bind-Value="sceneParameters.LookZ" /></td>
+</tr><tr>
+    <th/><th>Width</th>
+    <th>Height</th>
+</tr><tr>
+    <th>Image</th>
+    <td><InputNumber id="Width" @bind-Value="sceneParameters.Width" /></td>
+    <td><InputNumber id="Height" @bind-Value="sceneParameters.Height" /></td>
+</tr><tr>
+    <td></td>
+    <td></td>
+    <td><button class="btn btn-primary" type="submit">Start</button></td>
+</tr>
+</table>
+</EditForm>
+    <td><button class="btn btn-primary" @onclick="@GetImage">Display</button></td>
+<hr/>
+<img src="@img" alt="No img"/>
+
+@code {
+    private readonly SceneParameters sceneParameters = new SceneParameters();
+    private string img; 
+    private void Start()
+    {
+        RayTracingService.Run(sceneParameters);
+    }
+    private async void GetImage()
+    {
+        img = await RayTracingService.GetImage();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+    }
+}

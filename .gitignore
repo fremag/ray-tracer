@@ -7,3 +7,5 @@ ray-tracer/bin
 .vs
 /ray-tracer-demos/bin/
 /ray-tracer-demos/obj/
+/ray-tracer-ui/bin/
+/ray-tracer-ui/obj/
