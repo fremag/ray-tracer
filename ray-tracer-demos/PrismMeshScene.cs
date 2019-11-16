@@ -8,7 +8,7 @@ using Tuple = ray_tracer.Tuple;
 
 namespace ray_tracer_demos
 {
-    internal class PrismMeshScene : Scene
+    public class PrismMeshScene : Scene
     {
         public PrismMeshScene()
         {

@@ -14,19 +14,32 @@ namespace ray_tracer_demos
         protected Color Red = Color._Red;
         protected Color Green = Color._Green;
         protected Color Blue = Color._Blue;
-        
-        public string Render(string file, double camX, double camY, double camZ, double lookX=0, double lookY =0, double lookZ =0)
+        public Canvas Image { get; private set; }
+
+        public void Render(SceneParameters sceneParameters)
         {
+            Render( sceneParameters.CameraX, sceneParameters.CameraY, sceneParameters.CameraZ,
+                    sceneParameters.LookX,   sceneParameters.LookY,   sceneParameters.LookZ,
+                    sceneParameters.Height,  sceneParameters.Width);
+        }
+        
+        public void Render(double camX, double camY, double camZ, double lookX = 0, double lookY = 0, double lookZ = 0, int h = 400, int w = 600)
+        {
+            Image = new Canvas(w, h);
             var point = Helper.CreatePoint(camX, camY, camZ);
             var look = Helper.CreatePoint(lookX, lookY, lookZ);
             
-            var camera = new Camera(600, 400, Math.PI / 3, Helper.ViewTransform(point, look, Helper.CreateVector(0, 1, 0)));
+            var camera = new Camera(w, h, Math.PI / 3, Helper.ViewTransform(point, look, Helper.CreateVector(0, 1, 0)));
             camera.RowRendered += OnRowRendered;
 
+            camera.Render(Image, world);
+        }
+        
+        public string Render(string file, double camX, double camY, double camZ, double lookX=0, double lookY =0, double lookZ =0, int h=400, int w=600)
+        {
+            Render(camX, camY, camZ, lookX, lookY, lookZ, h, w);
             string outFilePath = Path.Combine(Path.GetTempPath(), file);
-            var canvas = camera.Render(world);
-            canvas.SavePPM(outFilePath);
-            
+            Image.SavePPM(outFilePath);
             return outFilePath;
         }
 
