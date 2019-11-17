@@ -11,21 +11,22 @@ namespace ray_tracer_ui.Data
 {
     public class RayTracingService
     {
-        private Scene scene;
+        private AbstractScene Scene { get; set; }
 
         public void Run(SceneParameters sceneParameters)
         {
-            scene = new MengerSpongeScene();
-            Task.Run( () => scene.Render(sceneParameters));
+            Scene = new LabyrinthScene();
+            Scene.InitWorld();
+            Task.Run( () => Scene.Render(sceneParameters));
         }
 
         public Task<string> GetImage()
         {
             using var memoryStream = new MemoryStream();
 
-            if (scene?.Image != null)
+            if (Scene?.Image != null)
             {
-                CreateImage(memoryStream, scene.Image);
+                CreateImage(memoryStream, Scene.Image);
             }
             else
             {

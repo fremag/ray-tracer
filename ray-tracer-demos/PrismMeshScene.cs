@@ -8,9 +8,9 @@ using Tuple = ray_tracer.Tuple;
 
 namespace ray_tracer_demos
 {
-    public class PrismMeshScene : Scene
+    public class PrismMeshScene : AbstractScene
     {
-        public PrismMeshScene()
+        public override void InitWorld()
         {
             DefaultFloor();
             Light(1, 1, -1);

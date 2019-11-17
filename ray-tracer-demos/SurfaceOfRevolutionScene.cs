@@ -5,9 +5,9 @@ using ray_tracer.Shapes.Mesh;
 
 namespace ray_tracer_demos
 {
-    internal class SurfaceOfRevolutionScene : Scene
+    internal class SurfaceOfRevolutionScene : AbstractScene
     {
-        public SurfaceOfRevolutionScene()
+        public override void InitWorld()
         {
             DefaultFloor();
             Light(1, 1, -1);

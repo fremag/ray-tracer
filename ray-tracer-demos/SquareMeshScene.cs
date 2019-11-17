@@ -4,9 +4,9 @@ using ray_tracer.Shapes.Mesh;
 
 namespace ray_tracer_demos
 {
-    internal class SquareMeshScene : Scene
+    internal class SquareMeshScene : AbstractScene
     {
-        public SquareMeshScene()
+        public override void InitWorld()
         {
             DefaultFloor();
             Light(1, 1, -1);

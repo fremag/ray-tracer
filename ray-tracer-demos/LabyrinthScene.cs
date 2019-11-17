@@ -6,16 +6,15 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class Labyrinth
+    public class LabyrinthScene : AbstractScene
     {
-        public static string RenderLabyrinthScene()
+        public override void InitWorld()
         {
-            var world = new World();
             IShape floor = new Plane
             {
                 Material = new Material(new CheckerPattern(Color.Black, Color.White))
             };
-            world.Add(floor);
+            Add(floor);
 
             var w = 60;
             var lab = ComputeLabyrinth(w, w);
@@ -34,18 +33,12 @@ namespace ray_tracer_demos
 
                 if (g.Count > 0)
                 {
-                    world.Add(g.Translate(tx: i-w/2));
+                    Add(g.Translate(tx: i-w/2));
                 }
             }
 
             var point = Helper.CreatePoint(0, 1, -0.75) * w*0.75;
-            world.Lights.Add(new PointLight(Helper.CreatePoint(0, w/3.0, 0), Color.White));
-            var camera = new Camera(1200, 800, Math.PI / 3, Helper.ViewTransform(point, Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 1, 0)));
-            camera.RowRendered += Program.OnRowRendered;
-            var canvas = camera.Render(world);
-            string file = Path.Combine(Path.GetTempPath(), "labyrinth.ppm");
-            canvas.SavePPM(file);
-            return file;
+            Light(0, w/3.0, 0, Color.White);
         }
 
         public static int[][] ComputeLabyrinth(int w, int h)

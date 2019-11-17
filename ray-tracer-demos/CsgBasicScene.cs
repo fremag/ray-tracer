@@ -3,9 +3,9 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class CsgBasicScene : Scene
+    public class CsgBasicScene : AbstractScene
     {
-        public CsgBasicScene()
+        public override void InitWorld()
         {
             DefaultFloor();
             Light(0, 4, 0);

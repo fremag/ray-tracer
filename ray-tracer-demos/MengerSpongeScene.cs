@@ -3,9 +3,9 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class MengerSpongeScene : Scene
+    public class MengerSpongeScene : AbstractScene
     {
-        public MengerSpongeScene()
+        public override void InitWorld()
         {
             DefaultFloor().Translate(ty: -1.5);
             Light(0, 0, 0, Color.White);

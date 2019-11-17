@@ -6,16 +6,18 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class Scene
+    public abstract class AbstractScene
     {
         private readonly World world = new World();
         public event Action<int, int> RowRendered;
-        protected readonly double Pi = Math.PI;
-        protected Color Red = Color._Red;
-        protected Color Green = Color._Green;
-        protected Color Blue = Color._Blue;
+        protected static readonly double Pi = Math.PI;
+        protected static readonly Color Red = Color._Red;
+        protected static readonly Color Green = Color._Green;
+        protected static readonly Color Blue = Color._Blue;
         public Canvas Image { get; private set; }
 
+        public abstract void InitWorld();
+        
         public void Render(SceneParameters sceneParameters)
         {
             Render( sceneParameters.CameraX, sceneParameters.CameraY, sceneParameters.CameraZ,
