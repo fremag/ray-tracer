@@ -2,6 +2,8 @@ namespace ray_tracer_demos
 {
     public class SceneParameters
     {
+        public string Scene { get; set; }
+        
         public double CameraX { get; set; } = 0;
         public double CameraY { get; set;} = 1;
         public double CameraZ { get; set;} = -1;

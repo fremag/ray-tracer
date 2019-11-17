@@ -3,6 +3,7 @@ using System.IO;
 using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
+using Tuple = ray_tracer.Tuple;
 
 namespace ray_tracer_demos
 {
@@ -71,6 +72,11 @@ namespace ray_tracer_demos
             world.Add(shapes);
         }
 
+        protected void Light(Tuple position)
+        {
+            Light(position.X, position.Y, position.Z);
+        }
+        
         protected void Light(double x, double y, double z)
         {
             Light(x, y, z, Color.White);

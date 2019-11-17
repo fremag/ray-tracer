@@ -2,10 +2,22 @@
 
 @using ray_tracer_demos
 @using ray_tracer_ui.Data
+
 @inject RayTracingService RayTracingService
 
 <EditForm Model="@sceneParameters" OnValidSubmit="@Start">
+
 <table>
+<tr><th>Scene</th><td colspan="2">
+<InputSelect id="scene" @bind-Value="sceneParameters.Scene">
+@foreach(var type in RayTracingService.GetScenes())
+{
+    <option>@type</option>
+}
+</InputSelect>
+
+
+</td></tr>
 <tr><th/><th>Camera</th><th>Look At</th></tr>
 <tr>
     <th>X</th>

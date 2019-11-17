@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ray_tracer;
 using ray_tracer_demos;
@@ -12,10 +15,29 @@ namespace ray_tracer_ui.Data
     public class RayTracingService
     {
         private AbstractScene Scene { get; set; }
+        public Dictionary<string, Type> SceneTypes { get; set; }
+        
+        public RayTracingService()
+        {
+            var types = Assembly.GetAssembly(typeof(AbstractScene))
+                .GetTypes().ToArray();
+            SceneTypes = types
+                .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
+                .Where(type => !type.IsAbstract)
+                .ToDictionary(type => type.Name);
 
+        }
+
+        public List<string> GetScenes() => SceneTypes.Keys.ToList();
+        
         public void Run(SceneParameters sceneParameters)
         {
-            Scene = new ConeScene();
+            SceneTypes.TryGetValue(sceneParameters.Scene, out var typeScene);
+            if (typeScene == null)
+            {
+                return;
+            }
+            Scene = (AbstractScene)Activator.CreateInstance(typeScene);
             Scene.InitWorld();
             Task.Run( () => Scene.Render(sceneParameters));
         }
