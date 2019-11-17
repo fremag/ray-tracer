@@ -15,7 +15,7 @@ namespace ray_tracer_ui.Data
 
         public void Run(SceneParameters sceneParameters)
         {
-            Scene = new LabyrinthScene();
+            Scene = new ConeScene();
             Scene.InitWorld();
             Task.Run( () => Scene.Render(sceneParameters));
         }
