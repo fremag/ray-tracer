@@ -17,7 +17,7 @@ namespace ray_tracer
                 Pixels[i] = new Color[Height];
                 for (int j = 0; j < Height; j++)
                 {
-                    Pixels[i][j] = Color.Black;
+                    Pixels[i][j] = null;
                 }
             }
         }

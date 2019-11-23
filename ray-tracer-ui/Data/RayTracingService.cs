@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -16,6 +17,8 @@ namespace ray_tracer_ui.Data
     {
         private AbstractScene Scene { get; set; }
         public Dictionary<string, Type> SceneTypes { get; set; }
+        Bitmap bitmap ;
+        private bool[][] pixels;
         
         public RayTracingService()
         {
@@ -39,6 +42,17 @@ namespace ray_tracer_ui.Data
             }
             Scene = (AbstractScene)Activator.CreateInstance(typeScene);
             Scene.InitWorld();
+            bitmap = new Bitmap(sceneParameters.Width, sceneParameters.Height);
+            for(int i=0; i <bitmap.Height; i++)
+            {
+                for(int j=0; j <bitmap.Width; j++)
+                {
+                    bitmap.SetPixel(j, i, Color.Black);
+                }
+            }
+
+            pixels = Enumerable.Range(0, sceneParameters.Height).Select(i => new bool[sceneParameters.Width]).ToArray();
+            
             Task.Run( () => Scene.Render(sceneParameters, renderParameters));
         }
 
@@ -71,31 +85,28 @@ namespace ray_tracer_ui.Data
 
         private void CreateImage(Stream stream, Canvas canvas)
         {
-            using var bitmap = new Bitmap(canvas.Width, canvas.Height);
-            using var graphics = Graphics.FromImage(bitmap);
-            graphics.Clear(Color.Black);
+            Stopwatch sw = Stopwatch.StartNew();  
 
             for (int i = 0; i < canvas.Width; i++)
             {
                 for (int j = 0; j < canvas.Height; j++)
                 {
                     var c = canvas.Pixels[i][j];
-                    var cRed = ray_tracer.Color.Normalize(c.Red);
-                    var cGreen = ray_tracer.Color.Normalize(c.Green);
-                    var cBlue = ray_tracer.Color.Normalize(c.Blue);
-                    try
+                    if (c != null && ! pixels[j][i])
                     {
+                        pixels[j][i] = true;
+                        var cRed = ray_tracer.Color.Normalize(c.Red);
+                        var cGreen = ray_tracer.Color.Normalize(c.Green);
+                        var cBlue = ray_tracer.Color.Normalize(c.Blue);
                         var color = Color.FromArgb(cRed, cGreen, cBlue);
-                        var pen = new Pen(color, 1);
-                        graphics.DrawRectangle(pen, i, j, 1, 1);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
+                        bitmap.SetPixel(i, j, color);
                     }
                 }
             }
+            Console.WriteLine($"Draw: {sw.ElapsedMilliseconds} ms");
+            sw.Reset();
             bitmap.Save(stream, ImageFormat.Png);
+            Console.WriteLine($"Save: {sw.ElapsedMilliseconds} ms");
         }
     }
 }

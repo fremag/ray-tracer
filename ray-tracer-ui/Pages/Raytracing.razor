@@ -39,18 +39,13 @@
     <td><InputNumber id="Width" @bind-Value="sceneParameters.Width" /></td>
     <td><InputNumber id="Height" @bind-Value="sceneParameters.Height" /></td>
 </tr><tr>
-    <th>Rendering</th>
-</tr><tr>
-    <th>Nb Threads</th>
+    <th>Threads</th>
     <td><InputNumber id="NbThreads" @bind-Value="renderParameters.NbThreads" /></td>
-</tr><tr>
-    <td></td>
-    <td></td>
-    <td><button class="btn btn-primary" type="submit">Start</button></td>
+    <td><button class="btn btn-primary" type="submit">Start</button>
+        <button class="btn btn-primary" type="button" @onclick="@GetImage">Display</button></td>
 </tr>
 </table>
 </EditForm>
-    <td><button class="btn btn-primary" @onclick="@GetImage">Display</button></td>
 <hr/>
 <img src="@img" alt="No img"/>
 
@@ -68,5 +63,6 @@
     }
     protected override async Task OnInitializedAsync()
     {
+        sceneParameters.Scene = typeof(MengerSpongeScene).Name;
     }
 }
