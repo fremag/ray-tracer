@@ -87,15 +87,9 @@ namespace ray_tracer
             if (shuffle)
             {
                 Random r = new Random();
-                foreach(var renderJob in jobs.OrderBy(job =>  r.Next()))
-                {
-                    RenderJobs.Enqueue(renderJob);
-                }
+                jobs = jobs.OrderBy(job => r.Next()).ToList();
             }
-            else
-            {
-                jobs.ForEach(job => RenderJobs.Enqueue(job));
-            }
+            jobs.ForEach(job => RenderJobs.Enqueue(job));
 
             for (int i = 0; i < nbThreads; i++)
             {
