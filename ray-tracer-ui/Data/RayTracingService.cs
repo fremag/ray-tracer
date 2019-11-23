@@ -30,7 +30,7 @@ namespace ray_tracer_ui.Data
 
         public List<string> GetScenes() => SceneTypes.Keys.ToList();
         
-        public void Run(SceneParameters sceneParameters)
+        public void Run(SceneParameters sceneParameters, RenderParameters renderParameters)
         {
             SceneTypes.TryGetValue(sceneParameters.Scene, out var typeScene);
             if (typeScene == null)
@@ -39,7 +39,7 @@ namespace ray_tracer_ui.Data
             }
             Scene = (AbstractScene)Activator.CreateInstance(typeScene);
             Scene.InitWorld();
-            Task.Run( () => Scene.Render(sceneParameters));
+            Task.Run( () => Scene.Render(sceneParameters, renderParameters));
         }
 
         public Task<string> GetImage()

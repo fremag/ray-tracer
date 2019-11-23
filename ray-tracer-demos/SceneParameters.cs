@@ -1,5 +1,11 @@
 namespace ray_tracer_demos
 {
+    public class RenderParameters
+    {
+        public int NbThreads { get; set; } = 4;
+        public bool Shuffle { get; set; } = true;
+    }
+    
     public class SceneParameters
     {
         public string Scene { get; set; }

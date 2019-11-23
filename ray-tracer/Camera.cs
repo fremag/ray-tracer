@@ -1,5 +1,8 @@
 #define OPTIM_PARALLEL
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +19,9 @@ namespace ray_tracer
         public double HalfWidth { get; }
 
         private Matrix InverseTransform { get; }
+        private ConcurrentQueue<RenderJob> RenderJobs { get; } = new ConcurrentQueue<RenderJob>();
+        public event Action<int, int> RowRendered;
+        private readonly object lockObj = new object();
 
         public Camera(int hSize, int vSize, double fieldOfView) :
             this(hSize, vSize, fieldOfView, Helper.CreateIdentity())
@@ -65,8 +71,48 @@ namespace ray_tracer
             return Helper.Ray(origin, direction);
         }
 
-        public event Action<int, int> RowRendered;
-        private readonly object lockObj = new object();
+        public void Render(Canvas canvas, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
+        {
+            var jobs = new List<RenderJob>(VSize*HSize);
+            for (int y = 0; y < VSize; y+=1)
+            {
+                for (int x = 0; x < HSize; x+=1)
+                {
+                    var ray = RayForPixel(x, y);
+                    var renderJob = new RenderJob(x, y, canvas, world, maxRecursion, ray, 1, 1);
+                    jobs.Add(renderJob);
+                }
+            }
+
+            if (shuffle)
+            {
+                Random r = new Random();
+                foreach(var renderJob in jobs.OrderBy(job =>  r.Next()))
+                {
+                    RenderJobs.Enqueue(renderJob);
+                }
+            }
+            else
+            {
+                jobs.ForEach(job => RenderJobs.Enqueue(job));
+            }
+
+            for (int i = 0; i < nbThreads; i++)
+            {
+                Thread t = new Thread(Run);
+                t.Name = "RayTracerWorker_" + i;
+                t.Start();
+            }
+        }
+
+        private void Run()
+        {
+            while (RenderJobs.TryDequeue(out var renderJob))
+            {
+                renderJob.DoWork();
+            }
+        }
+        
         public Canvas Render(World world, int maxRecursion = 10)
         {
             var image = new Canvas(HSize, VSize);
@@ -74,33 +120,41 @@ namespace ray_tracer
             
             return image;
         }
+    }
 
-        public void Render(Canvas image, World world, int maxRecursion=10)
+    public class RenderJob
+    {
+        public int X { get; }
+        public int Y { get; }
+        public int XSize { get; }
+        public int YSize { get; }
+        public Canvas Canvas { get; }
+        public World World { get; }
+        public int MaxRecursion { get; }
+        public Ray Ray { get; }
+
+        public RenderJob(in int x, in int y, Canvas canvas, World world, int maxRecursion, Ray ray, int xSize, int ySize)
         {
-         //   ThreadPool.SetMinThreads(4, 8); 
-            int progress = 0;
-#if OPTIM_PARALLEL            
-            Parallel.For(0, VSize, y =>
-#else                    
-            for(int y = 0; y < VSize; y++)
-#endif
-                {
-                    for (int x = 0; x < HSize; x++)
-                    {
-                        var ray = RayForPixel(x, y);
-                        var color = world.ColorAt(ray, maxRecursion);
-                        image.SetPixel(x, y, color);
-                    }
+            X = x;
+            Y = y;
+            XSize = xSize;
+            YSize = ySize;
+            Canvas = canvas;
+            World = world;
+            MaxRecursion = maxRecursion;
+            Ray = ray;
+        }
 
-                    Interlocked.Increment(ref progress);
-                    lock (lockObj)
-                    {
-                        RowRendered?.Invoke(progress, VSize);
-                    }
+        public void DoWork()
+        {
+            var color = World.ColorAt(Ray, MaxRecursion);
+            for(int i=0; i < XSize; i++)
+            {
+                for(int j=0; j < YSize; j++)
+                {
+                    Canvas.SetPixel(X+i, Y+j, color);
                 }
-#if OPTIM_PARALLEL            
-            );
-#endif
+            }
         }
     }
 }

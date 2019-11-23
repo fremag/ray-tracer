@@ -39,6 +39,11 @@
     <td><InputNumber id="Width" @bind-Value="sceneParameters.Width" /></td>
     <td><InputNumber id="Height" @bind-Value="sceneParameters.Height" /></td>
 </tr><tr>
+    <th>Rendering</th>
+</tr><tr>
+    <th>Nb Threads</th>
+    <td><InputNumber id="NbThreads" @bind-Value="renderParameters.NbThreads" /></td>
+</tr><tr>
     <td></td>
     <td></td>
     <td><button class="btn btn-primary" type="submit">Start</button></td>
@@ -51,10 +56,11 @@
 
 @code {
     private readonly SceneParameters sceneParameters = new SceneParameters();
+    private readonly RenderParameters renderParameters = new RenderParameters();
     private string img; 
     private void Start()
     {
-        RayTracingService.Run(sceneParameters);
+        RayTracingService.Run(sceneParameters, renderParameters);
     }
     private async void GetImage()
     {

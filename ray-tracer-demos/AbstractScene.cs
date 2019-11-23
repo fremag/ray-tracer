@@ -19,14 +19,14 @@ namespace ray_tracer_demos
 
         public abstract void InitWorld();
         
-        public void Render(SceneParameters sceneParameters)
+        public void Render(SceneParameters sceneParameters, RenderParameters renderParameters)
         {
             Render( sceneParameters.CameraX, sceneParameters.CameraY, sceneParameters.CameraZ,
                     sceneParameters.LookX,   sceneParameters.LookY,   sceneParameters.LookZ,
-                    sceneParameters.Height,  sceneParameters.Width);
+                    sceneParameters.Height,  sceneParameters.Width, renderParameters.NbThreads);
         }
         
-        public void Render(double camX, double camY, double camZ, double lookX = 0, double lookY = 0, double lookZ = 0, int h = 400, int w = 600)
+        public void Render(double camX, double camY, double camZ, double lookX = 0, double lookY = 0, double lookZ = 0, int h = 400, int w = 600, int nbThreads=4)
         {
             Image = new Canvas(w, h);
             var point = Helper.CreatePoint(camX, camY, camZ);
@@ -35,7 +35,7 @@ namespace ray_tracer_demos
             var camera = new Camera(w, h, Math.PI / 3, Helper.ViewTransform(point, look, Helper.CreateVector(0, 1, 0)));
             camera.RowRendered += OnRowRendered;
 
-            camera.Render(Image, world);
+            camera.Render(Image, world, nbThreads);
         }
         
         public string Render(string file, double camX, double camY, double camZ, double lookX=0, double lookY =0, double lookZ =0, int h=400, int w=600)
