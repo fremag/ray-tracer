@@ -4,9 +4,9 @@
 <details open>
   <summary>Chapter xx: basic UI</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/ray-tracer-ui.png"/>
+  Preview image:
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/ray-tracer-ui-preview.png"/>
 </details>
-
 
 <details open>
   <summary>Chapter xx: more triangles</summary>
