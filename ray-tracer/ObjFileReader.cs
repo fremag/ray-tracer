@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ray_tracer.Shapes;
 
 namespace ray_tracer
@@ -26,6 +27,22 @@ namespace ray_tracer
             var group = new Group();
             Groups.Where(g => g.Count !=0).ToList().ForEach(g => group.Add(g));
             return group;
+        }
+
+        public ObjFileReader(Stream stream, bool smooth)
+        {
+            Smooth = smooth;
+            Init(ReadLines(stream));
+        }
+        
+        public IEnumerable<string> ReadLines(Stream stream)
+        {
+            using var reader = new StreamReader(stream);
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                yield return line;
+            }
         }
 
         public ObjFileReader(string file, bool smooth)

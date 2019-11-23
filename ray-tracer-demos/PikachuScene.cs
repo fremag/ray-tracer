@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
@@ -16,12 +18,15 @@ namespace ray_tracer_demos
 
             Add(floor);
 
-            ObjFileReader smoothPikachuObj = new ObjFileReader("pikachu.obj", true);
+            var assembly = typeof(PikachuScene).GetTypeInfo().Assembly;
+            Stream resource = assembly.GetManifestResourceStream("ray_tracer_demos.Pikachu.obj");
+            ObjFileReader smoothPikachuObj = new ObjFileReader(resource, true);
             var smoothPikachu = smoothPikachuObj.ObjToGroup();
             smoothPikachu.Rotate(ry: Math.PI).Translate(tx: 0.5);
             Add(smoothPikachu);
 
-            ObjFileReader pikachuObj = new ObjFileReader("pikachu.obj", false);
+            resource = assembly.GetManifestResourceStream("ray_tracer_demos.Pikachu.obj");
+            ObjFileReader pikachuObj = new ObjFileReader(resource, false);
             var pikachu = pikachuObj.ObjToGroup();
             pikachu.Rotate(ry: Math.PI).Translate(tx: -4);
             Add(pikachu);

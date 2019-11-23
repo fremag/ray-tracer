@@ -4,7 +4,7 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class WorldPlaneStripePattern : AbstractScene
+    public class WorldPlaneStripePatternScene : AbstractScene
     {
         public override void InitWorld()
         {
