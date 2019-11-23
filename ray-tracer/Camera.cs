@@ -74,12 +74,12 @@ namespace ray_tracer
         public void Render(Canvas canvas, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
         {
             var jobs = new List<RenderJob>(VSize*HSize);
-            for (int y = 0; y < VSize; y+=1)
+            for (int y = 0; y < VSize; y++)
             {
-                for (int x = 0; x < HSize; x+=1)
+                for (int x = 0; x < HSize; x++)
                 {
                     var ray = RayForPixel(x, y);
-                    var renderJob = new RenderJob(x, y, canvas, world, maxRecursion, ray, 1, 1);
+                    var renderJob = new RenderJob(x, y, canvas, world, maxRecursion, ray);
                     jobs.Add(renderJob);
                 }
             }
@@ -120,19 +120,15 @@ namespace ray_tracer
     {
         public int X { get; }
         public int Y { get; }
-        public int XSize { get; }
-        public int YSize { get; }
         public Canvas Canvas { get; }
         public World World { get; }
         public int MaxRecursion { get; }
         public Ray Ray { get; }
 
-        public RenderJob(in int x, in int y, Canvas canvas, World world, int maxRecursion, Ray ray, int xSize, int ySize)
+        public RenderJob(in int x, in int y, Canvas canvas, World world, int maxRecursion, Ray ray)
         {
             X = x;
             Y = y;
-            XSize = xSize;
-            YSize = ySize;
             Canvas = canvas;
             World = world;
             MaxRecursion = maxRecursion;
@@ -142,13 +138,7 @@ namespace ray_tracer
         public void DoWork()
         {
             var color = World.ColorAt(Ray, MaxRecursion);
-            for(int i=0; i < XSize; i++)
-            {
-                for(int j=0; j < YSize; j++)
-                {
-                    Canvas.SetPixel(X+i, Y+j, color);
-                }
-            }
+            Canvas.SetPixel(X, Y, color);
         }
     }
 }
