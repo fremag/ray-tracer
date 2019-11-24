@@ -9,11 +9,14 @@ namespace ray_tracer
 {
     public class RenderManager
     {
+        public RenderStatistics RenderStatistics { get; private set; }
         public Canvas Image { get; private set; }
         private ConcurrentQueue<PixelJob> PixelJobs { get; } = new ConcurrentQueue<PixelJob>();
         private Thread[] threads;
         private bool stopRequested;
-
+        
+        public int PixelsLeft => PixelJobs.Count;
+        
         public void Render(CameraParameters camParams, RenderParameters renderParameters, World world)
         {
             Image = new Canvas(camParams.Width, camParams.Height);
@@ -23,6 +26,7 @@ namespace ray_tracer
             var viewTransform = Helper.ViewTransform(point, look, Helper.CreateVector(0, 1, 0));
             var camera = new Camera(camParams.Width, camParams.Height, Math.PI / 3, viewTransform);
             stopRequested = false;
+            RenderStatistics = new RenderStatistics {Start =  DateTime.Now, TotalPixels = camParams.Width * camParams.Height};
             Render(camera, world, renderParameters.NbThreads);
         }
 
@@ -56,7 +60,7 @@ namespace ray_tracer
                 for (int x = 0; x < camera.HSize; x++)
                 {
                     var ray = camera.RayForPixel(x, y);
-                    var renderJob = new PixelJob(x, y, Image, world, maxRecursion, ray);
+                    var renderJob = new PixelJob(x, y, Image, world, maxRecursion, ray, RenderStatistics);
                     pixelJobs.Add(renderJob);
                 }
             }
@@ -87,7 +91,8 @@ namespace ray_tracer
                 renderJob.DoWork();
                 n++;
             }
-            Console.WriteLine($"{name}: {n}");
+
+            RenderStatistics.Stop();
         }
 
         public void Wait()

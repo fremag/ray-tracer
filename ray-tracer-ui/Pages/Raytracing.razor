@@ -1,15 +1,16 @@
 ﻿@page "/raytracing"
 
+@using ray_tracer
 @using ray_tracer_demos
 @using ray_tracer_ui.Data
 
 @inject RayTracingService RayTracingService
 
-<EditForm Model="@sceneParameters" OnValidSubmit="@Start">
+<EditForm Model="@cameraParameters" OnValidSubmit="@Start">
 
 <table>
 <tr><th>Scene</th><td colspan="2">
-<InputSelect id="scene" @bind-Value="sceneParameters.Scene">
+<InputSelect id="scene" @bind-Value="sceneName">
 @foreach(var type in RayTracingService.GetScenes())
 {
     <option>@type</option>
@@ -21,49 +22,74 @@
 <tr><th/><th>Camera</th><th>Look At</th></tr>
 <tr>
     <th>X</th>
-    <td><InputNumber id="camX" @bind-Value="sceneParameters.CameraX" /></td>
-    <td><InputNumber id="LookX" @bind-Value="sceneParameters.LookX" /></td>
+    <td><InputNumber id="camX" @bind-Value="cameraParameters.CameraX" /></td>
+    <td><InputNumber id="LookX" @bind-Value="cameraParameters.LookX" /></td>
 </tr><tr> 
      <th>Y</th>
-    <td><InputNumber id="camY" @bind-Value="sceneParameters.CameraY" /></td>
-    <td><InputNumber id="LookY" @bind-Value="sceneParameters.LookY" /></td>
+    <td><InputNumber id="camY" @bind-Value="cameraParameters.CameraY" /></td>
+    <td><InputNumber id="LookY" @bind-Value="cameraParameters.LookY" /></td>
 </tr><tr>
     <th>Z</th>
-    <td><InputNumber id="camZ" @bind-Value="sceneParameters.CameraZ" /></td>
-    <td><InputNumber id="LookZ" @bind-Value="sceneParameters.LookZ" /></td>
+    <td><InputNumber id="camZ" @bind-Value="cameraParameters.CameraZ" /></td>
+    <td><InputNumber id="LookZ" @bind-Value="cameraParameters.LookZ" /></td>
 </tr><tr>
     <th/><th>Width</th>
     <th>Height</th>
 </tr><tr>
     <th>Image</th>
-    <td><InputNumber id="Width" @bind-Value="sceneParameters.Width" /></td>
-    <td><InputNumber id="Height" @bind-Value="sceneParameters.Height" /></td>
+    <td><InputNumber id="Width" @bind-Value="cameraParameters.Width" /></td>
+    <td><InputNumber id="Height" @bind-Value="cameraParameters.Height" /></td>
 </tr><tr>
     <th>Threads</th>
     <td><InputNumber id="NbThreads" @bind-Value="renderParameters.NbThreads" /></td>
     <td><button class="btn btn-primary" type="submit">Start</button>
-        <button class="btn btn-primary" type="button" @onclick="@GetImage">Display</button></td>
+        <button class="btn btn-primary" type="button" @onclick="@Stop">Stop</button>
+</td>
 </tr>
 </table>
 </EditForm>
+
+<hr/>
+<table>
+<button class="btn btn-primary" type="button" @onclick="@Display">Display</button>
+<tr><th>Time</th><td>@time</td></tr>
+<tr><th>Progress</th><td>@progress</td></tr>
+<tr><th>Speed</th><td>@speed</td></tr>
+</table>
 <hr/>
 <img src="@img" alt="No img"/>
 
 @code {
-    private readonly SceneParameters sceneParameters = new SceneParameters();
+    private string sceneName;
+    private readonly CameraParameters cameraParameters = new CameraParameters();
     private readonly RenderParameters renderParameters = new RenderParameters();
-    private string img; 
+    private string img;
+    private string time;
+    private string progress;
+    private string speed;
+    
     private void Start()
     {
-        RayTracingService.Run(sceneParameters, renderParameters);
+        RayTracingService.Run(sceneName, cameraParameters, renderParameters);
     }
-    private async void GetImage()
+    
+    private void Stop()
+    {
+        RayTracingService.Stop();
+    }
+    
+    private async void Display()
     {
         img = await RayTracingService.GetImage();
+        var stats = RayTracingService.GetStatistics();
+        time = $"{stats.Time:hh\\:mm\\:ss}";
+        progress = $"{stats.Progress:p2}";
+        speed = $"{stats.Speed:n2} pix/s";
     }
+    
     protected override Task OnInitializedAsync()
     {
-        sceneParameters.Scene = typeof(MengerSpongeScene).Name;
+        sceneName = typeof(MengerSpongeScene).Name;
         return Task.CompletedTask;
     }
 }

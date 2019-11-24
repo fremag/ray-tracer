@@ -3,7 +3,7 @@
 
 <details open>
   <summary>Chapter xx: basic UI</summary>
-  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/ray-tracer-ui.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/demo-ui.gif"/>
 <p>Preview image:</p>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/ray-tracer-ui-preview.png"/>
 </details>

@@ -36,7 +36,8 @@ namespace ray_tracer_ui.Data
         {
             RenderManager.Stop();
         }
-        
+
+        public RenderStatistics GetStatistics() => RenderManager.RenderStatistics;
         public List<string> GetScenes() => SceneTypes.Keys.ToList();
         
         public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
