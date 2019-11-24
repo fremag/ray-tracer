@@ -36,7 +36,7 @@ namespace ray_tracer
             PixelJobs.Clear();
         }
         
-        public void Render(World world, double camX, double camY, double camZ, double lookX=0, double lookY =0, double lookZ =0, int h=400, int w=600)
+        public void Render(World world, double camX, double camY, double camZ, double lookX=0, double lookY =0, double lookZ =0, int h=400, int w=600, int nbThreads=8)
         {
             var camParams = new CameraParameters
             {
@@ -49,7 +49,12 @@ namespace ray_tracer
                 Height = h,
                 Width = w
             };
-            Render(camParams, new RenderParameters(), world);
+            var renderParameters = new RenderParameters
+            {
+                NbThreads = nbThreads
+            };
+            
+            Render(camParams, renderParameters, world);
         }
         
         public void Render(Camera camera, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
@@ -75,21 +80,17 @@ namespace ray_tracer
 
             for (int i = 0; i < nbThreads; i++)
             {
-                var tName = $"RayTracerWorker_{i}";
-                Thread t = new Thread(() => Run(tName));
-                threads[i] = t;
-                t.Name = tName;
+                Thread t = new Thread(Run) {Name = $"RayTracerWorker_{i}"};
                 t.Start();
+                threads[i] = t;
             }
         }
 
-        private void Run(string name)
+        private void Run()
         {
-            int n = 0;
             while (! stopRequested && PixelJobs.TryDequeue(out var renderJob))
             {
                 renderJob.DoWork();
-                n++;
             }
 
             RenderStatistics.Stop();

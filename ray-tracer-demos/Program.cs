@@ -15,7 +15,7 @@ namespace ray_tracer_demos
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
             var scene = new MengerSpongeScene();
             scene.InitWorld();
-            renderMgr.Render(scene.World, 0, 1, -10, lookX: -0, lookY: 0);
+            renderMgr.Render(scene.World, 2, 3, -10, lookX: -1.5, lookY: 0);
             while (renderMgr.PixelsLeft > 0)
             {
                 Print(renderMgr);
