@@ -19,9 +19,7 @@ namespace ray_tracer
         public double HalfWidth { get; }
 
         private Matrix InverseTransform { get; }
-        private ConcurrentQueue<RenderJob> RenderJobs { get; } = new ConcurrentQueue<RenderJob>();
-        public event Action<int, int> RowRendered;
-        private readonly object lockObj = new object();
+        private ConcurrentQueue<PixelJob> PixelJobs { get; } = new ConcurrentQueue<PixelJob>();
 
         public Camera(int hSize, int vSize, double fieldOfView) :
             this(hSize, vSize, fieldOfView, Helper.CreateIdentity())
@@ -73,23 +71,23 @@ namespace ray_tracer
 
         public void Render(Canvas canvas, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
         {
-            var jobs = new List<RenderJob>(VSize*HSize);
+            var pixelJobs = new List<PixelJob>(VSize*HSize);
             for (int y = 0; y < VSize; y++)
             {
                 for (int x = 0; x < HSize; x++)
                 {
                     var ray = RayForPixel(x, y);
-                    var renderJob = new RenderJob(x, y, canvas, world, maxRecursion, ray);
-                    jobs.Add(renderJob);
+                    var renderJob = new PixelJob(x, y, canvas, world, maxRecursion, ray);
+                    pixelJobs.Add(renderJob);
                 }
             }
 
             if (shuffle)
             {
                 Random r = new Random();
-                jobs = jobs.OrderBy(job => r.Next()).ToList();
+                pixelJobs = pixelJobs.OrderBy(job => r.Next()).ToList();
             }
-            jobs.ForEach(job => RenderJobs.Enqueue(job));
+            pixelJobs.ForEach(job => PixelJobs.Enqueue(job));
 
             for (int i = 0; i < nbThreads; i++)
             {
@@ -101,7 +99,7 @@ namespace ray_tracer
 
         private void Run()
         {
-            while (RenderJobs.TryDequeue(out var renderJob))
+            while (PixelJobs.TryDequeue(out var renderJob))
             {
                 renderJob.DoWork();
             }
@@ -113,32 +111,6 @@ namespace ray_tracer
             Render(image, world, maxRecursion);
             
             return image;
-        }
-    }
-
-    public class RenderJob
-    {
-        public int X { get; }
-        public int Y { get; }
-        public Canvas Canvas { get; }
-        public World World { get; }
-        public int MaxRecursion { get; }
-        public Ray Ray { get; }
-
-        public RenderJob(in int x, in int y, Canvas canvas, World world, int maxRecursion, Ray ray)
-        {
-            X = x;
-            Y = y;
-            Canvas = canvas;
-            World = world;
-            MaxRecursion = maxRecursion;
-            Ray = ray;
-        }
-
-        public void DoWork()
-        {
-            var color = World.ColorAt(Ray, MaxRecursion);
-            Canvas.SetPixel(X, Y, color);
         }
     }
 }

@@ -292,5 +292,10 @@ namespace ray_tracer
 
             return Inversed;
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

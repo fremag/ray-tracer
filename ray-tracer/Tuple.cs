@@ -59,5 +59,10 @@ namespace ray_tracer
 
         public double this[in int i] => values[i];
         public Tuple Reflect(Tuple normal) => this - normal * 2 * DotProduct(normal);
+        
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
