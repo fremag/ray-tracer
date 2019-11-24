@@ -1,4 +1,4 @@
-namespace ray_tracer_demos
+namespace ray_tracer
 {
     public class RenderParameters
     {
@@ -6,10 +6,8 @@ namespace ray_tracer_demos
         public bool Shuffle { get; set; } = true;
     }
     
-    public class SceneParameters
+    public class CameraParameters
     {
-        public string Scene { get; set; }
-        
         public double CameraX { get; set; } = 0;
         public double CameraY { get; set;} = 1;
         public double CameraZ { get; set;} = -1;

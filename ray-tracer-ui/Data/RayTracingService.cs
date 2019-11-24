@@ -16,10 +16,11 @@ namespace ray_tracer_ui.Data
     public class RayTracingService
     {
         private AbstractScene Scene { get; set; }
-        public Dictionary<string, Type> SceneTypes { get; set; }
+        public Dictionary<string, Type> SceneTypes { get; }
         Bitmap bitmap ;
         private bool[][] pixels;
-        
+        private RenderManager RenderManager { get; }
+
         public RayTracingService()
         {
             var types = Assembly.GetAssembly(typeof(AbstractScene))
@@ -28,21 +29,27 @@ namespace ray_tracer_ui.Data
                 .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
                 .Where(type => !type.IsAbstract)
                 .ToDictionary(type => type.Name);
-
+            RenderManager = new RenderManager(); 
         }
 
+        public void Stop()
+        {
+            RenderManager.Stop();
+        }
+        
         public List<string> GetScenes() => SceneTypes.Keys.ToList();
         
-        public void Run(SceneParameters sceneParameters, RenderParameters renderParameters)
+        public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
         {
-            SceneTypes.TryGetValue(sceneParameters.Scene, out var typeScene);
+            SceneTypes.TryGetValue(sceneName, out var typeScene);
             if (typeScene == null)
             {
                 return;
             }
             Scene = (AbstractScene)Activator.CreateInstance(typeScene);
             Scene.InitWorld();
-            bitmap = new Bitmap(sceneParameters.Width, sceneParameters.Height);
+            
+            bitmap = new Bitmap(cameraParameters.Width, cameraParameters.Height);
             for(int i=0; i <bitmap.Height; i++)
             {
                 for(int j=0; j <bitmap.Width; j++)
@@ -51,18 +58,17 @@ namespace ray_tracer_ui.Data
                 }
             }
 
-            pixels = Enumerable.Range(0, sceneParameters.Height).Select(i => new bool[sceneParameters.Width]).ToArray();
-            
-            Task.Run( () => Scene.Render(sceneParameters, renderParameters));
+            pixels = Enumerable.Range(0, cameraParameters.Height).Select(i => new bool[cameraParameters.Width]).ToArray();
+            RenderManager.Render(cameraParameters, renderParameters, Scene.World);
         }
 
         public Task<string> GetImage()
         {
             using var memoryStream = new MemoryStream();
 
-            if (Scene?.Image != null)
+            if (RenderManager.Image != null)
             {
-                CreateImage(memoryStream, Scene.Image);
+                CreateImage(memoryStream, RenderManager.Image);
             }
             else
             {

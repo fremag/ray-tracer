@@ -19,7 +19,6 @@ namespace ray_tracer
         public double HalfWidth { get; }
 
         private Matrix InverseTransform { get; }
-        private ConcurrentQueue<PixelJob> PixelJobs { get; } = new ConcurrentQueue<PixelJob>();
 
         public Camera(int hSize, int vSize, double fieldOfView) :
             this(hSize, vSize, fieldOfView, Helper.CreateIdentity())
@@ -69,48 +68,5 @@ namespace ray_tracer
             return Helper.Ray(origin, direction);
         }
 
-        public void Render(Canvas canvas, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
-        {
-            var pixelJobs = new List<PixelJob>(VSize*HSize);
-            for (int y = 0; y < VSize; y++)
-            {
-                for (int x = 0; x < HSize; x++)
-                {
-                    var ray = RayForPixel(x, y);
-                    var renderJob = new PixelJob(x, y, canvas, world, maxRecursion, ray);
-                    pixelJobs.Add(renderJob);
-                }
-            }
-
-            if (shuffle)
-            {
-                Random r = new Random();
-                pixelJobs = pixelJobs.OrderBy(job => r.Next()).ToList();
-            }
-            pixelJobs.ForEach(job => PixelJobs.Enqueue(job));
-
-            for (int i = 0; i < nbThreads; i++)
-            {
-                Thread t = new Thread(Run);
-                t.Name = "RayTracerWorker_" + i;
-                t.Start();
-            }
-        }
-
-        private void Run()
-        {
-            while (PixelJobs.TryDequeue(out var renderJob))
-            {
-                renderJob.DoWork();
-            }
-        }
-        
-        public Canvas Render(World world, int maxRecursion = 10)
-        {
-            var image = new Canvas(HSize, VSize);
-            Render(image, world, maxRecursion);
-            
-            return image;
-        }
     }
 }
