@@ -1,11 +1,7 @@
 ﻿@page "/raytracing"
 
-@using ray_tracer
-@using ray_tracer_demos
 @using ray_tracer_ui.Data
-
-@inject RayTracingService RayTracingService
-
+@inherits RayTracingComponent;
 <EditForm Model="@cameraParameters" OnValidSubmit="@Start">
 
 <table>
@@ -58,38 +54,3 @@
 </table>
 <hr/>
 <img src="@img" alt="No img"/>
-
-@code {
-    private string sceneName;
-    private readonly CameraParameters cameraParameters = new CameraParameters();
-    private readonly RenderParameters renderParameters = new RenderParameters();
-    private string img;
-    private string time;
-    private string progress;
-    private string speed;
-    
-    private void Start()
-    {
-        RayTracingService.Run(sceneName, cameraParameters, renderParameters);
-    }
-    
-    private void Stop()
-    {
-        RayTracingService.Stop();
-    }
-    
-    private async void Display()
-    {
-        img = await RayTracingService.GetImage();
-        var stats = RayTracingService.GetStatistics();
-        time = $"{stats.Time:hh\\:mm\\:ss}";
-        progress = $"{stats.Progress:p2}";
-        speed = $"{stats.Speed:n2} pix/s";
-    }
-    
-    protected override Task OnInitializedAsync()
-    {
-        sceneName = typeof(MengerSpongeScene).Name;
-        return Task.CompletedTask;
-    }
-}

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Timers;
 using ray_tracer;
 using ray_tracer_demos;
 using Color = System.Drawing.Color;
@@ -15,10 +16,12 @@ namespace ray_tracer_ui.Data
 {
     public class RayTracingService
     {
+        public event Action<DateTime> Clock; 
         private AbstractScene Scene { get; set; }
         public Dictionary<string, Type> SceneTypes { get; }
         Bitmap bitmap ;
         private bool[][] pixels;
+        private readonly Timer timer;
         private RenderManager RenderManager { get; }
 
         public RayTracingService()
@@ -29,12 +32,20 @@ namespace ray_tracer_ui.Data
                 .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
                 .Where(type => !type.IsAbstract)
                 .ToDictionary(type => type.Name);
-            RenderManager = new RenderManager(); 
+            RenderManager = new RenderManager();
+            timer = new Timer {Interval = 1000, AutoReset = true};
+            timer.Elapsed += OnClock;
+        }
+
+        private void OnClock(object sender, ElapsedEventArgs e)
+        {
+            Clock?.Invoke(DateTime.Now);
         }
 
         public void Stop()
         {
             RenderManager.Stop();
+            timer.Stop();
         }
 
         public RenderStatistics GetStatistics() => RenderManager.RenderStatistics;
@@ -42,6 +53,7 @@ namespace ray_tracer_ui.Data
         
         public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
         {
+            timer.Start();
             SceneTypes.TryGetValue(sceneName, out var typeScene);
             if (typeScene == null)
             {
@@ -102,11 +114,18 @@ namespace ray_tracer_ui.Data
                     if (c != null && ! pixels[j][i])
                     {
                         pixels[j][i] = true;
-                        var cRed = ray_tracer.Color.Normalize(c.Red);
-                        var cGreen = ray_tracer.Color.Normalize(c.Green);
-                        var cBlue = ray_tracer.Color.Normalize(c.Blue);
-                        var color = Color.FromArgb(cRed, cGreen, cBlue);
-                        bitmap.SetPixel(i, j, color);
+                        try
+                        {
+                            var cRed = ray_tracer.Color.Normalize(c.Red);
+                            var cGreen = ray_tracer.Color.Normalize(c.Green);
+                            var cBlue = ray_tracer.Color.Normalize(c.Blue);
+                            var color = Color.FromArgb(cRed, cGreen, cBlue);
+                            bitmap.SetPixel(i, j, color);
+                        }
+                        catch (ArgumentException e)
+                        {
+                            Console.WriteLine($"i: {i}, j: {j}, Red: {c.Red}, Green: {c.Green}, Blue: {c.Blue}");
+                        }
                     }
                 }
             }
