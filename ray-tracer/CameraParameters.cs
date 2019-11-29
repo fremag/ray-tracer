@@ -8,6 +8,7 @@ namespace ray_tracer
     
     public class CameraParameters
     {
+        public string Name { get; set; }
         public double CameraX { get; set; } = 0;
         public double CameraY { get; set;} = 1;
         public double CameraZ { get; set;} = -1;

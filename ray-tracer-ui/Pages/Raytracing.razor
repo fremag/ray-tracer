@@ -1,12 +1,11 @@
 ﻿@page "/raytracing"
 
-@using ray_tracer_ui.Data
 @inherits RayTracingComponent;
 <EditForm Model="@cameraParameters" OnValidSubmit="@Start">
 
 <table>
 <tr><th>Scene</th><td colspan="2">
-<InputSelect id="scene" @bind-Value="sceneName">
+<InputSelect id="scene" @bind-Value="SceneName">
 @foreach(var type in RayTracingService.GetScenes())
 {
     <option>@type</option>
@@ -38,7 +37,7 @@
 </tr><tr>
     <th>Threads</th>
     <td><InputNumber id="NbThreads" @bind-Value="renderParameters.NbThreads" /></td>
-    <td><button class="btn btn-primary" type="submit">Start</button>
+    <td><button class="btn btn-primary" type="submit">Fiat Lux !</button>
         <button class="btn btn-primary" type="button" @onclick="@Stop">Stop</button>
 </td>
 </tr>
@@ -46,6 +45,9 @@
 </EditForm>
 
 <hr/>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="@progressValue" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
 <table>
 <button class="btn btn-primary" type="button" @onclick="@Display">Display</button>
 <tr><th>Time</th><td>@time</td></tr>

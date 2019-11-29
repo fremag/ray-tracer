@@ -5,6 +5,14 @@ namespace ray_tracer_demos
 {
     public class CsgBasicScene : AbstractScene
     {
+        public CsgBasicScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 3, CameraZ = -4,
+                LookX = 0, LookY = 1, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             DefaultFloor();

@@ -12,17 +12,28 @@ namespace ray_tracer_ui.Pages
         [Inject]
         protected RayTracingService RayTracingService { get; set; }
 
-        protected string sceneName;
+        protected string SceneName
+        {
+            get => sceneName;
+            set
+            {
+                sceneName = value;
+                InitCameraParameters();
+            }
+        }
+
         protected readonly CameraParameters cameraParameters = new CameraParameters();
         protected readonly RenderParameters renderParameters = new RenderParameters();
         protected string img;
         protected string time;
         protected string progress;
+        protected double progressValue;
         protected string speed;
-    
+        private string sceneName;
+
         protected void Start()
         {
-            RayTracingService.Run(sceneName, cameraParameters, renderParameters);
+            RayTracingService.Run(SceneName, cameraParameters, renderParameters);
         }
     
         protected void Stop()
@@ -38,17 +49,19 @@ namespace ray_tracer_ui.Pages
             {
                 time = "";
                 progress = "";
+                progressValue = 0;
                 speed = "";
                 return;
             }
             time = $"{stats.Time:hh\\:mm\\:ss}";
             progress = $"{stats.Progress:p2}";
             speed = $"{stats.Speed:n2} pix/s";
+            progressValue = stats.Progress * 100;
         }
     
         protected override Task OnInitializedAsync()
         {
-            sceneName = typeof(MengerSpongeScene).Name;
+            SceneName = typeof(MengerSpongeScene).Name;
             RayTracingService.Clock += OnClock;
             return Task.CompletedTask;
         }
@@ -56,6 +69,20 @@ namespace ray_tracer_ui.Pages
         private void OnClock(DateTime now)
         {
             Display();
+            InvokeAsync(StateHasChanged);
+        }
+
+        public void InitCameraParameters()
+        {
+            var cameraParameter = RayTracingService.CameraParameters(SceneName)[0];
+            cameraParameters.Height =  cameraParameter.Height;
+            cameraParameters.Width =  cameraParameter.Width;
+            cameraParameters.CameraX =  cameraParameter.CameraX;
+            cameraParameters.CameraY =  cameraParameter.CameraY;
+            cameraParameters.CameraZ =  cameraParameter.CameraZ;
+            cameraParameters.LookX =  cameraParameter.LookX;
+            cameraParameters.LookY =  cameraParameter.LookY;
+            cameraParameters.LookZ =  cameraParameter.LookZ;
             InvokeAsync(StateHasChanged);
         }
     }

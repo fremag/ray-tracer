@@ -16,10 +16,10 @@ namespace ray_tracer_ui.Data
 {
     public class RayTracingService
     {
-        public event Action<DateTime> Clock; 
+        public event Action<DateTime> Clock;
         private AbstractScene Scene { get; set; }
         public Dictionary<string, Type> SceneTypes { get; }
-        Bitmap bitmap ;
+        Bitmap bitmap;
         private bool[][] pixels;
         private readonly Timer timer;
         private RenderManager RenderManager { get; }
@@ -49,23 +49,29 @@ namespace ray_tracer_ui.Data
         }
 
         public RenderStatistics GetStatistics() => RenderManager.RenderStatistics;
-        public List<string> GetScenes() => SceneTypes.Keys.ToList();
+        public List<CameraParameters> CameraParameters(string sceneName)
+        {
+            var scene = CreateScene(sceneName);
+            return scene == null ? new List<CameraParameters>() : scene.CameraParameters;
+        }
         
+        public List<string> GetScenes() => SceneTypes.Keys.ToList();
+
         public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
         {
             timer.Start();
-            SceneTypes.TryGetValue(sceneName, out var typeScene);
-            if (typeScene == null)
+            Scene = CreateScene(sceneName);
+            if (Scene == null)
             {
                 return;
             }
-            Scene = (AbstractScene)Activator.CreateInstance(typeScene);
+
             Scene.InitWorld();
-            
+
             bitmap = new Bitmap(cameraParameters.Width, cameraParameters.Height);
-            for(int i=0; i <bitmap.Height; i++)
+            for (int i = 0; i < bitmap.Height; i++)
             {
-                for(int j=0; j <bitmap.Width; j++)
+                for (int j = 0; j < bitmap.Width; j++)
                 {
                     bitmap.SetPixel(j, i, Color.Black);
                 }
@@ -73,6 +79,18 @@ namespace ray_tracer_ui.Data
 
             pixels = Enumerable.Range(0, cameraParameters.Height).Select(i => new bool[cameraParameters.Width]).ToArray();
             RenderManager.Render(cameraParameters, renderParameters, Scene.World);
+        }
+
+        private AbstractScene CreateScene(string sceneName)
+        {
+            SceneTypes.TryGetValue(sceneName, out var typeScene);
+            if (typeScene == null)
+            {
+                return null;
+            }
+
+            var scene = (AbstractScene) Activator.CreateInstance(typeScene);
+            return scene;
         }
 
         public Task<string> GetImage()
@@ -97,21 +115,21 @@ namespace ray_tracer_ui.Data
         {
             using Bitmap b = new Bitmap(50, 50);
             using Graphics g = Graphics.FromImage(b);
-            
+
             g.Clear(Color.Black);
             b.Save(memoryStream, ImageFormat.Png);
         }
 
         private void CreateImage(Stream stream, Canvas canvas)
         {
-            Stopwatch sw = Stopwatch.StartNew();  
+            Stopwatch sw = Stopwatch.StartNew();
 
             for (int i = 0; i < canvas.Width; i++)
             {
                 for (int j = 0; j < canvas.Height; j++)
                 {
                     var c = canvas.Pixels[i][j];
-                    if (c != null && ! pixels[j][i])
+                    if (c != null && !pixels[j][i])
                     {
                         pixels[j][i] = true;
                         try
@@ -129,6 +147,7 @@ namespace ray_tracer_ui.Data
                     }
                 }
             }
+
             Console.WriteLine($"Draw: {sw.ElapsedMilliseconds} ms");
             sw.Reset();
             bitmap.Save(stream, ImageFormat.Png);

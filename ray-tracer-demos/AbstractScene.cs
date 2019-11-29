@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
@@ -15,7 +15,13 @@ namespace ray_tracer_demos
         protected static readonly Color Green = Color._Green;
         protected static readonly Color Blue = Color._Blue;
 
+        public List<CameraParameters> CameraParameters { get; set; } = new List<CameraParameters>(); 
         public abstract void InitWorld();
+
+        protected AbstractScene()
+        {
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400, CameraX = 0, CameraY = 1, CameraZ = -1, LookX = 0, LookY = 0, LookZ = 0});
+        }
 
         public IShape DefaultFloor()
         {

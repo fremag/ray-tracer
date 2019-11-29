@@ -1,12 +1,20 @@
 using System;
 using ray_tracer;
-using ray_tracer.Shapes;
 using ray_tracer.Shapes.Mesh;
 
 namespace ray_tracer_demos
 {
     internal class CurveSweepScene : AbstractScene
     {
+        public CurveSweepScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 1.5, CameraZ = -1.5,
+                LookX = 0, LookY = 0.5, LookZ = 0});
+            
+        }
+
         private void Curve(double u, double v,  out double x, out double y)
         {
             double r = 0.05+0*Math.Cos(2*Pi*v);

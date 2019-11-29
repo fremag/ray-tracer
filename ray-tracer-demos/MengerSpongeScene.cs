@@ -5,6 +5,12 @@ namespace ray_tracer_demos
 {
     public class MengerSpongeScene : AbstractScene
     {
+        public MengerSpongeScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400, CameraX = 3, CameraY = 2, CameraZ = -12, LookX = -1.5, LookY = 1, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             DefaultFloor().Translate(ty: -1.5);

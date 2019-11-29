@@ -9,6 +9,14 @@ namespace ray_tracer_demos
 {
     public class CubeScene : AbstractScene
     {
+        public CubeScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = -13, CameraY = 17, CameraZ = -13,
+                LookX = 0, LookY = 5, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             const int n = 10;
