@@ -9,6 +9,14 @@ namespace ray_tracer_demos
 {
     public class PikachuScene : AbstractScene
     {
+        public PikachuScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 5, CameraY = 5, CameraZ = -10,
+                LookX = 0, LookY = 2, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             IShape floor = new Plane

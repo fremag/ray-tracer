@@ -6,6 +6,14 @@ namespace ray_tracer_demos
 {
     public class WorldPlaneStripePatternScene : AbstractScene
     {
+        public WorldPlaneStripePatternScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 3, CameraZ = -5,
+                LookX = 0, LookY = 1, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             IShape floor = new Plane();

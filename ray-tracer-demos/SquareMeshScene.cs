@@ -6,6 +6,14 @@ namespace ray_tracer_demos
 {
     internal class SquareMeshScene : AbstractScene
     {
+        public SquareMeshScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 1, CameraZ = -7,
+                LookX = 0, LookY = 0, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             DefaultFloor();
