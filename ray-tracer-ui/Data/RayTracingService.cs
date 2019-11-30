@@ -140,7 +140,7 @@ namespace ray_tracer_ui.Data
                             var color = Color.FromArgb(cRed, cGreen, cBlue);
                             bitmap.SetPixel(i, j, color);
                         }
-                        catch (ArgumentException e)
+                        catch (ArgumentException)
                         {
                             Console.WriteLine($"i: {i}, j: {j}, Red: {c.Red}, Green: {c.Green}, Blue: {c.Blue}");
                         }

@@ -1,8 +1,10 @@
+using System;
+
 namespace ray_tracer
 {
     public class RenderParameters
     {
-        public int NbThreads { get; set; } = 4;
+        public int NbThreads { get; set; } = Environment.ProcessorCount;
         public bool Shuffle { get; set; } = true;
     }
     

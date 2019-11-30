@@ -8,6 +8,14 @@ namespace ray_tracer_demos
 {
     public class LabyrinthScene : AbstractScene
     {
+        public LabyrinthScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 35, CameraY = 25, CameraZ = -35,
+                LookX = 14, LookY = 0, LookZ = -13});
+        }
+
         public override void InitWorld()
         {
             IShape floor = new Plane

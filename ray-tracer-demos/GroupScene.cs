@@ -6,6 +6,15 @@ namespace ray_tracer_demos
 {
     public class GroupScene : AbstractScene
     {
+        public GroupScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 4, CameraZ = -4,
+                LookX = 2, LookY = 1, LookZ = 0});
+
+        }
+
         public static IShape CreatePyramid(int n = 5)
         {
             var g = new Group();

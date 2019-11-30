@@ -6,6 +6,14 @@ namespace ray_tracer_demos
 {
     public class GlassSphereScene : AbstractScene
     {
+        public GlassSphereScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 0, CameraY = 0, CameraZ = -3,
+                LookX = 0, LookY = 0, LookZ = 0});
+        }
+
         public override void InitWorld()
         {
             IShape floor = new Plane

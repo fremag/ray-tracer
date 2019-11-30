@@ -7,6 +7,14 @@ namespace ray_tracer_demos
 {
     public class CylinderScene : AbstractScene
     {
+        public CylinderScene()
+        {
+            CameraParameters.Clear();
+            CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
+                CameraX = 6, CameraY = 5, CameraZ = -8,
+                LookX = 3, LookY = 2, LookZ = 0});
+        }
+
         private void AddObject(double tx, double ty, double tz, int n)
         {
             var sphere = new Sphere().Scale(0.3).Translate(tx, ty, tz);
