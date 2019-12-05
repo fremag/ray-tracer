@@ -136,9 +136,10 @@ namespace ray_tracer
             double[] d = new double[4];
             for (int i = 0; i < m.Size; i++)
             {
+                double[] row = m.Values[i];
                 for (int j = 0; j < m.Size; j++)
                 {
-                    d[i] += m[i, j] * t[j];
+                    d[i] += row[j] * t[j];
                 }
             }
 

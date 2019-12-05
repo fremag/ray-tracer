@@ -68,7 +68,7 @@ namespace ray_tracer.Shapes
             }
             else
             {
-                result = new Intersections();
+                result = Intersections.Empty;
             }
 
             return result;

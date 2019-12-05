@@ -87,6 +87,12 @@ namespace ray_tracer
             pixelJobs.ForEach(job => PixelJobs.Enqueue(job));
             threads = new Thread[nbThreads];
 
+            if (nbThreads == 0)
+            {
+                Run();
+                return;
+            }
+
             for (int i = 0; i < nbThreads; i++)
             {
                 Thread t = new Thread(Run) {Name = $"RayTracerWorker_{i}"};
@@ -124,7 +130,7 @@ namespace ray_tracer
         {
             Render(scene.CameraParameters[0], new RenderParameters
             {
-                NbThreads = nbThreads > 0 ? nbThreads : Environment.ProcessorCount
+                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount
             }, scene.World);
         }
 

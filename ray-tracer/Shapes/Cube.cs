@@ -16,7 +16,7 @@ namespace ray_tracer.Shapes
             var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));
             if (tMin > tMax)
             {
-                return new Intersections();
+                return Intersections.Empty;
             }
             return new Intersections{new Intersection(tMin, this), new Intersection(tMax, this)};
         }

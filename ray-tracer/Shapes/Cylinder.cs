@@ -19,13 +19,11 @@ namespace ray_tracer.Shapes
 
         public override Intersections IntersectLocal(Ray ray)
         {
-
             var xs = new Intersections();
             var a = ray.Direction.X * ray.Direction.X + ray.Direction.Z * ray.Direction.Z;
             // ray is not parallel to the y axis
             if (a > double.Epsilon)
             {
-
                 var b = 2 * ray.Origin.X * ray.Direction.X + 2 * ray.Origin.Z * ray.Direction.Z;
                 var c = ray.Origin.X * ray.Origin.X + ray.Origin.Z * ray.Origin.Z - 1;
                 var disc = b * b - 4 * a * c;
