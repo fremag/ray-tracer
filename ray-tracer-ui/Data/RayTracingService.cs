@@ -26,12 +26,7 @@ namespace ray_tracer_ui.Data
 
         public RayTracingService()
         {
-            var types = Assembly.GetAssembly(typeof(AbstractScene))
-                .GetTypes().ToArray();
-            SceneTypes = types
-                .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
-                .Where(type => !type.IsAbstract)
-                .ToDictionary(type => type.Name);
+            SceneTypes = Helper.GetScenes<IcosahedronScene>();
             RenderManager = new RenderManager();
             timer = new Timer {Interval = 1000, AutoReset = true};
             timer.Elapsed += OnClock;

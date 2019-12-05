@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using ray_tracer.Shapes;
@@ -344,6 +346,16 @@ namespace ray_tracer
             cyl.Transform =  m * cyl.Transform;
             cyl.Translate(p1);
             return cyl;
+        }
+
+        public static Dictionary<string, Type> GetScenes<T>()
+        {
+            var types = Assembly.GetAssembly(typeof(T)).GetTypes();
+            var sceneTypes = types
+                .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
+                .Where(type => !type.IsAbstract)
+                .ToDictionary(type => type.Name);
+            return sceneTypes;
         }
     }
 }

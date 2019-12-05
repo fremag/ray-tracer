@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
-using Tuple = ray_tracer.Tuple;
 
-namespace ray_tracer_demos
+namespace ray_tracer
 {
     public abstract class AbstractScene
     {

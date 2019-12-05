@@ -10,7 +10,7 @@ namespace ray_tracer_demos
         {
             CameraParameters.Clear();
             CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
-                CameraX = 0, CameraY = 1, CameraZ = -7,
+                CameraX = 0, CameraY = 1, CameraZ = -2,
                 LookX = 0, LookY = 0, LookZ = 0});
         }
 

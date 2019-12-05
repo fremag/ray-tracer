@@ -74,7 +74,8 @@ namespace ray_tracer_ui.Pages
 
         public void InitCameraParameters()
         {
-            var cameraParameter = RayTracingService.CameraParameters(SceneName)[0];
+            var camParams = RayTracingService.CameraParameters(SceneName);
+            var cameraParameter = camParams[0];
             cameraParameters.Height =  cameraParameter.Height;
             cameraParameters.Width =  cameraParameter.Width;
             cameraParameters.CameraX =  cameraParameter.CameraX;

@@ -14,9 +14,18 @@ namespace ray_tracer
         private ConcurrentQueue<PixelJob> PixelJobs { get; } = new ConcurrentQueue<PixelJob>();
         private Thread[] threads;
         private bool stopRequested;
-        
         public int PixelsLeft => PixelJobs.Count;
-        
+        public string OutputDir { get; } 
+
+        public RenderManager() : this(Path.GetTempPath())
+        {
+        }
+
+        public RenderManager(string outputDir)
+        {
+            OutputDir = outputDir;
+        }
+
         public void Render(CameraParameters camParams, RenderParameters renderParameters, World world)
         {
             Image = new Canvas(camParams.Width, camParams.Height);
@@ -106,9 +115,34 @@ namespace ray_tracer
 
         public string Save(string file)
         {
-            string outFilePath = Path.Combine(Path.GetTempPath(), file);
+            string outFilePath = Path.Combine(OutputDir, file);
             Image.SavePPM(outFilePath);
             return outFilePath;
+        }
+
+        public void Render(AbstractScene scene, int nbThreads=-1)
+        {
+            Render(scene.CameraParameters[0], new RenderParameters
+            {
+                NbThreads = nbThreads > 0 ? nbThreads : Environment.ProcessorCount
+            }, scene.World);
+        }
+
+        public AbstractScene Render<T>(int nbThreads = -1) where T : AbstractScene
+        {
+            return Render(typeof(T), nbThreads);
+        }
+        
+        public AbstractScene Render(Type sceneType, int nbThreads=-1)
+        {
+            AbstractScene scene = Activator.CreateInstance(sceneType) as AbstractScene;
+            if (scene == null)
+            {
+                throw new InvalidOperationException($"Wrong scene type: {sceneType}");
+            }
+            scene.InitWorld();
+            Render(scene, nbThreads);
+            return scene;
         }
     }
 }

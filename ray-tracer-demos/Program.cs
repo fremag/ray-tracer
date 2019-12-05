@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Timers;
 using ray_tracer;
 
 namespace ray_tracer_demos
@@ -10,46 +12,58 @@ namespace ray_tracer_demos
     {
         static void Main()
         {
-            Stopwatch sw = Stopwatch.StartNew();
-            RenderManager renderMgr = new RenderManager();
-            Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
-            var scene = new MengerSpongeScene();
-            scene.InitWorld();
-            renderMgr.Render(scene.World, 2, 3, -10, lookX: -1.5, lookY: 0);
-            while (renderMgr.PixelsLeft > 0)
+            string dir = Path.Combine(Path.GetTempPath(), "raytracer");
+            if (Directory.Exists(dir))
             {
-                Print(renderMgr);
-                Thread.Sleep(500);
+                Directory.Delete(dir, true);
             }
 
-            Print(renderMgr);
-            Console.WriteLine();
+            Directory.CreateDirectory(dir);
 
-            var file = renderMgr.Save("prism.ppm");
+            var scenes = Helper.GetScenes<IcosahedronScene>().Values.ToArray();
+            scenes = new[] {typeof(SquareMeshScene), typeof(SurfaceOfRevolutionScene)
+                //, typeof(CurveSweepScene), typeof(LabyrinthScene)
+            };
+            Stopwatch sw = Stopwatch.StartNew();
+            Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
+            Run(dir, scenes);
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
-            Helper.Display(file);
-            File.Delete(file);
+            Helper.Display(dir);
+        }
+
+        public const int L = 30;
+
+        public static void Run(string dir, params Type[] sceneTypes)
+        {
+            RenderManager renderMgr = new RenderManager(dir);
+            Timer timer = new Timer(500)
+            {
+                AutoReset = true
+            };
+            timer.Elapsed += (sender, args) => { Print(renderMgr); };
+
+            foreach (var sceneType in sceneTypes)
+            {
+                Console.CursorLeft = 0;
+                Console.Write($"{sceneType.Name,-L}");
+                var scene = renderMgr.Render(sceneType);
+                timer.Start();
+                renderMgr.Wait();
+                timer.Stop();
+
+                Print(renderMgr);
+                Console.WriteLine();
+                renderMgr.Save($"{scene.GetType().Name}.ppm");
+            }
         }
 
         private static void Print(RenderManager renderMgr)
         {
-            Console.CursorLeft = 0;
-            Console.CursorTop = 0;
-            Console.Write(renderMgr.RenderStatistics);
-        }
-
-        internal static void OnRowRendered(int progress, int hSize)
-        {
-            var startTime = Process.GetCurrentProcess().StartTime;
-            var now = DateTime.Now;
-            var pct = (100.0 * progress) / hSize;
-            var t = (now - startTime).TotalSeconds / pct;
-            var endTime = startTime.AddSeconds(100 * t);
-
-            Console.SetCursorPosition(0, Console.CursorLeft);
-            Console.Write($"{startTime - now:hh\\:mm\\:ss}> {pct,5:n2} % => {endTime - startTime:hh\\:mm\\:ss}, endTime: {endTime:HH\\:mm\\:ss}");
+            Console.CursorLeft = L + 1;
+            var stats = renderMgr.RenderStatistics;
+            Console.Write($"{stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
         }
     }
 }
