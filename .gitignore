@@ -9,3 +9,5 @@ ray-tracer/bin
 /ray-tracer-demos/obj/
 /ray-tracer-ui/bin/
 /ray-tracer-ui/obj/
+/ray-perf/
+/ray-tracer.sln.DotSettings.user

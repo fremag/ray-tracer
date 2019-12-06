@@ -1,4 +1,6 @@
+#define FAST_MATRIX
 using System;
+using System.Numerics;
 
 namespace ray_tracer
 {
@@ -6,15 +8,12 @@ namespace ray_tracer
     {
         private double[][] Values { get; }
         private Matrix Inversed { get; set; }
-        public static Matrix Identity = new Matrix(4);
-
-        static Matrix()
-        {
-            Identity[0, 0] = 1;
-            Identity[1, 1] = 1;
-            Identity[2, 2] = 1;
-            Identity[3, 3] = 1;
-        }
+        public static readonly Matrix Identity = new Matrix(4, 
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1);
+        private Matrix4x4 matrix;
         
         public Matrix(int size)
         {
@@ -32,7 +31,7 @@ namespace ray_tracer
                 var row = values[i];
                 for (int j = 0; j < row.Length; j++)
                 {
-                    Values[i][j] = row[j];
+                    this[i, j] = row[j];
                 }
             }
         }
@@ -44,7 +43,7 @@ namespace ray_tracer
             {
                 for (int j = 0; j < size; j++)
                 {
-                    Values[i][j] = values[n++];
+                    this[i, j] = values[n++];
                 }
             }
         }
@@ -54,7 +53,54 @@ namespace ray_tracer
         public double this[int i, int j]
         {
             get => Values[i][j];
-            set => Values[i][j] = value;
+            set
+            {
+                Values[i][j] = value;
+                if (Size != 4)
+                {
+                    return;
+                }
+
+                switch (i)
+                {
+                    case 0:
+                        switch (j)
+                        {
+                            case 0: matrix.M11 = (float)value; break;
+                            case 1: matrix.M21 = (float)value; break;
+                            case 2: matrix.M31 = (float)value; break;
+                            case 3: matrix.M41 = (float)value; break;
+                        }
+                        break;
+                    case 1:
+                        switch (j)
+                        {
+                            case 0: matrix.M12 = (float)value; break;
+                            case 1: matrix.M22 = (float)value; break;
+                            case 2: matrix.M32 = (float)value; break;
+                            case 3: matrix.M42 = (float)value; break;
+                        }
+                        break;
+                    case 2:
+                        switch (j)
+                        {
+                            case 0: matrix.M13 = (float)value; break;
+                            case 1: matrix.M23 = (float)value; break;
+                            case 2: matrix.M33 = (float)value; break;
+                            case 3: matrix.M43 = (float)value; break;
+                        }
+                        break;
+                    case 3:
+                        switch (j)
+                        {
+                            case 0: matrix.M14 = (float)value; break;
+                            case 1: matrix.M24 = (float)value; break;
+                            case 2: matrix.M34 = (float)value; break;
+                            case 3: matrix.M44 = (float)value; break;
+                        }
+                        break;
+                }
+            }
         }
 
         public bool Equals(Matrix m)
@@ -130,23 +176,6 @@ namespace ray_tracer
         }
 
         public static Matrix operator *(Matrix m1, Matrix m2) => Multiply(m1, m2);
-
-        public static Tuple Multiply(Matrix m, Tuple t)
-        {
-            double[] d = new double[4];
-            for (int i = 0; i < m.Size; i++)
-            {
-                double[] row = m.Values[i];
-                for (int j = 0; j < m.Size; j++)
-                {
-                    d[i] += row[j] * t[j];
-                }
-            }
-
-            var v = new Tuple(d[0], d[1], d[2], d[3]);
-            return v;
-        }
-        
         public static Matrix operator +(Matrix m1, Matrix m2) => Add(m1, m2);
         
         public static Matrix Add(Matrix m1, Matrix m2)
@@ -162,6 +191,7 @@ namespace ray_tracer
 
             return m;
         }
+        
         public static Matrix Multiply(Matrix m, double d)
         {
             var result = new Matrix(m.Size);
@@ -176,8 +206,36 @@ namespace ray_tracer
             return result;
         }
         
-        public static Tuple operator *(Matrix m1, Tuple t) => Multiply(m1, t);
-        public static Tuple operator *(Tuple t, Matrix m1) => Multiply(m1, t);
+        private Tuple FastTransform(Tuple t)
+        {
+            var ww = Vector4.Transform(t.vector, matrix);
+            var result =  new Tuple(ww.X, ww.Y, ww.Z, ww.W);
+
+            return result;
+        }
+
+        private Tuple Transform(Tuple t)
+        {
+            double[] d = new double[4];
+            for (int i = 0; i < Size; i++)
+            {
+                double[] row = Values[i];
+                for (int j = 0; j < Size; j++)
+                {
+                    d[i] += row[j] * t[j];
+                }
+            }
+
+            var v = new Tuple(d[0], d[1], d[2], d[3]);
+            return v;
+        }
+#if FAST_MATRIX        
+        public static Tuple operator *(Matrix m1, Tuple t) => m1.FastTransform(t);
+        public static Tuple operator *(Tuple t, Matrix m1) => m1.FastTransform(t);
+#else
+        public static Tuple operator *(Matrix m1, Tuple t) => m1.Transform(t);
+        public static Tuple operator *(Tuple t, Matrix m1) => m1.Transform(t);
+#endif
         public static Matrix operator *(double d, Matrix m) => Multiply(m, d);
         public static Matrix operator *(Matrix m, double d) => Multiply(m, d);
 

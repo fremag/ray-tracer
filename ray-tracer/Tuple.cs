@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace ray_tracer
 {
@@ -9,13 +10,16 @@ namespace ray_tracer
         public double Y  => values[1];
         public double Z  => values[2];
         public double W  => values[3];
-
+        public Vector4 vector;
+        
         public Tuple(double x, double y, double z, double w)
         {
             values[0] = x;
             values[1] = y;
-            values[2] =  z;
+            values[2] = z;
             values[3] = w;
+            
+            vector = new Vector4((float)x, (float)y, (float)z, (float)w ); 
         }
 
         public override string ToString() => $"X: {X} Y: {Y} Z: {Z} W: {W}";

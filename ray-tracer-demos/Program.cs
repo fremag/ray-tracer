@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Timers;
 using ray_tracer;
 
@@ -12,18 +13,24 @@ namespace ray_tracer_demos
     {
         static void Main()
         {
-            int nbThreads = 4+0*Environment.ProcessorCount;
-            Run(new List<Type>
+            Console.WriteLine(Vector.IsHardwareAccelerated);
+            int nbThreads = Environment.ProcessorCount*0+4;
+            if (true)
             {
-                typeof(CubeScene),
+                Run(new List<Type>
+                {
+                    //typeof(MengerSpongeScene),
+                    typeof(CubeScene),
 //                typeof(SquareMeshScene),
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
 //                typeof(LabyrinthScene),
-            }, nbThreads, true);
-            
-
-//            BenchmarkFull();
+                }, nbThreads, !true);
+            }
+            else
+            {
+                BenchmarkFull();
+            }
         }
 
         private static void BenchmarkFull()
@@ -84,6 +91,10 @@ namespace ray_tracer_demos
         {
             Console.CursorLeft = L + 1;
             var stats = renderMgr.RenderStatistics;
+            if (stats == null)
+            {
+                return;
+            }
             Console.Write($"{stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
         }
     }
