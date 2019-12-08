@@ -327,7 +327,7 @@ namespace ray_tracer
 
         public Matrix Inverse()
         {
-            var b = Inversed != null;
+            var b = ! ReferenceEquals(Inversed, null);
             if (b)
             {
                 return Inversed;
