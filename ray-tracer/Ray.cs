@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace ray_tracer
 {
     public class Ray
@@ -5,6 +7,10 @@ namespace ray_tracer
         public Tuple Origin { get; }
         public Tuple Direction { get; }
 
+        public Ray(ref Vector4 origin, ref Vector4 direction) : this(Helper.CreatePoint(origin.X, origin.Y, origin.Z), Helper.CreatePoint(direction.X, direction.Y, direction.Z ))
+        {}
+            
+         
         public Ray(Tuple origin, Tuple direction)
         {
             Origin = origin;

@@ -14,8 +14,6 @@ namespace ray_tracer.tests.Shapes
             var p3 = Helper.CreatePoint(1, 0, 0);
             var t = new Triangle(p1, p2, p3);
             Check.That(t.P1).IsEqualTo(p1);
-            Check.That(t.P2).IsEqualTo( p2);
-            Check.That(t.P3).IsEqualTo(p3);
             Check.That(t.E1 ).IsEqualTo(Helper.CreateVector(-1, -1, 0));
             Check.That(t.E2).IsEqualTo(Helper.CreateVector(1, -1, 0));
             Check.That(t.N).IsEqualTo(Helper.CreateVector(0, 0, -1));

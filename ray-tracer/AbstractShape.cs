@@ -29,17 +29,22 @@ namespace ray_tracer
 
         public Intersections Intersect(Ray ray)
         {
+            return Intersect(ref ray.Origin.vector, ref ray.Direction.vector);
+        }
+
+        public Intersections Intersect(ref Vector4 origin, ref Vector4 direction)
+        {
             Intersections intersections;
             if (! ReferenceEquals(Transform, Matrix.Identity))
             {
                 var invTransform = Transform.Inverse().matrix;
-                var origin = Vector4.Transform(ray.Origin.vector, invTransform);
-                var direction = Vector4.Transform(ray.Direction.vector, invTransform);
-                intersections=  IntersectLocal(ref origin, ref direction);
+                var transformedOrigin = Vector4.Transform(origin, invTransform);
+                var transformedDirection = Vector4.Transform(direction, invTransform);
+                intersections=  IntersectLocal(ref transformedOrigin, ref transformedDirection);
             }
             else
             {
-                intersections = IntersectLocal(ref ray.Origin.vector, ref ray.Direction.vector);
+                intersections = IntersectLocal(ref origin, ref direction);
             }
 
             return intersections;

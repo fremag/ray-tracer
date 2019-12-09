@@ -44,11 +44,7 @@ namespace ray_tracer.tests
                 "f 1 2 3",
                 "f 1 3 4");
             Check.That(reader.Triangles[0].P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(reader.Triangles[0].P2).IsEqualTo(reader.Vertices[1]);
-            Check.That(reader.Triangles[0].P3).IsEqualTo(reader.Vertices[2]);
             Check.That(reader.Triangles[1].P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(reader.Triangles[1].P2).IsEqualTo(reader.Vertices[2]);
-            Check.That(reader.Triangles[1].P3).IsEqualTo(reader.Vertices[3]);
         }
         
         [Fact]
@@ -66,16 +62,10 @@ namespace ray_tracer.tests
             var t3 = reader.DefaultGroup[2] as Triangle;
 
             Check.That(t1.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t1.P2).IsEqualTo(reader.Vertices[1]);
-            Check.That(t1.P3).IsEqualTo(reader.Vertices[2]);
             
             Check.That(t2.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t2.P2).IsEqualTo(reader.Vertices[2]);
-            Check.That(t2.P3).IsEqualTo(reader.Vertices[3]);
             
             Check.That(t3.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t3.P2).IsEqualTo(reader.Vertices[3]);
-            Check.That(t3.P3).IsEqualTo(reader.Vertices[4]);
         }
         
         [Fact]
@@ -94,12 +84,8 @@ namespace ray_tracer.tests
             var t2 = reader.Groups[2][0] as Triangle;
 
             Check.That(t1.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t1.P2).IsEqualTo(reader.Vertices[1]);
-            Check.That(t1.P3).IsEqualTo(reader.Vertices[2]);
             
             Check.That(t2.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t2.P2).IsEqualTo(reader.Vertices[2]);
-            Check.That(t2.P3).IsEqualTo(reader.Vertices[3]);
         }
         
         [Fact]
@@ -132,12 +118,8 @@ namespace ray_tracer.tests
             var t2 = reader.DefaultGroup[0] as Triangle;
 
             Check.That(t1.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t1.P2).IsEqualTo(reader.Vertices[1]);
-            Check.That(t1.P3).IsEqualTo(reader.Vertices[2]);
             
             Check.That(t2.P1).IsEqualTo(reader.Vertices[0]);
-            Check.That(t2.P2).IsEqualTo(reader.Vertices[1]);
-            Check.That(t2.P3).IsEqualTo(reader.Vertices[2]);
         }        
     }
 }

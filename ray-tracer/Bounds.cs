@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Numerics;
 
 namespace ray_tracer
 {
@@ -42,6 +43,16 @@ namespace ray_tracer
             Helper.CheckAxis(ray.Origin.Y, ray.Direction.Y, out var ytMin, out var ytMax, PMin.Y, PMax.Y);
             Helper.CheckAxis(ray.Origin.Z, ray.Direction.Z, out var ztMin, out var ztMax, PMin.Z, PMax.Z);
 
+            var tMin = Math.Max(xtMin, Math.Max(ytMin, ztMin));
+            var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));
+            return tMin <= tMax;
+        }        
+        
+        public bool IntersectLocal(ref Vector4 origin, ref Vector4 direction)
+        {
+            Helper.CheckAxis(origin.X, direction.X, out var xtMin, out var xtMax, PMin.X, PMax.X);
+            Helper.CheckAxis(origin.Y, direction.Y, out var ytMin, out var ytMax, PMin.Y, PMax.Y);
+            Helper.CheckAxis(origin.Z, direction.Z, out var ztMin, out var ztMax, PMin.Z, PMax.Z);
             var tMin = Math.Max(xtMin, Math.Max(ytMin, ztMin));
             var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));
             return tMin <= tMax;

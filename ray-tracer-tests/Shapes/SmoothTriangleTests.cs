@@ -29,8 +29,6 @@ namespace ray_tracer.tests.Shapes
         public void ConstructingSmoothTriangleTest()
         {
             Check.That(tri.P1).IsEqualTo(p1);
-            Check.That( tri.P2 ).IsEqualTo( p2);
-            Check.That( tri.P3 ).IsEqualTo( p3);
             Check.That( tri.N1 ).IsEqualTo( n1);
             Check.That( tri.N2).IsEqualTo( n2);
             Check.That( tri.N3).IsEqualTo(n3);
