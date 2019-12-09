@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace ray_tracer.Shapes
 {
@@ -74,15 +75,30 @@ namespace ray_tracer.Shapes
             }
         }
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Vector4 origin, ref Vector4 direction)
         {
-            if (Box.IntersectLocal(ray))
+            if (!Box.IntersectLocal(ref origin, ref direction))
             {
-                var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
-                return new Intersections(intersections);
+                return Intersections.Empty;
             }
 
-            return new Intersections();
+            var intersections = new Intersections();
+            foreach (var shape in Shapes)
+            {
+                var inters = shape.Intersect(ref origin, ref direction);
+                foreach (var inter in inters)
+                {
+                    intersections.Add(inter);
+                }
+            }
+
+            intersections.Sort();
+            return intersections;
+        }
+
+        public override Intersections IntersectLocal(Ray ray)
+        {
+            throw new InvalidOperationException();
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

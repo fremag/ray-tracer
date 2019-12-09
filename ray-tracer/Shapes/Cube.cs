@@ -28,21 +28,7 @@ namespace ray_tracer.Shapes
 
         public override Intersections IntersectLocal(Ray ray)
         {
-            Helper.CheckAxis(ray.Origin.X, ray.Direction.X, out var xtMin, out var xtMax);
-            Helper.CheckAxis(ray.Origin.Y, ray.Direction.Y, out var ytMin, out var ytMax);
-            if (xtMin > ytMax || ytMin > xtMax)
-            {
-                return Intersections.Empty;
-            }
-            Helper.CheckAxis(ray.Origin.Z, ray.Direction.Z, out var ztMin, out var ztMax);
-
-            var tMin = Math.Max(xtMin, Math.Max(ytMin, ztMin));
-            var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));
-            if (tMin > tMax)
-            {
-                return Intersections.Empty;
-            }
-            return new Intersections{new Intersection(tMin, this), new Intersection(tMax, this)};
+            throw new InvalidOperationException();
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

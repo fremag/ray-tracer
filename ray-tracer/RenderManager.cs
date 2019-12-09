@@ -36,7 +36,7 @@ namespace ray_tracer
             var camera = new Camera(camParams.Width, camParams.Height, Math.PI / 3, viewTransform);
             stopRequested = false;
             RenderStatistics = new RenderStatistics {Start =  DateTime.Now, TotalPixels = camParams.Width * camParams.Height};
-            Render(camera, world, renderParameters.NbThreads);
+            Render(camera, world, renderParameters.NbThreads, shuffle: renderParameters.Shuffle);
         }
 
         public void Stop()
@@ -126,20 +126,21 @@ namespace ray_tracer
             return outFilePath;
         }
 
-        public void Render(AbstractScene scene, int nbThreads=-1)
+        public void Render(AbstractScene scene, int nbThreads=-1, bool shuffle = false)
         {
             Render(scene.CameraParameters[0], new RenderParameters
             {
-                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount
+                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount,
+                Shuffle =  shuffle
             }, scene.World);
         }
 
-        public AbstractScene Render<T>(int nbThreads = -1) where T : AbstractScene
+        public AbstractScene Render<T>(int nbThreads = -1, bool shuffle=false) where T : AbstractScene
         {
             return Render(typeof(T), nbThreads);
         }
         
-        public AbstractScene Render(Type sceneType, int nbThreads=-1)
+        public AbstractScene Render(Type sceneType, int nbThreads=-1, bool shuffle=false)
         {
             AbstractScene scene = Activator.CreateInstance(sceneType) as AbstractScene;
             if (scene == null)
@@ -147,7 +148,7 @@ namespace ray_tracer
                 throw new InvalidOperationException($"Wrong scene type: {sceneType}");
             }
             scene.InitWorld();
-            Render(scene, nbThreads);
+            Render(scene, nbThreads, shuffle);
             return scene;
         }
     }

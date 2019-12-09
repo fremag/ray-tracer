@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Numerics;
 
 namespace ray_tracer.Shapes
 {
@@ -56,15 +58,15 @@ namespace ray_tracer.Shapes
             return result;
         }
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Vector4 origin, ref Vector4 direction)
         {
-            Intersections leftXs = Left.Intersect(ray);
-            var rightXs = Right.Intersect(ray);
+            Intersections leftXs = Left.Intersect(ref origin, ref direction);
+            var rightXs = Right.Intersect(ref origin, ref direction);
             Intersections result;
             if (leftXs.Any() || rightXs.Any())
             {
-                 var xs = new Intersections(leftXs.Concat(rightXs));
-                 result = Filter(xs);
+                var xs = new Intersections(leftXs.Concat(rightXs));
+                result = Filter(xs);
             }
             else
             {
@@ -72,6 +74,11 @@ namespace ray_tracer.Shapes
             }
 
             return result;
+        }
+        
+        public override Intersections IntersectLocal(Ray ray)
+        {
+            throw new InvalidOperationException();
         }
     }
 }
