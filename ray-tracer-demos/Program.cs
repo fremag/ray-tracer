@@ -14,18 +14,21 @@ namespace ray_tracer_demos
         static void Main()
         {
             Console.WriteLine(Vector.IsHardwareAccelerated);
-            int nbThreads = Environment.ProcessorCount*0+4;
-            if (!true)
+            int nbThreads = Environment.ProcessorCount*0+0;
+            if (true)
             {
                 Run(new List<Type>
                 {
+                    typeof(TeapotScene),
+                    typeof(CurveSweepScene),
+                    typeof(PikachuScene),
                     //typeof(MengerSpongeScene),
-                    typeof(CubeScene),
+                //    typeof(CubeScene),
 //                typeof(SquareMeshScene),
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
 //                typeof(LabyrinthScene),
-                }, nbThreads, !true);
+                }, nbThreads, true);
             }
             else
             {
