@@ -339,16 +339,17 @@ namespace ray_tracer
                 throw new InvalidOperationException("Can not inverse matrix: determinant == 0 !");
             }
 
-            Inversed = new Matrix(Size);
+            var inversed = new Matrix(Size);
             for (int row = 0; row < Size; row++)
             {
                 for (int col = 0; col < Size; col++)
                 {
                     var cof = Cofactor(row, col);
-                    Inversed[col, row] = cof / det;
+                    inversed[col, row] = cof / det;
                 }
             }
 
+            Inversed = inversed;
             return Inversed;
         }
 
