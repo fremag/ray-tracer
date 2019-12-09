@@ -1,5 +1,7 @@
 #define OPTIM_WORLD_TO_OBJECT
 #define OPTIM_INTERSECT
+using System.Numerics;
+
 namespace ray_tracer
 {
     public abstract class AbstractShape : IShape
@@ -9,6 +11,14 @@ namespace ray_tracer
         public Material Material { get; set; } = new Material();
 
         public abstract Intersections IntersectLocal(Ray ray);
+        public virtual Intersections IntersectLocal(ref Vector4 origin, ref Vector4 direction)
+        {
+            var o = Helper.CreatePoint(origin.X, origin.Y, origin.Z);
+            var d = Helper.CreateVector(direction.X, direction.Y, direction.Z);
+            var ray = new Ray(o, d);
+            return IntersectLocal(ray);
+        }
+        
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
         
@@ -19,16 +29,20 @@ namespace ray_tracer
 
         public Intersections Intersect(Ray ray)
         {
-            Ray transformedRay = ray;
-#if OPTIM_INTERSECT            
+            Intersections intersections;
             if (! ReferenceEquals(Transform, Matrix.Identity))
             {
-#endif                
-                transformedRay = ray.Transform(Transform.Inverse());
-#if OPTIM_INTERSECT                
+                var invTransform = Transform.Inverse().matrix;
+                var origin = Vector4.Transform(ray.Origin.vector, invTransform);
+                var direction = Vector4.Transform(ray.Direction.vector, invTransform);
+                intersections=  IntersectLocal(ref origin, ref direction);
             }
-#endif            
-            return IntersectLocal(transformedRay);
+            else
+            {
+                intersections = IntersectLocal(ref ray.Origin.vector, ref ray.Direction.vector);
+            }
+
+            return intersections;
         }
         
         public Tuple NormalAt(Tuple worldPoint, Intersection hit=null)

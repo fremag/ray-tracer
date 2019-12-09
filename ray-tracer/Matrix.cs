@@ -7,13 +7,13 @@ namespace ray_tracer
     public class Matrix
     {
         private double[][] Values { get; }
-        private Matrix Inversed { get; set; }
+        private Matrix Inverted { get; set; }
         public static readonly Matrix Identity = new Matrix(4, 
             1,0,0,0,
             0,1,0,0,
             0,0,1,0,
             0,0,0,1);
-        private Matrix4x4 matrix;
+        internal Matrix4x4 matrix;
         
         public Matrix(int size)
         {
@@ -327,10 +327,10 @@ namespace ray_tracer
 
         public Matrix Inverse()
         {
-            var b = ! ReferenceEquals(Inversed, null);
+            var b = ! ReferenceEquals(Inverted, null);
             if (b)
             {
-                return Inversed;
+                return Inverted;
             }
             
             var det = Determinant();
@@ -339,18 +339,18 @@ namespace ray_tracer
                 throw new InvalidOperationException("Can not inverse matrix: determinant == 0 !");
             }
 
-            var inversed = new Matrix(Size);
+            var inverted = new Matrix(Size);
             for (int row = 0; row < Size; row++)
             {
                 for (int col = 0; col < Size; col++)
                 {
                     var cof = Cofactor(row, col);
-                    inversed[col, row] = cof / det;
+                    inverted[col, row] = cof / det;
                 }
             }
 
-            Inversed = inversed;
-            return Inversed;
+            Inverted = inverted;
+            return Inverted;
         }
 
         public override int GetHashCode()
