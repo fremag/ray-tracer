@@ -14,17 +14,22 @@ namespace ray_tracer_demos
         static void Main()
         {
             Console.WriteLine(Vector.IsHardwareAccelerated);
-            int nbThreads = Environment.ProcessorCount*0+4;
+            int nbThreads = Environment.ProcessorCount * 0 + 4;
             if (!true)
             {
                 Run(new List<Type>
-                {typeof(CsgBasicScene),
-                    typeof(MengerSpongeScene),
-                    
+                {
+                    typeof(SingleSphereScene)
+   //                 typeof(SingleCylinderScene),
+  //                  typeof(CylinderScene),
+ //                   typeof(CylinderAltitudeScene),
+//                    typeof(CsgBasicScene),
+//                    typeof(MengerSpongeScene),
+
 //                    typeof(TeapotScene),
 //                    typeof(CurveSweepScene),
 //                    typeof(PikachuScene),
-                //    typeof(CubeScene),
+                    //    typeof(CubeScene),
 //                typeof(SquareMeshScene),
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
@@ -43,7 +48,7 @@ namespace ray_tracer_demos
             Run(scenes, display: true);
         }
 
-        public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false, bool shuffle=false)
+        public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false, bool shuffle = false)
         {
             string dir = Path.Combine(Path.GetTempPath(), "raytracer");
             if (Directory.Exists(dir))
@@ -98,6 +103,7 @@ namespace ray_tracer_demos
             {
                 return;
             }
+
             Console.Write($"{name,-L} {stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace ray_tracer
 {
@@ -9,10 +10,19 @@ namespace ray_tracer
         public List<IShape> Shapes { get; } = new List<IShape>();
         public List<PointLight> Lights { get; } = new List<PointLight>();
 
-        public Intersections Intersect(Ray ray)
+        public Intersections Intersect(ref Vector4 origin, ref Vector4 direction)
         {
-            var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
-            return new Intersections(intersections);
+            var intersections = new Intersections();
+            foreach (var shape in Shapes)
+            {
+                var inters = shape.Intersect(ref origin, ref direction);
+                foreach (var inter in inters)
+                {
+                    intersections.Add(inter);
+                }   
+            }
+            intersections.Sort();
+            return intersections;
         }
 
         public Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
@@ -42,7 +52,7 @@ namespace ray_tracer
 
         public Color ColorAt(Ray ray, int remaining = 5)
         {
-            var intersections = Intersect(ray);
+            var intersections = Intersect(ref ray.Origin.vector, ref ray.Direction.vector);
             var hit = intersections.Hit();
             if (hit == null)
             {
@@ -59,8 +69,7 @@ namespace ray_tracer
             var v = light.Position - point;
             var distance = v.Magnitude;
             var direction = v.Normalize();
-            var r = Helper.Ray(point, direction);
-            var intersections = Intersect(r);
+            var intersections = Intersect(ref point.vector, ref direction.vector);
             var h = intersections.Hit();
             if (h != null && h.T < distance)
             {
@@ -119,6 +128,11 @@ namespace ray_tracer
             var color = ColorAt(refractRay, remaining - 1) * intersectionData.Object.Material.Transparency;            
            
             return color;
+        }
+
+        public Intersections Intersect(Ray ray)
+        {
+            return Intersect(ref ray.Origin.vector, ref ray.Direction.vector);
         }
     }
 }

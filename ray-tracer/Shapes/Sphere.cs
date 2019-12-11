@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace ray_tracer.Shapes
 {
@@ -8,10 +9,15 @@ namespace ray_tracer.Shapes
 
         public override Intersections IntersectLocal(Ray ray)
         {
-            var sphereToRay = ray.Origin - Helper.CreatePoint(0, 0, 0);
-            var a = ray.Direction.DotProduct(ray.Direction);
-            var b = 2 * ray.Direction.DotProduct(sphereToRay);
-            var c = sphereToRay.DotProduct(sphereToRay) - 1;
+            throw new InvalidOperationException();
+        }
+
+        public override Intersections IntersectLocal(ref Vector4 origin, ref Vector4 direction)
+        {
+            var sphereToRay = new Vector4(origin.X, origin.Y, origin.Z, 0);
+            var a = Vector4.Dot(direction, direction);
+            var b = 2 * Vector4.Dot(direction, sphereToRay);
+            var c = Vector4.Dot(sphereToRay, sphereToRay) - 1;
             var discriminant = b * b - 4 * a * c;
 
             if (discriminant < 0)
@@ -19,8 +25,10 @@ namespace ray_tracer.Shapes
                 return Helper.Intersections();
             }
 
-            var t1 = (-b - Math.Sqrt(discriminant)) / (2 * a);
-            var t2 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+            var sqrtDet = Math.Sqrt(discriminant) / (2 * a);
+            var d = -b / (2 * a);
+            var t1 = d - sqrtDet;
+            var t2 = d + sqrtDet;
 
             return Helper.Intersections(
                 new Intersection(t1, this),

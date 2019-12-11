@@ -11,7 +11,6 @@ namespace ray_tracer
             Width = width;
             Height = height;
             Pixels = new Color[Width][];
-            var black = Color.Black;
             for (int i = 0; i < Width; i++)
             {
                 Pixels[i] = new Color[Height];
