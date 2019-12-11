@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace ray_tracer.Shapes
 {
@@ -19,13 +20,18 @@ namespace ray_tracer.Shapes
 
         public override Intersections IntersectLocal(Ray ray)
         {
+            throw new InvalidOperationException();
+        }
+
+        public override Intersections IntersectLocal(ref Vector4 origin, ref Vector4 direction)
+        {
             var xs = new Intersections();
-            var a = ray.Direction.X * ray.Direction.X + ray.Direction.Z * ray.Direction.Z;
+            var a = direction.X * direction.X + direction.Z * direction.Z;
             // ray is not parallel to the y axis
-            if (a > double.Epsilon)
+            if (a > float.Epsilon)
             {
-                var b = 2 * ray.Origin.X * ray.Direction.X + 2 * ray.Origin.Z * ray.Direction.Z;
-                var c = ray.Origin.X * ray.Origin.X + ray.Origin.Z * ray.Origin.Z - 1;
+                var b = 2 * origin.X * direction.X + 2 * origin.Z * direction.Z;
+                var c = origin.X * origin.X + origin.Z * origin.Z - 1;
                 var disc = b * b - 4 * a * c;
 
                 // ray does not intersect the cylinder
@@ -44,20 +50,20 @@ namespace ray_tracer.Shapes
                     t1 = t;
                 }
 
-                var y0 = ray.Origin.Y + t0 * ray.Direction.Y;
+                var y0 = origin.Y + t0 * direction.Y;
                 if (Minimum < y0 && y0 < Maximum)
                 {
                     xs.Add(new Intersection(t0, this));
                 }
 
-                var y1 = ray.Origin.Y + t1 * ray.Direction.Y;
+                var y1 = origin.Y + t1 * direction.Y;
                 if (Minimum < y1 && y1 < Maximum)
                 {
                     xs.Add(new Intersection(t1, this));
                 }
             }
 
-            IntersectCaps(ray, xs);
+            IntersectCaps(ref origin, ref direction, xs);
             xs.Sort();
             return xs;
         }
@@ -82,33 +88,33 @@ namespace ray_tracer.Shapes
         // a helper function to reduce duplication.
         // checks to see if the intersection at `t` is within a radius
         // of 1 (the radius of your cylinders) from the y axis.
-        private bool CheckCap(Ray ray, double t)
+        private bool CheckCap(ref Vector4 origin, ref Vector4 direction, double t)
         {
-            var x = ray.Origin.X + t * ray.Direction.X;
-            var z = ray.Origin.Z + t * ray.Direction.Z;
+            var x = origin.X + t * direction.X;
+            var z = origin.Z + t * direction.Z;
             return (x * x + z * z) <= 1;
         }
 
-        private void IntersectCaps(Ray ray, Intersections xs)
+        private void IntersectCaps(ref Vector4 origin, ref Vector4 direction, Intersections xs)
         {
             // caps only matter if the cylinder is closed, and might possibly be intersected by the ray.
-            if (!Closed || Math.Abs(ray.Direction.Y) <= double.Epsilon)
+            if (!Closed || Math.Abs(direction.Y) <= float.Epsilon)
             {
                 return;
             }
 
             // check for an intersection with the lower end cap by intersecting
             // the ray with the plane at y=cyl.minimum
-            var t = (Minimum - ray.Origin.Y) / ray.Direction.Y;
-            if (CheckCap(ray, t))
+            var t = (Minimum - origin.Y) / direction.Y;
+            if (CheckCap(ref origin, ref direction, t))
             {
                 xs.Add(new Intersection(t, this));
             }
 
             // check for an intersection with the upper end cap by intersecting
             // the ray with the plane at y=cyl.maximum
-            t = (Maximum - ray.Origin.Y) / ray.Direction.Y;
-            if (CheckCap(ray, t))
+            t = (Maximum - origin.Y) / direction.Y;
+            if (CheckCap(ref origin, ref direction, t))
             {
                 xs.Add(new Intersection(t, this));
             }
