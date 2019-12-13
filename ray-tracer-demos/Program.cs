@@ -20,7 +20,8 @@ namespace ray_tracer_demos
                 Run(new List<Type>
                 {
                     //typeof(MengerSpongeScene),
-                    typeof(CubeScene),
+                    typeof(TeapotScene),
+                //    typeof(CubeScene),
 //                typeof(SquareMeshScene),
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
@@ -36,7 +37,7 @@ namespace ray_tracer_demos
         private static void BenchmarkFull()
         {
             var scenes = Helper.GetScenes<IcosahedronScene>().Values.ToList();
-            Run(scenes, display: true);
+            Run(scenes, nbThreads: 4, display: !true);
         }
 
         public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)
