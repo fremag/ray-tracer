@@ -11,7 +11,7 @@ namespace ray_tracer
 
         public Intersections Intersect(Ray ray)
         {
-            var intersections = Shapes.SelectMany(shape => shape.Intersect(ray));
+            var intersections = Shapes.SelectMany(shape => shape.Intersect(ref ray.Origin, ref ray.Direction));
             return new Intersections(intersections);
         }
 

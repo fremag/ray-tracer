@@ -320,7 +320,7 @@ namespace ray_tracer.tests
             Check.That(m.Determinant()).IsEqualTo(532);
             Check.That(m.Cofactor(2, 3)).IsEqualTo(-160);
 
-            var inv = m.Inverse();
+            var inv = m.Invert();
             Check.That(inv[3, 2]).IsEqualTo(-160.0 / 532);
 
             Check.That(m.Cofactor(3, 2)).IsEqualTo(105);
@@ -350,7 +350,7 @@ namespace ray_tracer.tests
                 -0.69231, -0.69231, -0.76923, -1.92308
             );
 
-            var inv = m.Inverse();
+            var inv = m.Invert();
             Check.That(inv).IsEqualTo(expectedInv);
         }
 
@@ -371,7 +371,7 @@ namespace ray_tracer.tests
 
             var m3 = m1 * m2;
             
-            Check.That(m3 * m2.Inverse()).IsEqualTo(m1);
+            Check.That(m3 * m2.Invert()).IsEqualTo(m1);
         }
     }
 }

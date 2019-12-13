@@ -4,7 +4,7 @@ namespace ray_tracer
     {
         IShape Parent { get; set; }
         Material Material { get; set; }
-        Intersections Intersect(Ray ray);
+        Intersections Intersect(ref Tuple origin, ref Tuple direction);
         Tuple NormalAt(Tuple worldPoint, Intersection hit=null);
         Tuple WorldToObject(Tuple point);
         Tuple NormalToWorld(Tuple normal);

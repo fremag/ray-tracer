@@ -87,7 +87,7 @@ namespace ray_tracer.tests.Shapes
         {
             var c = new CsgUnion(new Sphere(), new Cube());
             var r = Helper.Ray(0, 2, -5, 0, 0, 1);
-            var xs = c.IntersectLocal(r);
+            var xs = c.IntersectLocal(ref r.Origin, ref r.Direction);
             Check.That(xs).IsEmpty();
         }
 
@@ -100,7 +100,7 @@ namespace ray_tracer.tests.Shapes
 
             var csg = new CsgUnion(sphere1, sphere2);
             var r = Helper.Ray(0, 0, -5, 0, 0, 1);
-            var xs = csg.IntersectLocal(r);
+            var xs = csg.IntersectLocal(ref r.Origin, ref r.Direction);
             Check.That(xs).CountIs(2);
             Check.That(xs[0].T).IsEqualTo(4);
             Check.That(xs[0].Object).IsEqualTo(sphere1);

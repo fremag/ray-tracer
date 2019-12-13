@@ -17,7 +17,7 @@ namespace ray_tracer.tests
             {
                 foreach (var c in canvas[i])
                 {
-                    Check.That(c).IsEqualTo(Color.Black);
+                    Check.That(c).IsNull();
                 }
             }
         }

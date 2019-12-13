@@ -17,15 +17,15 @@ namespace ray_tracer.Shapes
 
         public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
         {
             var xs = new Intersections();
-            var a = ray.Direction.X * ray.Direction.X + ray.Direction.Z * ray.Direction.Z;
+            var a = direction.X * direction.X + direction.Z * direction.Z;
             // ray is not parallel to the y axis
             if (a > double.Epsilon)
             {
-                var b = 2 * ray.Origin.X * ray.Direction.X + 2 * ray.Origin.Z * ray.Direction.Z;
-                var c = ray.Origin.X * ray.Origin.X + ray.Origin.Z * ray.Origin.Z - 1;
+                var b = 2 * origin.X * direction.X + 2 * origin.Z * direction.Z;
+                var c = origin.X * origin.X + origin.Z * origin.Z - 1;
                 var disc = b * b - 4 * a * c;
 
                 // ray does not intersect the cylinder
@@ -44,20 +44,20 @@ namespace ray_tracer.Shapes
                     t1 = t;
                 }
 
-                var y0 = ray.Origin.Y + t0 * ray.Direction.Y;
+                var y0 = origin.Y + t0 * direction.Y;
                 if (Minimum < y0 && y0 < Maximum)
                 {
                     xs.Add(new Intersection(t0, this));
                 }
 
-                var y1 = ray.Origin.Y + t1 * ray.Direction.Y;
+                var y1 = origin.Y + t1 * direction.Y;
                 if (Minimum < y1 && y1 < Maximum)
                 {
                     xs.Add(new Intersection(t1, this));
                 }
             }
 
-            IntersectCaps(ray, xs);
+            IntersectCaps(new Ray(origin, direction), xs);
             xs.Sort();
             return xs;
         }

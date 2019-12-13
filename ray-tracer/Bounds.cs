@@ -36,11 +36,15 @@ namespace ray_tracer
             PMax = Helper.CreatePoint(xMax, yMax, zMax);
         }
         
-        public bool IntersectLocal(Ray ray)
+        public bool IntersectLocal(ref Tuple origin, ref Tuple direction)
         {
-            Helper.CheckAxis(ray.Origin.X, ray.Direction.X, out var xtMin, out var xtMax, PMin.X, PMax.X);
-            Helper.CheckAxis(ray.Origin.Y, ray.Direction.Y, out var ytMin, out var ytMax, PMin.Y, PMax.Y);
-            Helper.CheckAxis(ray.Origin.Z, ray.Direction.Z, out var ztMin, out var ztMax, PMin.Z, PMax.Z);
+            Helper.CheckAxis(origin.X, direction.X, out var xtMin, out var xtMax, PMin.X, PMax.X);
+            Helper.CheckAxis(origin.Y, direction.Y, out var ytMin, out var ytMax, PMin.Y, PMax.Y);
+            if (xtMin > ytMax || ytMin > xtMax)
+            {
+                return false;
+            }
+            Helper.CheckAxis(origin.Z, direction.Z, out var ztMin, out var ztMax, PMin.Z, PMax.Z);
 
             var tMin = Math.Max(xtMin, Math.Max(ytMin, ztMin));
             var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));

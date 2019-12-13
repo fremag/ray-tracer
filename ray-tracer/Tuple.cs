@@ -3,22 +3,21 @@ using System.Numerics;
 
 namespace ray_tracer
 {
-    public class Tuple
+    public struct Tuple
     {
-        private readonly double[] values = new double[4];
-        public double X  => values[0];
-        public double Y  => values[1];
-        public double Z  => values[2];
-        public double W  => values[3];
+        public double X { get; }
+
+        public double Y { get; }
+        public double Z { get; }
+        public double W { get; }
         public Vector4 vector;
         
         public Tuple(double x, double y, double z, double w)
         {
-            values[0] = x;
-            values[1] = y;
-            values[2] = z;
-            values[3] = w;
-            
+            X = x;
+            Y = y;
+            Z = z;
+            W = w;
             vector = new Vector4((float)x, (float)y, (float)z, (float)w ); 
         }
 
@@ -26,12 +25,7 @@ namespace ray_tracer
         
         public override bool Equals(object o)
         {
-            var other = o as Tuple;
-            if (other == null)
-            {
-                return false;
-            }
-
+            var other = (Tuple)o;
             return Helper.AreEquals(other.X, X) && Helper.AreEquals(other.Y, Y) && Helper.AreEquals(other.Z, Z) && Helper.AreEquals(other.W,  W);
         }
 
@@ -61,7 +55,6 @@ namespace ray_tracer
         public static Tuple operator *(Tuple t1, Tuple t2) => t1.CrossProduct(t2);
         public Tuple CrossProduct(Tuple v) => Helper.CreateVector(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
 
-        public double this[in int i] => values[i];
         public Tuple Reflect(Tuple normal) => this - normal * 2 * DotProduct(normal);
         
         public override int GetHashCode()

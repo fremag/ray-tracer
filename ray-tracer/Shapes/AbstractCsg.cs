@@ -56,10 +56,10 @@ namespace ray_tracer.Shapes
             return result;
         }
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
         {
-            Intersections leftXs = Left.Intersect(ray);
-            var rightXs = Right.Intersect(ray);
+            Intersections leftXs = Left.Intersect(ref origin, ref direction);
+            var rightXs = Right.Intersect(ref origin, ref direction);
             Intersections result;
             if (leftXs.Any() || rightXs.Any())
             {

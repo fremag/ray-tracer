@@ -29,9 +29,9 @@ namespace ray_tracer.Shapes
             Box = box;
         }
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
         {
-            var rayDir = ray.Direction;
+            ref var rayDir = ref direction;
 
             var dirCrossE2_X = rayDir.Y * E2.Z - rayDir.Z * E2.Y;
             var dirCrossE2_Y = rayDir.Z * E2.X - rayDir.X * E2.Z;
@@ -44,9 +44,9 @@ namespace ray_tracer.Shapes
             }
 
             var f = 1.0 / det;
-            var p1ToOrigin_X = ray.Origin.X - P1.X;
-            var p1ToOrigin_Y = ray.Origin.Y - P1.Y;
-            var p1ToOrigin_Z = ray.Origin.Z - P1.Z;
+            var p1ToOrigin_X = origin.X - P1.X;
+            var p1ToOrigin_Y = origin.Y - P1.Y;
+            var p1ToOrigin_Z = origin.Z - P1.Z;
 
             var u = f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
             if (u < 0 || u > 1)

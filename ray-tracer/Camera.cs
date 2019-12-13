@@ -47,7 +47,7 @@ namespace ray_tracer
 
             PixelSize = HalfWidth * 2 / HSize;
 
-            InverseTransform = Transform.Inverse();
+            InverseTransform = Transform.Invert();
         }
 
         public Ray RayForPixel(int px, int py)

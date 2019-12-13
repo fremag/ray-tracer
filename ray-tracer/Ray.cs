@@ -1,9 +1,9 @@
 namespace ray_tracer
 {
-    public class Ray
+    public struct Ray
     {
-        public Tuple Origin { get; }
-        public Tuple Direction { get; }
+        public Tuple Origin;
+        public Tuple Direction;
 
         public Ray(Tuple origin, Tuple direction)
         {

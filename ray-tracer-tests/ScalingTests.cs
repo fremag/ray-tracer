@@ -19,7 +19,7 @@ namespace ray_tracer.tests
         {
             var s = Helper.Scaling(2, 3, 4);
 
-            var invS = s.Inverse();
+            var invS = s.Invert();
             var p = Helper.CreatePoint(-4, 6, 8);
             var scaled = invS * p;
             Check.That(scaled).IsEqualTo(Helper.CreatePoint(-2, 2, 2));

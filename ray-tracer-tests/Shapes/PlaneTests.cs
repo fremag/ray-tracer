@@ -20,7 +20,7 @@ namespace ray_tracer.tests.Shapes
         {
             var p = new Plane();
             var r = Helper.Ray(Helper.CreatePoint(0, 10, 0), Helper.CreateVector(0, 0, 1));
-            var xs = p.Intersect(r);
+            var xs = p.Intersect(ref r.Origin, ref r.Direction);
             Check.That(xs).IsEmpty();
         }
 
@@ -29,7 +29,7 @@ namespace ray_tracer.tests.Shapes
         {
             var p = new Plane();
             var r = Helper.Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 0, 1));
-            var xs = p.Intersect(r);
+            var xs = p.Intersect(ref r.Origin, ref r.Direction);
             Check.That(xs).IsEmpty();
         }
 
@@ -38,7 +38,7 @@ namespace ray_tracer.tests.Shapes
         {
             var p = new Plane();
             var r = Helper.Ray(Helper.CreatePoint(0, 1, 0), Helper.CreateVector(0, -1, 0));
-            var xs = p.Intersect(r);
+            var xs = p.Intersect(ref r.Origin, ref r.Direction);
             Check.That(xs.Count).IsEqualTo(1);
             Check.That(xs[0].Object).IsEqualTo(p);
             Check.That(xs[0].T).IsEqualTo(1);
@@ -49,7 +49,7 @@ namespace ray_tracer.tests.Shapes
         {
             var p = new Plane();
             var r = Helper.Ray(Helper.CreatePoint(0, -1, 0), Helper.CreateVector(0, 1, 0));
-            var xs = p.Intersect(r);
+            var xs = p.Intersect(ref r.Origin, ref r.Direction);
             Check.That(xs.Count).IsEqualTo(1);
             Check.That(xs[0].Object).IsEqualTo(p);
             Check.That(xs[0].T).IsEqualTo(1);

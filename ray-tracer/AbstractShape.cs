@@ -1,5 +1,3 @@
-#define OPTIM_WORLD_TO_OBJECT
-#define OPTIM_INTERSECT
 namespace ray_tracer
 {
     public abstract class AbstractShape : IShape
@@ -8,7 +6,7 @@ namespace ray_tracer
         public IShape Parent { get; set; }
         public Material Material { get; set; } = new Material();
 
-        public abstract Intersections IntersectLocal(Ray ray);
+        public abstract Intersections IntersectLocal(ref Tuple origin, ref Tuple direction);
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
         
@@ -17,20 +15,18 @@ namespace ray_tracer
             return ReferenceEquals(shape, this);
         }
 
-        public Intersections Intersect(Ray ray)
+        public Intersections Intersect(ref Tuple origin, ref Tuple direction)
         {
-            Ray transformedRay = ray;
-#if OPTIM_INTERSECT            
-            if (! ReferenceEquals(Transform, Matrix.Identity))
+            if (ReferenceEquals(Transform, Matrix.Identity))
             {
-#endif                
-                transformedRay = ray.Transform(Transform.Inverse());
-#if OPTIM_INTERSECT                
+                return IntersectLocal(ref origin, ref direction);
             }
-#endif            
-            return IntersectLocal(transformedRay);
+            var invMatrix = Transform.Invert();
+            var transformedOrigin = invMatrix.FastTransform(ref origin);
+            var transformedDirection = invMatrix.FastTransform(ref direction);
+            return IntersectLocal(ref transformedOrigin, ref transformedDirection);
         }
-        
+
         public Tuple NormalAt(Tuple worldPoint, Intersection hit=null)
         {
             var localPoint = WorldToObject(worldPoint);
@@ -45,19 +41,17 @@ namespace ray_tracer
             {
                 p = Parent.WorldToObject(point);
             }
-#if OPTIM_WORLD_TO_OBJECT
             if (ReferenceEquals(Transform, Matrix.Identity))
             {
                 return p;
             }
-#endif            
-            var transfoP =  Transform.Inverse() * p;
+            var transfoP =  Transform.Invert().FastTransform(ref p);
             return transfoP;
         }
 
         public Tuple NormalToWorld(Tuple normal)
         {
-            var n = Transform.Inverse().Transpose() * normal;
+            var n = Transform.Invert().Transpose() * normal;
             n = Helper.CreateVector(n.X, n.Y, n.Z);
             n = n.Normalize();
             if (Parent != null)

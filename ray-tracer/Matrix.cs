@@ -7,13 +7,13 @@ namespace ray_tracer
     public class Matrix
     {
         private double[][] Values { get; }
-        private Matrix Inversed { get; set; }
+        private Matrix Inverted { get; set; }
         public static readonly Matrix Identity = new Matrix(4, 
             1,0,0,0,
             0,1,0,0,
             0,0,1,0,
             0,0,0,1);
-        private Matrix4x4 matrix;
+        public Matrix4x4 matrix;
         
         public Matrix(int size)
         {
@@ -206,7 +206,7 @@ namespace ray_tracer
             return result;
         }
         
-        private Tuple FastTransform(Tuple t)
+        public Tuple FastTransform(ref Tuple t)
         {
             var ww = Vector4.Transform(t.vector, matrix);
             var result =  new Tuple(ww.X, ww.Y, ww.Z, ww.W);
@@ -217,21 +217,18 @@ namespace ray_tracer
         private Tuple Transform(Tuple t)
         {
             double[] d = new double[4];
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < 4; i++)
             {
                 double[] row = Values[i];
-                for (int j = 0; j < Size; j++)
-                {
-                    d[i] += row[j] * t[j];
-                }
+                d[i] = row[0] * t.X + row[1] * t.Y + row[2] * t.Z + row[3] * t.Z;
             }
 
             var v = new Tuple(d[0], d[1], d[2], d[3]);
             return v;
         }
 #if FAST_MATRIX        
-        public static Tuple operator *(Matrix m1, Tuple t) => m1.FastTransform(t);
-        public static Tuple operator *(Tuple t, Matrix m1) => m1.FastTransform(t);
+        public static Tuple operator *(Matrix m1, Tuple t) => m1.FastTransform(ref t);
+        public static Tuple operator *(Tuple t, Matrix m1) => m1.FastTransform(ref t);
 #else
         public static Tuple operator *(Matrix m1, Tuple t) => m1.Transform(t);
         public static Tuple operator *(Tuple t, Matrix m1) => m1.Transform(t);
@@ -325,12 +322,12 @@ namespace ray_tracer
 
         public bool Invertible() => Determinant() != 0;
 
-        public Matrix Inverse()
+        public Matrix Invert()
         {
-            var b = ! ReferenceEquals(Inversed, null);
+            var b = ! ReferenceEquals(Inverted, null);
             if (b)
             {
-                return Inversed;
+                return Inverted;
             }
             
             var det = Determinant();
@@ -339,17 +336,18 @@ namespace ray_tracer
                 throw new InvalidOperationException("Can not inverse matrix: determinant == 0 !");
             }
 
-            Inversed = new Matrix(Size);
+            var inverted = new Matrix(Size);
             for (int row = 0; row < Size; row++)
             {
                 for (int col = 0; col < Size; col++)
                 {
                     var cof = Cofactor(row, col);
-                    Inversed[col, row] = cof / det;
+                    inverted[col, row] = cof / det;
                 }
             }
 
-            return Inversed;
+            Inverted = inverted;
+            return inverted;
         }
 
         public override int GetHashCode()

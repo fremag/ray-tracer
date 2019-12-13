@@ -45,7 +45,7 @@ namespace ray_tracer
                 for (int j = 0; j < canvas.Width; j++)
                 {
                     var pixel = canvas.GetPixel(j, i);
-                    var c = Color.Normalize(pixel.Red);
+                    var c = Color.Normalize(pixel?.Red??0);
                     if (!PrintComponent(row, c))
                     {
                         yield return row.ToString();
@@ -53,7 +53,7 @@ namespace ray_tracer
                         row.Append(c);
                     }
                     
-                    c = Color.Normalize(pixel.Green);
+                    c = Color.Normalize(pixel?.Green??0);
                     if (!PrintComponent(row, c))
                     {
                         yield return row.ToString();
@@ -61,7 +61,7 @@ namespace ray_tracer
                         row.Append(c);
                     }
                     
-                    c = Color.Normalize(pixel.Blue);
+                    c = Color.Normalize(pixel?.Blue??0);
                     if (!PrintComponent(row, c))
                     {
                         yield return row.ToString();

@@ -19,7 +19,7 @@ namespace ray_tracer.tests
         {
             var t = Helper.Translation(5, -3, 2);
 
-            var invT = t.Inverse();
+            var invT = t.Invert();
             var p = Helper.CreatePoint(-3, 4, 5);
             var translated = invT * p;
             Check.That(translated).IsEqualTo(Helper.CreatePoint(-8, 7, 3));

@@ -21,7 +21,7 @@ namespace ray_tracer.tests
         {
             var p = Helper.CreatePoint(0, 1, 0);
             var halfQ = Helper.RotationX(Math.PI / 4);
-            var invHalfQ = halfQ.Inverse();
+            var invHalfQ = halfQ.Invert();
             Check.That(invHalfQ * p).IsEqualTo(Helper.CreatePoint(0, Math.Sqrt(2) / 2, - Math.Sqrt(2) / 2));
         }
         

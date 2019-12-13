@@ -16,12 +16,12 @@ namespace ray_tracer.Shapes
             Closed = closed;
         }
 
-        public override Intersections IntersectLocal(Ray ray)
+        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
         {
             var xs = new Intersections();
-            var a = ray.Direction.X * ray.Direction.X - ray.Direction.Y * ray.Direction.Y + ray.Direction.Z * ray.Direction.Z;
-            var b = 2 * ray.Origin.X * ray.Direction.X - 2 * ray.Origin.Y * ray.Direction.Y + 2 * ray.Origin.Z * ray.Direction.Z;
-            var c = ray.Origin.X * ray.Origin.X - ray.Origin.Y * ray.Origin.Y + ray.Origin.Z * ray.Origin.Z;
+            var a = direction.X * direction.X - direction.Y * direction.Y + direction.Z * direction.Z;
+            var b = 2 * origin.X * direction.X - 2 * origin.Y * direction.Y + 2 * origin.Z * direction.Z;
+            var c = origin.X * origin.X - origin.Y * origin.Y + origin.Z * origin.Z;
 
             if (Math.Abs(a) <= double.Epsilon && Math.Abs(b) > double.Epsilon)
             {
@@ -44,13 +44,13 @@ namespace ray_tracer.Shapes
                         t1 = tmp;
                     }
 
-                    var y0 = ray.Origin.Y + t0 * ray.Direction.Y;
+                    var y0 = origin.Y + t0 * direction.Y;
                     if (Minimum < y0 && y0 < Maximum)
                     {
                         xs.Add(new Intersection(t0, this));
                     }
 
-                    var y1 = ray.Origin.Y + t1 * ray.Direction.Y;
+                    var y1 = origin.Y + t1 * direction.Y;
                     if (Minimum < y1 && y1 < Maximum)
                     {
                         xs.Add(new Intersection(t1, this));
@@ -58,7 +58,7 @@ namespace ray_tracer.Shapes
                 }
             }
 
-            IntersectCaps(ray, xs);
+            IntersectCaps(new Ray(origin, direction), xs);
             xs.Sort();
             return xs;
         }

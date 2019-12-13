@@ -15,7 +15,7 @@ namespace ray_tracer_demos
         {
             Console.WriteLine(Vector.IsHardwareAccelerated);
             int nbThreads = Environment.ProcessorCount*0+4;
-            if (true)
+            if (!true)
             {
                 Run(new List<Type>
                 {
@@ -66,36 +66,34 @@ namespace ray_tracer_demos
         public static void Run(string dir, int nbThreads, params Type[] sceneTypes)
         {
             RenderManager renderMgr = new RenderManager(dir);
-            Timer timer = new Timer(500)
-            {
-                AutoReset = true
-            };
-            timer.Elapsed += (sender, args) => { Print(renderMgr); };
 
             foreach (var sceneType in sceneTypes)
             {
-                Console.CursorLeft = 0;
-                Console.Write($"{sceneType.Name,-L}");
+                Timer timer = new Timer(500)
+                {
+                    AutoReset = true
+                };
+                timer.Elapsed += (sender, args) => { Print(sceneType.Name, renderMgr); };
                 timer.Start();
                 var scene = renderMgr.Render(sceneType, nbThreads);
                 renderMgr.Wait();
                 timer.Stop();
 
-                Print(renderMgr);
+                Print(sceneType.Name, renderMgr);
                 Console.WriteLine();
                 renderMgr.Save($"{scene.GetType().Name}.ppm");
             }
         }
 
-        private static void Print(RenderManager renderMgr)
+        private static void Print(string sceneTypeName, RenderManager renderMgr)
         {
-            Console.CursorLeft = L + 1;
+            Console.CursorLeft = 0;
             var stats = renderMgr.RenderStatistics;
             if (stats == null)
             {
                 return;
             }
-            Console.Write($"{stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
+            Console.Write($"{sceneTypeName,-30} {stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
         }
     }
 }
