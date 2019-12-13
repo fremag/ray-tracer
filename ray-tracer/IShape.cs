@@ -2,6 +2,7 @@ namespace ray_tracer
 {
     public interface IShape : ITransformable
     {
+        int Id { get; }
         IShape Parent { get; set; }
         Material Material { get; set; }
         Intersections Intersect(ref Tuple origin, ref Tuple direction);

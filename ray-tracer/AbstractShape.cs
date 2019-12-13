@@ -1,7 +1,11 @@
+using System.Threading;
+
 namespace ray_tracer
 {
     public abstract class AbstractShape : IShape
     {
+        private static int id = 0;
+        public int Id { get; } = Interlocked.Increment(ref id); 
         public Matrix Transform { get; set; } = Matrix.Identity;
         public IShape Parent { get; set; }
         public Material Material { get; set; } = new Material();

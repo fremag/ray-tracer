@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace ray_tracer.Shapes
     {
         protected List<IShape> Shapes { get; } = new List<IShape>();
         private Bounds box;
+        private readonly ConcurrentDictionary<long, bool> cacheContains = new ConcurrentDictionary<long, bool>();
         public IShape this[int i] => Shapes[i];
         public int Count => Shapes.Count;
         
@@ -78,7 +80,7 @@ namespace ray_tracer.Shapes
         {
             if (!Box.IntersectLocal(ref origin, ref direction))
             {
-                return new Intersections();
+                return Intersections.Empty;
             }
 
             var intersections = new Intersections();
@@ -102,7 +104,27 @@ namespace ray_tracer.Shapes
         
         public override bool Contains(IShape shape)
         {
-            return ReferenceEquals(shape, this) || Shapes.Any(s => s.Contains(shape));
+            if (cacheContains.TryGetValue(shape.Id, out var result))
+            {
+                return result;
+            }
+            if (ReferenceEquals(shape, this))
+            {
+                cacheContains[shape.Id] = true;
+                return true;
+            }
+
+            foreach (var s in Shapes)
+            {
+                if (s.Contains(shape))
+                {
+                    cacheContains[shape.Id] = true;
+                    return true;
+                }
+            }
+
+            cacheContains[shape.Id] = false;
+            return false;
         }
 
     }
