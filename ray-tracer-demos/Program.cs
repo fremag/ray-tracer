@@ -14,8 +14,8 @@ namespace ray_tracer_demos
         static void Main()
         {
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            int nbThreads = Environment.ProcessorCount*0+0;
-            if (true)
+            int nbThreads = Environment.ProcessorCount*0+4;
+            if (!true)
             {
                 Run(new List<Type>
                 {
@@ -39,7 +39,7 @@ namespace ray_tracer_demos
         private static void BenchmarkFull()
         {
             var scenes = Helper.GetScenes<IcosahedronScene>().Values.ToList();
-            Run(scenes, nbThreads: 4, display: !true);
+            Run(scenes, nbThreads: 8, display: !true);
         }
 
         public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)

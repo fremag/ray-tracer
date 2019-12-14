@@ -14,7 +14,7 @@ namespace ray_tracer
         private ConcurrentQueue<PixelJob> PixelJobs { get; } = new ConcurrentQueue<PixelJob>();
         private Thread[] threads;
         private bool stopRequested;
-        public int PixelsLeft => PixelJobs.Count;
+        public int JobsLeft => PixelJobs.Count;
         public string OutputDir { get; } 
 
         public RenderManager() : this(Path.GetTempPath())
@@ -68,23 +68,39 @@ namespace ray_tracer
         
         public void Render(Camera camera, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
         {
-            var pixelJobs = new List<PixelJob>(camera.VSize*camera.HSize);
+
+            var pixels = new List<Tuple<int, int>>();
             for (int y = 0; y < camera.VSize; y++)
             {
                 for (int x = 0; x < camera.HSize; x++)
                 {
-                    var ray = camera.RayForPixel(x, y);
-                    var renderJob = new PixelJob(x, y, Image, world, maxRecursion, ray, RenderStatistics);
-                    pixelJobs.Add(renderJob);
+                    pixels.Add(new Tuple<int, int>(x, y));
                 }
             }
 
             if (shuffle)
             {
-                Random r = new Random();
-                pixelJobs = pixelJobs.OrderBy(job => r.Next()).ToList();
+                Random r = new Random(0);
+                pixels = pixels.OrderBy(job => r.Next()).ToList();
             }
-            pixelJobs.ForEach(job => PixelJobs.Enqueue(job));
+
+            const int BatchSize = 128;
+            for (int i = 0; i < pixels.Count; i+=BatchSize)
+            {
+                PixelJob job = new PixelJob(Image, world, maxRecursion, RenderStatistics, camera);
+                for (int j = 0; j < BatchSize; j++)
+                {
+                    if (i + j >= pixels.Count)
+                    {
+                        continue;
+                    }
+                    var pixel = pixels[i+j];
+                    job.X.Add(pixel.Item1);
+                    job.Y.Add(pixel.Item2);
+                }
+                PixelJobs.Enqueue(job);    
+            }
+            
             threads = new Thread[nbThreads];
 
             if (nbThreads == 0)
