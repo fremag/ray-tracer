@@ -56,22 +56,19 @@ namespace ray_tracer.Shapes
             return result;
         }
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
-            Intersections leftXs = Left.Intersect(ref origin, ref direction);
-            var rightXs = Right.Intersect(ref origin, ref direction);
+            Intersections leftXs = new Intersections(); 
+            Left.Intersect(ref origin, ref direction, leftXs);
+            var rightXs = new Intersections(); 
+            Right.Intersect(ref origin, ref direction, rightXs);
             Intersections result;
             if (leftXs.Any() || rightXs.Any())
             {
                  var xs = new Intersections(leftXs.Concat(rightXs));
                  result = Filter(xs);
+                 intersections.AddRange(result);
             }
-            else
-            {
-                result = Intersections.Empty;
-            }
-
-            return result;
         }
     }
 }

@@ -17,9 +17,8 @@ namespace ray_tracer.Shapes
 
         public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
-            var xs = new Intersections();
             var a = direction.X * direction.X + direction.Z * direction.Z;
             // ray is not parallel to the y axis
             if (a > double.Epsilon)
@@ -31,7 +30,7 @@ namespace ray_tracer.Shapes
                 // ray does not intersect the cylinder
                 if (disc < 0)
                 {
-                    return xs;
+                    return;
                 }
 
                 var t0 = (-b - Math.Sqrt(disc)) / (2 * a);
@@ -47,19 +46,17 @@ namespace ray_tracer.Shapes
                 var y0 = origin.Y + t0 * direction.Y;
                 if (Minimum < y0 && y0 < Maximum)
                 {
-                    xs.Add(new Intersection(t0, this));
+                    intersections.Add(new Intersection(t0, this));
                 }
 
                 var y1 = origin.Y + t1 * direction.Y;
                 if (Minimum < y1 && y1 < Maximum)
                 {
-                    xs.Add(new Intersection(t1, this));
+                    intersections.Add(new Intersection(t1, this));
                 }
             }
 
-            IntersectCaps(new Ray(origin, direction), xs);
-            xs.Sort();
-            return xs;
+            IntersectCaps(new Ray(origin, direction), intersections);
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

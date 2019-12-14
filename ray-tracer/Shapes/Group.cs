@@ -76,25 +76,17 @@ namespace ray_tracer.Shapes
             }
         }
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             if (!Box.IntersectLocal(ref origin, ref direction))
             {
-                return Intersections.Empty;
+                return;
             }
 
-            var intersections = new Intersections();
             foreach (var shape in Shapes)
             {
-                var subIntersections =  shape.Intersect(ref origin, ref direction);
-                if (subIntersections.Count > 0)
-                {
-                    intersections.AddRange(subIntersections);
-                }
+                shape.Intersect(ref origin, ref direction, intersections);
             }
-
-            intersections.Sort();
-            return intersections;
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

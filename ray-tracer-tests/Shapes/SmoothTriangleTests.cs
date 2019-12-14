@@ -49,7 +49,8 @@ namespace ray_tracer.tests.Shapes
         public void AnIntersectionWithSmoothTriangleStoresUvTest()
         {
             var r = Helper.Ray(-0.2, 0.3, -2, 0, 0, 1);
-            var xs = tri.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            tri.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs[0].U).IsCloseTo(0.45, Helper.Epsilon);
             Check.That(xs[0].V).IsCloseTo(0.25, Helper.Epsilon);
         }

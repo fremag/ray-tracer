@@ -14,7 +14,8 @@ namespace ray_tracer.tests.Shapes
         {
             var ray = Helper.Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
             var sphere = Helper.Sphere();
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs.Select(i => i.T)).ContainsExactly(4, 6);
         }
         
@@ -23,7 +24,8 @@ namespace ray_tracer.tests.Shapes
         {
             var ray = Helper.Ray(Helper.CreatePoint(0, 1, -5), Helper.CreateVector(0, 0, 1));
             var sphere = Helper.Sphere();
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs.Select(i => i.T)).ContainsExactly(5, 5);
         }
         
@@ -32,7 +34,8 @@ namespace ray_tracer.tests.Shapes
         {
             var ray = Helper.Ray(Helper.CreatePoint(0, 2, -5), Helper.CreateVector(0, 0, 1));
             var sphere = Helper.Sphere();
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs = new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs).IsEmpty();
         }
         
@@ -41,7 +44,8 @@ namespace ray_tracer.tests.Shapes
         {
             var ray = Helper.Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 0, 1));
             var sphere = Helper.Sphere();
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs.Select(i => i.T)).ContainsExactly(-1, 1);
             Check.That(xs.Select(i => i.Object)).ContainsExactly(sphere, sphere);
         }
@@ -51,7 +55,8 @@ namespace ray_tracer.tests.Shapes
         {
             var ray = Helper.Ray(Helper.CreatePoint(0, 0, 5), Helper.CreateVector(0, 0, 1));
             var sphere = Helper.Sphere();
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs.Select(i => i.T)).ContainsExactly(-6, -4);
         }
 
@@ -78,7 +83,8 @@ namespace ray_tracer.tests.Shapes
             var sphere = Helper.Sphere();
             sphere.Transform = Helper.Scaling(2, 2, 2);
             
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs.Select(i => i.T)).ContainsExactly(3, 7);
         }
         
@@ -89,7 +95,8 @@ namespace ray_tracer.tests.Shapes
             var sphere = Helper.Sphere();
             sphere.Transform = Helper.Translation(5, 0, 0);
             
-            var xs = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+            var xs =  new Intersections();
+            sphere.Intersect(ref ray.Origin, ref ray.Direction, xs);
             Check.That(xs).IsEmpty();
         }
 
@@ -117,7 +124,8 @@ namespace ray_tracer.tests.Shapes
                     // describe the point on the wall that the ray will target
                     var position = Helper.CreatePoint(worldX, worldY, wallZ);
                     var r = Helper.Ray(rayOrigin, (position - rayOrigin).Normalize());
-                    var intersections = sphere.Intersect(ref r.Origin, ref r.Direction);
+                    var intersections =  new Intersections();
+                    sphere.Intersect(ref r.Origin, ref r.Direction, intersections);
                     if (intersections.Hit() != null)
                     {
                         canvas.SetPixel(x, y, color);
@@ -247,7 +255,8 @@ namespace ray_tracer.tests.Shapes
                     // describe the point on the wall that the ray will target
                     var position = Helper.CreatePoint(worldX, worldY, wallZ);
                     var ray = Helper.Ray(rayOrigin, (position - rayOrigin).Normalize());
-                    var intersections = sphere.Intersect(ref ray.Origin, ref ray.Direction);
+                    var intersections =  new Intersections();
+                    sphere.Intersect(ref ray.Origin, ref ray.Direction, intersections);
                     var hit = intersections.Hit();
                     
                     if (hit != null)

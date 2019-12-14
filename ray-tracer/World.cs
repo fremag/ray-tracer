@@ -9,17 +9,23 @@ namespace ray_tracer
         public List<IShape> Shapes { get; } = new List<IShape>();
         public List<PointLight> Lights { get; } = new List<PointLight>();
 
-        public Intersections Intersect(Ray ray)
+        public void Intersect(Ray ray, Intersections intersections)
         {
-            var intersections = Shapes.SelectMany(shape => shape.Intersect(ref ray.Origin, ref ray.Direction));
-            return new Intersections(intersections);
+            for (var i = 0; i < Shapes.Count; i++)
+            {
+                var shape = Shapes[i];
+                shape.Intersect(ref ray.Origin, ref ray.Direction, intersections);
+            }
+
+            intersections.Sort();
         }
 
         public Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
         {
             var color = Color.Black;
-            foreach (var light in Lights)
+            for (var i = 0; i < Lights.Count; i++)
             {
+                var light = Lights[i];
                 var isShadowed = IsShadowed(intersectionData.OverPoint, light);
                 var surface = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, isShadowed);
                 var reflected = ReflectedColor(intersectionData, remaining);
@@ -42,7 +48,8 @@ namespace ray_tracer
 
         public Color ColorAt(Ray ray, int remaining = 5)
         {
-            var intersections = Intersect(ray);
+            var intersections = new Intersections();
+            Intersect(ray, intersections);
             var hit = intersections.Hit();
             if (hit == null)
             {
@@ -60,7 +67,8 @@ namespace ray_tracer
             var distance = v.Magnitude;
             var direction = v.Normalize();
             var r = Helper.Ray(point, direction);
-            var intersections = Intersect(r);
+            var intersections = new Intersections();
+            Intersect(r, intersections);
             var h = intersections.Hit();
             if (h != null && h.T < distance)
             {

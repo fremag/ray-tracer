@@ -18,7 +18,8 @@ namespace ray_tracer.tests.Shapes
         {
             var c = new Cube();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), Helper.CreateVector(dx, dy, dz));
-            var xs = c.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs = new Intersections();
+            c.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs.Count).IsEqualTo(2);
 
             Check.That(xs[0].T).IsEqualTo(t1);
@@ -36,7 +37,8 @@ namespace ray_tracer.tests.Shapes
         {
             var c = new Cube();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), Helper.CreateVector(dx, dy, dz));
-            var xs = c.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            c.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
 

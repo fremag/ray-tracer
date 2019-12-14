@@ -10,7 +10,7 @@ namespace ray_tracer
         public IShape Parent { get; set; }
         public Material Material { get; set; } = new Material();
 
-        public abstract Intersections IntersectLocal(ref Tuple origin, ref Tuple direction);
+        public abstract void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections);
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
         
@@ -19,16 +19,17 @@ namespace ray_tracer
             return ReferenceEquals(shape, this);
         }
 
-        public Intersections Intersect(ref Tuple origin, ref Tuple direction)
+        public void Intersect(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             if (ReferenceEquals(Transform, Matrix.Identity))
             {
-                return IntersectLocal(ref origin, ref direction);
+                IntersectLocal(ref origin, ref direction, intersections);
+                return;
             }
             var invMatrix = Transform.Invert();
             var transformedOrigin = invMatrix.FastTransform(ref origin);
             var transformedDirection = invMatrix.FastTransform(ref direction);
-            return IntersectLocal(ref transformedOrigin, ref transformedDirection);
+            IntersectLocal(ref transformedOrigin, ref transformedDirection, intersections);
         }
 
         public Tuple NormalAt(Tuple worldPoint, Intersection hit=null)

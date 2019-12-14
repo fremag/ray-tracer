@@ -6,13 +6,13 @@ namespace ray_tracer.Shapes
     {
         public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             Helper.CheckAxis(origin.X, direction.X, out var xtMin, out var xtMax);
             Helper.CheckAxis(origin.Y, direction.Y, out var ytMin, out var ytMax);
             if (xtMin > ytMax || ytMin > xtMax)
             {
-                return Intersections.Empty;
+                return;
             }
             Helper.CheckAxis(origin.Z, direction.Z, out var ztMin, out var ztMax);
 
@@ -20,9 +20,10 @@ namespace ray_tracer.Shapes
             var tMax = Math.Min(xtMax, Math.Min(ytMax, ztMax));
             if (tMin > tMax)
             {
-                return Intersections.Empty;
+                return;
             }
-            return new Intersections{new Intersection(tMin, this), new Intersection(tMax, this)};
+            intersections.Add(new Intersection(tMin, this));
+            intersections.Add(new Intersection(tMax, this));
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

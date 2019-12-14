@@ -16,7 +16,8 @@ namespace ray_tracer.tests.Shapes
             var shape = new Cone();
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = shape.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs = new Intersections(); 
+            shape.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             
             Check.That(xs).CountIs(2);
 
@@ -30,7 +31,8 @@ namespace ray_tracer.tests.Shapes
             var shape = new Cone();
             var direction = Helper.CreateVector(0, 1, 1).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(0, 0, -1), direction);
-            var xs = shape.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs = new Intersections(); 
+            shape.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(1);
             Check.That(xs[0].T).IsCloseTo(0.35355, Helper.Epsilon);
         }
@@ -44,7 +46,8 @@ namespace ray_tracer.tests.Shapes
             var shape = new Cone(-0.5, 0.5, true);
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = shape.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs = new Intersections();
+            shape.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(c);
         }
 

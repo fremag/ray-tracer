@@ -46,7 +46,8 @@ namespace ray_tracer.tests
         {
             var world = GetDefaultWorld();
             var ray = Helper.Ray(Helper.CreatePoint(0, 0, -5), Helper.CreateVector(0, 0, 1));
-            var intersections = world.Intersect(ray);
+            var intersections =  new Intersections();
+            world.Intersect(ray, intersections);
             Check.That(intersections.Select(intersection => intersection.T)).ContainsExactly(4, 4.5, 5.5, 6);
         }
 

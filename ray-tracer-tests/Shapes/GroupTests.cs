@@ -12,7 +12,8 @@ namespace ray_tracer.tests.Shapes
         {
             var g = new Group();
             var r = Helper.Ray(0, 0, 0, 0, 0, 1);
-            var xs = g.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            g.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
 
@@ -26,12 +27,14 @@ namespace ray_tracer.tests.Shapes
             g.Add(s1, s2, s3);
 
             var r = Helper.Ray(0, 0, -5, 0, 0, 1);
-            var xs = g.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            g.IntersectLocal(ref r.Origin, ref r.Direction, xs);
+            xs.Sort();
             Check.That(xs).CountIs(4);
-            Check.That(xs[0].Object).IsEqualTo(s2);
-            Check.That(xs[1].Object).IsEqualTo(s2);
-            Check.That(xs[2].Object).IsEqualTo(s1);
-            Check.That(xs[3].Object).IsEqualTo(s1);
+            Check.That(xs[0].Object).IsSameReferenceAs(s2);
+            Check.That(xs[1].Object).IsSameReferenceAs(s2);
+            Check.That(xs[2].Object).IsSameReferenceAs(s1);
+            Check.That(xs[3].Object).IsSameReferenceAs(s1);
         }
 
         [Fact]
@@ -42,7 +45,8 @@ namespace ray_tracer.tests.Shapes
             var s = Helper.Sphere().Translate(tx: 5);
             g.Add(s);
             var r = Helper.Ray(10, 0, -10, 0, 0, 1);
-            var xs = g.Intersect(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            g.Intersect(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(2);
         }
 

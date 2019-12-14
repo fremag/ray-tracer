@@ -6,7 +6,7 @@ namespace ray_tracer.Shapes
     {
         public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             var sphereToRay = origin - Helper.CreatePoint(0, 0, 0);
             var a = direction.DotProduct(direction);
@@ -16,16 +16,14 @@ namespace ray_tracer.Shapes
 
             if (discriminant < 0)
             {
-                return Helper.Intersections();
+                return;
             }
 
             var t1 = (-b - Math.Sqrt(discriminant)) / (2 * a);
             var t2 = (-b + Math.Sqrt(discriminant)) / (2 * a);
 
-            return Helper.Intersections(
-                new Intersection(t1, this),
-                new Intersection(t2, this)
-            );
+            intersections.Add(new Intersection(t1, this));
+            intersections.Add(new Intersection(t2, this));
         }
 
         public override Tuple NormalAtLocal(Tuple objectPoint, Intersection hit=null)

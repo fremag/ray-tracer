@@ -16,9 +16,8 @@ namespace ray_tracer.Shapes
             Closed = closed;
         }
 
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
-            var xs = new Intersections();
             var a = direction.X * direction.X - direction.Y * direction.Y + direction.Z * direction.Z;
             var b = 2 * origin.X * direction.X - 2 * origin.Y * direction.Y + 2 * origin.Z * direction.Z;
             var c = origin.X * origin.X - origin.Y * origin.Y + origin.Z * origin.Z;
@@ -26,7 +25,7 @@ namespace ray_tracer.Shapes
             if (Math.Abs(a) <= double.Epsilon && Math.Abs(b) > double.Epsilon)
             {
                 var t = -c / (2 * b);
-                xs.Add(new Intersection(t, this));
+                intersections.Add(new Intersection(t, this));
             }
 
             if (Math.Abs(a) > double.Epsilon)
@@ -47,20 +46,18 @@ namespace ray_tracer.Shapes
                     var y0 = origin.Y + t0 * direction.Y;
                     if (Minimum < y0 && y0 < Maximum)
                     {
-                        xs.Add(new Intersection(t0, this));
+                        intersections.Add(new Intersection(t0, this));
                     }
 
                     var y1 = origin.Y + t1 * direction.Y;
                     if (Minimum < y1 && y1 < Maximum)
                     {
-                        xs.Add(new Intersection(t1, this));
+                        intersections.Add(new Intersection(t1, this));
                     }
                 }
             }
 
-            IntersectCaps(new Ray(origin, direction), xs);
-            xs.Sort();
-            return xs;
+            IntersectCaps(new Ray(origin, direction), intersections);
         }
 
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)

@@ -15,7 +15,8 @@ namespace ray_tracer.tests.Shapes
             var cyl = new Cylinder();
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = cyl.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            cyl.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(0);
         }
 
@@ -28,7 +29,8 @@ namespace ray_tracer.tests.Shapes
             var cyl = new Cylinder();
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = cyl.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            cyl.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(2);
             Check.That(xs[0].T).IsCloseTo(t0, 1e-4);
             Check.That(xs[1].T).IsCloseTo(t1, 1e-4);
@@ -60,7 +62,8 @@ namespace ray_tracer.tests.Shapes
             var cyl = new Cylinder {Maximum = 2, Minimum = 1};
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = cyl.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            cyl.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(c);
         }
 
@@ -75,7 +78,8 @@ namespace ray_tracer.tests.Shapes
             var cyl = new Cylinder {Minimum = 1, Maximum = 2, Closed = true};
             var direction = Helper.CreateVector(dx, dy, dz).Normalize();
             var r = Helper.Ray(Helper.CreatePoint(x, y, z), direction);
-            var xs = cyl.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            cyl.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(c);
         }
 

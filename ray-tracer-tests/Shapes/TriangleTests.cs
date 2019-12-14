@@ -38,7 +38,8 @@ namespace ray_tracer.tests.Shapes
         {
             var t = new Triangle(Helper.CreatePoint(0, 1, 0), Helper.CreatePoint(-1, 0, 0), Helper.CreatePoint(1, 0, 0));
             var r = Helper.Ray(Helper.CreatePoint(0, -1, -2), Helper.CreateVector(0, 1, 0));
-            var xs = t.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            t.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
         
@@ -47,7 +48,8 @@ namespace ray_tracer.tests.Shapes
         {
             var t = new Triangle(Helper.CreatePoint(0, 1, 0), Helper.CreatePoint(-1, 0, 0), Helper.CreatePoint(1, 0, 0));
             var r = Helper.Ray(Helper.CreatePoint(1, 1, -2), Helper.CreateVector(0, 0, 1));
-            var xs = t.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            t.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
         
@@ -56,7 +58,8 @@ namespace ray_tracer.tests.Shapes
         {
             var t = new Triangle(Helper.CreatePoint(0, 1, 0), Helper.CreatePoint(-1, 0, 0), Helper.CreatePoint(1, 0, 0));
             var r = Helper.Ray(Helper.CreatePoint(-1, 1, -2), Helper.CreateVector(0, 0, 1));
-            var xs = t.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            t.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
         
@@ -65,7 +68,8 @@ namespace ray_tracer.tests.Shapes
         {
             var t = new Triangle(Helper.CreatePoint(0, 1, 0), Helper.CreatePoint(-1, 0, 0), Helper.CreatePoint(1, 0, 0));
             var r = Helper.Ray(Helper.CreatePoint(0, -1, -2), Helper.CreateVector(0, 0, 1));
-            var xs = t.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            t.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).IsEmpty();
         }
 
@@ -74,7 +78,8 @@ namespace ray_tracer.tests.Shapes
         {
             var t = new Triangle(Helper.CreatePoint(0, 1, 0), Helper.CreatePoint(-1, 0, 0), Helper.CreatePoint(1, 0, 0));
             var r = Helper.Ray(Helper.CreatePoint(0, 0.5, -2), Helper.CreateVector(0, 0, 1));
-            var xs = t.IntersectLocal(ref r.Origin, ref r.Direction);
+            var xs =  new Intersections();
+            t.IntersectLocal(ref r.Origin, ref r.Direction, xs);
             Check.That(xs).CountIs(1);
             Check.That(xs[0].T).IsEqualTo(2);
         }

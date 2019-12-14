@@ -38,14 +38,14 @@ namespace ray_tracer.Shapes
             Box = box;
         }
 #if VECTOR3
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             var dir3 = new Vector3((float) direction.X, (float) direction.Y, (float) direction.Z);
             var dirCrossE2 = Vector3.Cross(dir3, e2);
             var det = Vector3.Dot(e1, dirCrossE2);
             if (Math.Abs(det) < Helper.Epsilon)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var f = 1.0 / det;
@@ -54,18 +54,18 @@ namespace ray_tracer.Shapes
             var u = f * Vector3.Dot(p1ToOrigin, dirCrossE2);
             if (u < 0 || u > 1)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var originCrossE1 = Vector3.Cross(p1ToOrigin, e1);
             var v = f * Vector3.Dot(dir3, originCrossE1);
             if (v < 0 || (u + v) > 1)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var t = f * Vector3.Dot(e2, originCrossE1);
-            return new Intersections {new Intersection(t, this, u, v)};
+            intersections.Add(new Intersection(t, this, u, v));
         }
 #else        
         public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
