@@ -19,13 +19,13 @@ namespace ray_tracer.Shapes
 
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
-            var a = direction.X * direction.X + direction.Z * direction.Z;
+            var a = 2*(direction.X * direction.X + direction.Z * direction.Z);
             // ray is not parallel to the y axis
             if (a > double.Epsilon)
             {
-                var b = 2 * origin.X * direction.X + 2 * origin.Z * direction.Z;
+                var b = 2 * (origin.X * direction.X + origin.Z * direction.Z);
                 var c = origin.X * origin.X + origin.Z * origin.Z - 1;
-                var disc = b * b - 4 * a * c;
+                var disc = b * b - 2 * a * c;
 
                 // ray does not intersect the cylinder
                 if (disc < 0)
@@ -33,8 +33,10 @@ namespace ray_tracer.Shapes
                     return;
                 }
 
-                var t0 = (-b - Math.Sqrt(disc)) / (2 * a);
-                var t1 = (-b + Math.Sqrt(disc)) / (2 * a);
+                var x= -b/a;
+                var sqrt = Math.Sqrt(disc) / a;
+                var t0 = x - sqrt;
+                var t1 = x + sqrt;
 
                 if (t0 > t1)
                 {
@@ -65,16 +67,19 @@ namespace ray_tracer.Shapes
             var dist = worldPoint.X * worldPoint.X + worldPoint.Z * worldPoint.Z;
             if (dist < 1 && worldPoint.Y >= Maximum - Helper.Epsilon)
             {
-                return Helper.CreateVector(0, 1, 0);
+                return NormTop;
             }
 
             if (dist < 1 && worldPoint.Y <= Minimum + Helper.Epsilon)
             {
-                return Helper.CreateVector(0, -1, 0);
+                return NormBottom;
             }
 
             return Helper.CreateVector(worldPoint.X, 0, worldPoint.Z);
         }
+
+        private static Tuple NormTop { get; } = Helper.CreateVector(0, 1, 0);
+        private static Tuple NormBottom { get; } = Helper.CreateVector(0, -1, 0);
 
         // a helper function to reduce duplication.
         // checks to see if the intersection at `t` is within a radius

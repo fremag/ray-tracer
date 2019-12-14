@@ -13,7 +13,7 @@ namespace ray_tracer_demos
     {
         static void Main()
         {
-            Console.WriteLine(Vector.IsHardwareAccelerated);
+            Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+0;
             if (!true)
             {
@@ -96,7 +96,7 @@ namespace ray_tracer_demos
             {
                 return;
             }
-            Console.Write($"{sceneTypeName,-30} {stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,15:n2} px/s");
+            Console.Write($"{sceneTypeName,-30} {stats.Progress,8:p2}      {stats.Time:hh\\:mm\\:ss} {stats.Speed,10:###,###,##0} px/s");
         }
     }
 }
