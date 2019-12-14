@@ -4,6 +4,9 @@ namespace ray_tracer.Shapes
 {
     public class Cylinder : AbstractShape
     {
+        private static Tuple NormTop { get; } = Helper.CreateVector(0, 1, 0);
+        private static Tuple NormBottom { get; } = Helper.CreateVector(0, -1, 0);
+
         public double Minimum { get; set; }
         public double Maximum { get; set; }
         public bool Closed { get; set; }
@@ -77,9 +80,6 @@ namespace ray_tracer.Shapes
 
             return Helper.CreateVector(worldPoint.X, 0, worldPoint.Z);
         }
-
-        private static Tuple NormTop { get; } = Helper.CreateVector(0, 1, 0);
-        private static Tuple NormBottom { get; } = Helper.CreateVector(0, -1, 0);
 
         // a helper function to reduce duplication.
         // checks to see if the intersection at `t` is within a radius
