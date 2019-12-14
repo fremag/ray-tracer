@@ -305,6 +305,10 @@ namespace ray_tracer
             var uv = u * v;
             var uvMagnitude = u.Magnitude * v.Magnitude;
             double sinPhi = uv.Magnitude / uvMagnitude;
+            if (sinPhi < double.Epsilon)
+            {
+                return Matrix.Identity;
+            }
             Tuple n = uv / sinPhi;
             // https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula            
             var m1 = new Matrix(4,
