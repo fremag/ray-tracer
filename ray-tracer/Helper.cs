@@ -305,11 +305,6 @@ namespace ray_tracer
             var uv = u * v;
             var uvMagnitude = u.Magnitude * v.Magnitude;
             double sinPhi = uv.Magnitude / uvMagnitude;
-            if (sinPhi < double.Epsilon)
-            {
-                return Matrix.Identity;
-            }
-            Tuple n = uv / sinPhi;
             // https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula            
             var m1 = new Matrix(4,
                 cosPhi, 0, 0, 0,
@@ -318,10 +313,16 @@ namespace ray_tracer
                 0, 0, 0, 1
             );
 
+            if (Math.Abs(sinPhi) < double.Epsilon)
+            {
+                return m1;
+            }
+
+            Tuple n = uv / sinPhi;
             var m2 = new Matrix(4,
-                n.X * n.X, n.X*n.Y, n.X*n.Z, 0,
-                n.X * n.Y, n.Y*n.Y, n.Y*n.Z, 0,
-                n.X * n.Z, n.Z*n.Y, n.Z*n.Z, 0,
+                n.X * n.X, n.X * n.Y, n.X * n.Z, 0,
+                n.X * n.Y, n.Y * n.Y, n.Y * n.Z, 0,
+                n.X * n.Z, n.Z * n.Y, n.Z * n.Z, 0,
                 0, 0, 0, 0
             );
 
@@ -330,7 +331,6 @@ namespace ray_tracer
                 n.Z, 0, -n.X, 0,
                 -n.Y, n.X, 0, 0,
                 0, 0, 0, 0);
-
             var m = m1 + (1 - cosPhi) * m2 + sinPhi * m3;
             return m;
         }

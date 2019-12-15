@@ -15,12 +15,14 @@ namespace ray_tracer_demos
         {
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+4;
-            if (!true)
+            if (true)
             {
                 Run(new List<Type>
                 {
+                    
+                    typeof(IcosahedronScene),
 //                    typeof(CylinderScene),
-                    typeof(CylinderAltitudeScene),
+//                    typeof(CylinderAltitudeScene),
                     //typeof(MengerSpongeScene),
 //                    typeof(TeapotScene),
                 //    typeof(CubeScene),
