@@ -41,6 +41,5 @@ namespace ray_tracer.Shapes
 
             return group;
         }
-
-    }
+   }
 }

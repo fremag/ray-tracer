@@ -8,7 +8,7 @@ namespace ray_tracer
         public int Id { get; } = Interlocked.Increment(ref id); 
         public Matrix Transform { get; set; } = Matrix.Identity;
         public IShape Parent { get; set; }
-        public Material Material { get; set; } = new Material();
+        public virtual Material Material { get; set; } = new Material();
 
         public abstract void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections);
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);

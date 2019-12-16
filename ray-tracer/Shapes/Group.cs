@@ -13,6 +13,20 @@ namespace ray_tracer.Shapes
         public IShape this[int i] => Shapes[i];
         public int Count => Shapes.Count;
         
+        private Material material;
+
+        public override Material Material
+        {
+            get => material;
+            set {
+                material = value;
+                foreach (var shape in Shapes)
+                {
+                    shape.Material = material;
+                }
+            }
+        }
+ 
         public override Bounds Box
         {
             get
