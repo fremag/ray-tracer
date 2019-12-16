@@ -19,8 +19,8 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-                    
-                    typeof(IcosahedronScene),
+//                    typeof(IcosahedronScene),
+                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),
 //                    typeof(CylinderAltitudeScene),
                     //typeof(MengerSpongeScene),
