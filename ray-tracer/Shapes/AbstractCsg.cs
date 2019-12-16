@@ -4,12 +4,21 @@ namespace ray_tracer.Shapes
 {
     public abstract class AbstractCsg : Group
     {
-        public IShape Left { get; }
-        public IShape Right { get; }
+        public IShape Left { get; private set; }
+        public IShape Right { get; private set; }
 
         public abstract bool IntersectionAllowed(bool leftHit, bool insideLeft, bool insideRight);
 
+        protected AbstractCsg()
+        {
+        }
+
         protected AbstractCsg(IShape left, IShape right)
+        {
+            Init(left, right);
+        }
+
+        public void Init(IShape left, IShape right)
         {
             Left = left;
             Right = right;

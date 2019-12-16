@@ -1,7 +1,10 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details open>
+<details>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/menger_castle.png"/>
+</details>
+<details>
   <summary>Chapter xx: basic UI</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/demo-ui.gif"/>
 </details>

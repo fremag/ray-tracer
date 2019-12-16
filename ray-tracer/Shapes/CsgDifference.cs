@@ -2,6 +2,10 @@ namespace ray_tracer.Shapes
 {
     public class CsgDifference : AbstractCsg
     {
+        public CsgDifference()
+        {
+        }
+
         public CsgDifference(IShape left, IShape right) : base(left, right)
         {
         }

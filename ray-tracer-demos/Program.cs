@@ -20,10 +20,10 @@ namespace ray_tracer_demos
                 Run(new List<Type>
                 {
 //                    typeof(IcosahedronScene),
-                    typeof(PrismMeshScene),
+//                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),
 //                    typeof(CylinderAltitudeScene),
-                    //typeof(MengerSpongeScene),
+                    typeof(MengerCastleScene),
 //                    typeof(TeapotScene),
                 //    typeof(CubeScene),
 //                typeof(SquareMeshScene),
