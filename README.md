@@ -2,6 +2,7 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details>
+  <summary>Chapter xx: demos</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/menger_castle.png"/>
 </details>
 <details>
