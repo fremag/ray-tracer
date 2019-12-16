@@ -15,7 +15,8 @@ namespace ray_tracer_demos
         {
             DefaultFloor().Translate(ty: -1.5);
             Light(-1, 5, -5, Color.White/2);
-            Light(-5, 5, -1, Color.White/2);
+            Light(-5, 5, -1, Color.White/4);
+            Light(5, 5, -1, Color.White/6);
 
             var sponge2 = new MengerSponge(4);
             var cube = new Cube().Scale(sx: 2, sz: 2).Translate(ty: 1);
