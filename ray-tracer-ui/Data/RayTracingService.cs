@@ -94,7 +94,10 @@ namespace ray_tracer_ui.Data
 
             if (RenderManager.Image != null)
             {
-                CreateImage(memoryStream, RenderManager.Image);
+                lock (bitmap)
+                {
+                    CreateImage(memoryStream, RenderManager.Image);
+                }
             }
             else
             {
@@ -146,6 +149,7 @@ namespace ray_tracer_ui.Data
             Console.WriteLine($"Draw: {sw.ElapsedMilliseconds} ms");
             sw.Reset();
             bitmap.Save(stream, ImageFormat.Png);
+
             Console.WriteLine($"Save: {sw.ElapsedMilliseconds} ms");
         }
     }
