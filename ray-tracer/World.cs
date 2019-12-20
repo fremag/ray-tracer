@@ -28,8 +28,8 @@ namespace ray_tracer
             for (var i = 0; i < Lights.Count; i++)
             {
                 var light = Lights[i];
-                var isShadowed = IsShadowed(intersectionData.OverPoint, light);
-                var surface = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, isShadowed);
+                double lightIntensity = light.IntensityAt(intersectionData.OverPoint, this);
+                var surface = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, lightIntensity);
                 var reflected = ReflectedColor(intersectionData, remaining);
                 var refracted = RefractedColor(intersectionData, remaining);
 

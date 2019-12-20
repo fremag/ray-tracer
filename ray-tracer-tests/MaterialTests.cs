@@ -47,9 +47,11 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, 0, -1);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1));
-            var inShadow = false;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
-            Check.That(result).IsEqualTo(new Color(1.9, 1.9, 1.9));
+            var lightIntensity = 1;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
+            Check.That(result.Red).IsCloseTo(1.9, Helper.Epsilon);
+            Check.That(result.Green).IsCloseTo(1.9, Helper.Epsilon);
+            Check.That(result.Blue).IsCloseTo(1.9, Helper.Epsilon);
         }
         
         [Fact]
@@ -58,8 +60,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, Math.Sqrt(2)/2, -Math.Sqrt(2)/2);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1));
-            var inShadow = false;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
+            var lightIntensity = 1;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
             Check.That(result).IsEqualTo(new Color(1.0, 1.0, 1.0));
         }
 
@@ -69,8 +71,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, 0, -1);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 10, -10), new Color(1, 1, 1));
-            var inShadow = false;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
+            var lightIntensity = 1;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
             var c = 0.1+0.9*Math.Sqrt(2)/2;
             Check.That(result.Red).IsCloseTo(c, 1e-5);
             Check.That(result.Green).IsCloseTo(c, 1e-5);
@@ -83,8 +85,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, -Math.Sqrt(2)/2, -Math.Sqrt(2)/2);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 10, -10), new Color(1, 1, 1));
-            var inShadow = false;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
+            var lightIntensity = 1;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
             var c = 0.1+0.9*Math.Sqrt(2)/2 + 0.9;
             Check.That(result).IsEqualTo(new Color(c, c, c));
         }
@@ -95,8 +97,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, 0, -1);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, 10), new Color(1, 1, 1));
-            var inShadow = false;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
+            var lightIntensity = 1;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
             Check.That(result).IsEqualTo(new Color(0.1, 0.1, 0.1));
         }
 
@@ -106,8 +108,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, 0, -1);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1));
-            var inShadow = true;
-            var result = material.Lighting(light, position, eyev, normalv, inShadow);
+            var lightIntensity = 0;
+            var result = material.Lighting(light, position, eyev, normalv, lightIntensity);
             Check.That(result).IsEqualTo(new Color(0.1, 0.1, 0.1));
         }
 
@@ -121,8 +123,8 @@ namespace ray_tracer.tests
             var eyev = Helper.CreateVector(0, 0, -1);
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1));
-            var c1 = material.Lighting(light, Helper.CreatePoint(0.9, 0, 0), eyev, normalv, false);
-            var c2 = material.Lighting(light, Helper.CreatePoint(1.1, 0, 0), eyev, normalv, false);
+            var c1 = material.Lighting(light, Helper.CreatePoint(0.9, 0, 0), eyev, normalv, 1);
+            var c2 = material.Lighting(light, Helper.CreatePoint(1.1, 0, 0), eyev, normalv, 1);
             Check.That(c1).IsEqualTo(Color.White);
             Check.That(c2).IsEqualTo(Color.Black);
         }
@@ -173,7 +175,7 @@ namespace ray_tracer.tests
             var normalv = Helper.CreateVector(0, 0, -1);
             var light = new PointLight(Helper.CreatePoint(0, 0, -10), new Color(1, 1, 1));
             var shape = new Sphere {Transform = objectTransform};
-            var color = material.Lighting(light, shape, Helper.CreatePoint(x, y, z), eyev, normalv, false);
+            var color = material.Lighting(light, shape, Helper.CreatePoint(x, y, z), eyev, normalv, 1);
             Check.That(color).IsEqualTo(expectedColor);
         }
     }

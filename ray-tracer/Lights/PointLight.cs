@@ -1,16 +1,15 @@
 namespace ray_tracer.Lights
 {
-    public interface ILight
-    {
-        Tuple Position { get; }
-        Color Intensity { get; }
-    }
-    
-    
-    
     public class PointLight : ILight
     {
         public Color Intensity { get; }
+        public double IntensityAt(Tuple point, World world)
+        {
+            
+            var isShadowed = world.IsShadowed(point, this);
+            return isShadowed ? 0 : 1;
+        }
+
         public Tuple Position { get; }
 
         public PointLight(Tuple position, Color intensity)
@@ -19,6 +18,4 @@ namespace ray_tracer.Lights
             Intensity = intensity;
         }
     }
-    
-    
 }

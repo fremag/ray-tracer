@@ -36,29 +36,25 @@ namespace ray_tracer
                 
         }
 
-        public Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
+        public Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
         {
             var color = Pattern.GetColorAtShape(shape, point);
-            return Lighting(light, point, eye, normal, isShadowed, color);
+            return Lighting(light, point, eye, normal, lightIntensity, color);
         }
 
-        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
+        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
         {
             var color = Pattern.GetColor(point);
-            return Lighting(light, point, eye, normal, isShadowed, color);
+            return Lighting(light, point, eye, normal, lightIntensity, color);
         }
         
-        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed, Color color)
+        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity, Color color)
         {
             var effectiveColor = color * light.Intensity;
             // find the direction to the light source
             var lightv = (light.Position - point).Normalize();
             // compute the ambient contribution
             var ambient = effectiveColor * Ambient;
-            if (isShadowed)
-            {
-                return ambient;
-            }
             
             // light_dot_normal represents the cosine of the angle between the
             // light vector and the normal vector. A negative number means the
@@ -93,7 +89,12 @@ namespace ray_tracer
                 }
             }
             // Add the three contributions together to get the final shading
-            return ambient + diffuse + specular;
+            var lightColor = diffuse + specular;
+            if (lightIntensity < 1)
+            {
+                lightColor *= lightIntensity;
+            }
+            return ambient + lightColor;
         }
 
 #region EqualsHashCode
