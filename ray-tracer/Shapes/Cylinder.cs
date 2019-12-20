@@ -10,15 +10,15 @@ namespace ray_tracer.Shapes
         public double Minimum { get; set; }
         public double Maximum { get; set; }
         public bool Closed { get; set; }
+        public override Bounds Box { get; }
 
         public Cylinder(double minimum = double.NegativeInfinity, double maximum = double.PositiveInfinity, bool closed = false)
         {
             Minimum = minimum;
             Maximum = maximum;
             Closed = closed;
+            Box = new Bounds {PMin = Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
         }
-
-        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, Minimum, -1), PMax = Helper.CreatePoint(1, Maximum, 1)};
 
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {

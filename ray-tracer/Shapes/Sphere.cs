@@ -4,7 +4,8 @@ namespace ray_tracer.Shapes
 {
     public class Sphere : AbstractShape
     {
-        public override Bounds Box { get; } = new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
+        public override Bounds Box { get; } = SphereBox;
+        private static Bounds SphereBox { get; } = new Bounds {PMin = Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
 
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
@@ -29,7 +30,7 @@ namespace ray_tracer.Shapes
 
         public override Tuple NormalAtLocal(Tuple objectPoint, Intersection hit=null)
         {
-            var objectNormal = objectPoint - Helper.CreatePoint(0, 0, 0);
+            var objectNormal = Helper.CreateVector(objectPoint.X, objectPoint.Y, objectPoint.Z);
             return objectNormal;
         }
     }

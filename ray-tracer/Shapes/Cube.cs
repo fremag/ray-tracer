@@ -4,7 +4,8 @@ namespace ray_tracer.Shapes
 {
     public class Cube : AbstractShape
     {
-        public override Bounds Box => new Bounds {PMin =  Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
+        private static Bounds CubeBox { get; } = new Bounds {PMin = Helper.CreatePoint(-1, -1, -1), PMax = Helper.CreatePoint(1, 1, 1)};
+        public override Bounds Box { get; } = CubeBox;
 
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
@@ -14,6 +15,7 @@ namespace ray_tracer.Shapes
             {
                 return;
             }
+
             Helper.CheckAxis(origin.Z, direction.Z, out var ztMin, out var ztMax);
 
             var tMin = Math.Max(xtMin, Math.Max(ytMin, ztMin));
@@ -22,23 +24,35 @@ namespace ray_tracer.Shapes
             {
                 return;
             }
+
             intersections.Add(new Intersection(tMin, this));
             intersections.Add(new Intersection(tMax, this));
         }
 
-        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null)
+        private static readonly Tuple NegNormX = Helper.CreateVector(-1, 0, 0);
+        private static readonly Tuple NormX = Helper.CreateVector(1, 0, 0);
+        private static readonly Tuple NegNormY = Helper.CreateVector(0, -1, 0);
+        private static readonly Tuple NormY = Helper.CreateVector(0, 1, 0);
+        private static readonly Tuple NegNormZ = Helper.CreateVector(0, 0, -1);
+        private static readonly Tuple NormZ = Helper.CreateVector(0, 0, 1);
+
+        public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit = null)
         {
-            var maxc = Math.Max(Math.Abs(worldPoint.X), Math.Max(Math.Abs(worldPoint.Y), Math.Abs(worldPoint.Z)));
-            if (maxc == Math.Abs(worldPoint.X)) 
+            var absX = Math.Abs(worldPoint.X);
+            var absY = Math.Abs(worldPoint.Y);
+            var absZ = Math.Abs(worldPoint.Z);
+            var maxc = Math.Max(absX, Math.Max(absY, absZ));
+            if (maxc == absX)
             {
-                return Helper.CreateVector(worldPoint.X, 0, 0);
-            }
-            if (maxc == Math.Abs(worldPoint.Y))
-            {
-                return Helper.CreateVector(0, worldPoint.Y, 0);
+                return worldPoint.X > 0 ? NormX : NegNormX;
             }
 
-            return Helper.CreateVector(0, 0, worldPoint.Z);
+            if (maxc == absY)
+            {
+                return worldPoint.Y > 0 ? NormY : NegNormY;
+            }
+
+            return worldPoint.Z > 0 ? NormZ : NegNormZ;
         }
     }
 }
