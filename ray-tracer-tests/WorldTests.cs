@@ -208,7 +208,7 @@ namespace ray_tracer.tests
 
             var r = Helper.Ray(Helper.CreatePoint(0, 0, 0), Helper.CreateVector(0, 1, 0));
             var c = w.ColorAt(r);
-            Check.That(c).IsNotNull();
+            Check.That(c).Not.IsDefaultValue();
         }
 
         [Fact]

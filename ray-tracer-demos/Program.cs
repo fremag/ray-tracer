@@ -43,7 +43,7 @@ namespace ray_tracer_demos
         {
             var scenes = Helper.GetScenes<IcosahedronScene>().Values
                 .Where(type => type != typeof(MengerCastleScene)).ToList();
-            Run(scenes, nbThreads: 0, display: !true);
+            Run(scenes, nbThreads: 4, display: !true);
         }
 
         public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)

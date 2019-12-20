@@ -44,12 +44,13 @@ namespace ray_tracer_ui.Data
         }
 
         public RenderStatistics GetStatistics() => RenderManager.RenderStatistics;
+
         public List<CameraParameters> CameraParameters(string sceneName)
         {
             var scene = CreateScene(sceneName);
             return scene == null ? new List<CameraParameters>() : scene.CameraParameters;
         }
-        
+
         public List<string> GetScenes() => SceneTypes.Keys.ToList();
 
         public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
@@ -122,28 +123,33 @@ namespace ray_tracer_ui.Data
         {
             Stopwatch sw = Stopwatch.StartNew();
 
-            for (int i = 0; i < canvas.Width; i++)
+            int i=-1;
+            int j=-1;
+            ray_tracer.Color c = default;
+            try
             {
-                for (int j = 0; j < canvas.Height; j++)
+                for (i = 0; i < canvas.Width; i++)
                 {
-                    var c = canvas.Pixels[i][j];
-                    if (c != null && !pixels[j][i])
+                    for (j = 0; j < canvas.Height; j++)
                     {
+                        c = canvas.Pixels[i][j];
+                        if (!canvas.Computed[i][j] || pixels[j][i])
+                        {
+                            continue;
+                        }
+
                         pixels[j][i] = true;
-                        try
-                        {
-                            var cRed = ray_tracer.Color.Normalize(c.Red);
-                            var cGreen = ray_tracer.Color.Normalize(c.Green);
-                            var cBlue = ray_tracer.Color.Normalize(c.Blue);
-                            var color = Color.FromArgb(cRed, cGreen, cBlue);
-                            bitmap.SetPixel(i, j, color);
-                        }
-                        catch (ArgumentException)
-                        {
-                            Console.WriteLine($"i: {i}, j: {j}, Red: {c.Red}, Green: {c.Green}, Blue: {c.Blue}");
-                        }
+                        var cRed = ray_tracer.Color.Normalize(c.Red);
+                        var cGreen = ray_tracer.Color.Normalize(c.Green);
+                        var cBlue = ray_tracer.Color.Normalize(c.Blue);
+                        var color = Color.FromArgb(cRed, cGreen, cBlue);
+                        bitmap.SetPixel(i, j, color);
                     }
                 }
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine($"i: {i}, j: {j}, Red: {c.Red}, Green: {c.Green}, Blue: {c.Blue}");
             }
 
             Console.WriteLine($"Draw: {sw.ElapsedMilliseconds} ms");

@@ -26,7 +26,7 @@ namespace ray_tracer.Patterns
 
         public override int GetHashCode()
         {
-            return (Color != null ? Color.GetHashCode() : 0);
+            return Color.GetHashCode();
         }
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace ray_tracer
 {
-    public class Color
+    public struct Color
     {
         public static readonly Color Black = new Color(0);
         public static readonly Color White = new Color(1);
@@ -18,6 +18,7 @@ namespace ray_tracer
         {
 
         }
+        
         public Color(double red, double green, double blue)
         {
             Red = red;
@@ -42,7 +43,7 @@ namespace ray_tracer
             return (int)Math.Round(d * 255, 0);
         }
 
-        protected bool Equals(Color other)
+        public bool Equals(Color other)
         {
             return Red.Equals(other.Red) && Green.Equals(other.Green) && Blue.Equals(other.Blue);
         }

@@ -17,7 +17,7 @@ namespace ray_tracer.tests
             {
                 foreach (var c in canvas[i])
                 {
-                    Check.That(c).IsNull();
+                    Check.That(c).IsDefaultValue();
                 }
             }
         }
