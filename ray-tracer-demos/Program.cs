@@ -15,7 +15,7 @@ namespace ray_tracer_demos
         {
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+8;
-            if (true)
+            if (!true)
             {
                 Run(new List<Type>
                 {
@@ -23,8 +23,9 @@ namespace ray_tracer_demos
 //                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),
 //                    typeof(CylinderAltitudeScene),
-                    typeof(MengerCastleScene),
-//                    typeof(TeapotScene),
+//                    typeof(MengerCastleScene),
+                   typeof(TeapotScene),
+                   typeof(PikachuScene),
                 //    typeof(CubeScene),
 //                typeof(SquareMeshScene),
 //                typeof(SurfaceOfRevolutionScene),
@@ -40,8 +41,9 @@ namespace ray_tracer_demos
 
         private static void BenchmarkFull()
         {
-            var scenes = Helper.GetScenes<IcosahedronScene>().Values.ToList();
-            Run(scenes, nbThreads: 8, display: !true);
+            var scenes = Helper.GetScenes<IcosahedronScene>().Values
+                .Where(type => type != typeof(MengerCastleScene)).ToList();
+            Run(scenes, nbThreads: 0, display: !true);
         }
 
         public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)

@@ -1,6 +1,14 @@
-namespace ray_tracer
+namespace ray_tracer.Lights
 {
-    public class PointLight
+    public interface ILight
+    {
+        Tuple Position { get; }
+        Color Intensity { get; }
+    }
+    
+    
+    
+    public class PointLight : ILight
     {
         public Color Intensity { get; }
         public Tuple Position { get; }
@@ -11,4 +19,6 @@ namespace ray_tracer
             Intensity = intensity;
         }
     }
+    
+    
 }

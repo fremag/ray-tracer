@@ -1,4 +1,5 @@
 using System;
+using ray_tracer.Lights;
 using ray_tracer.Patterns;
 
 namespace ray_tracer
@@ -35,19 +36,19 @@ namespace ray_tracer
                 
         }
 
-        public Color Lighting(PointLight light, IShape shape, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
+        public Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
             var color = Pattern.GetColorAtShape(shape, point);
             return Lighting(light, point, eye, normal, isShadowed, color);
         }
 
-        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
+        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed)
         {
             var color = Pattern.GetColor(point);
             return Lighting(light, point, eye, normal, isShadowed, color);
         }
         
-        public Color Lighting(PointLight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed, Color color)
+        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, bool isShadowed, Color color)
         {
             var effectiveColor = color * light.Intensity;
             // find the direction to the light source

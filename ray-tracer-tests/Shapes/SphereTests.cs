@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using NFluent;
+using ray_tracer.Lights;
 using ray_tracer.Patterns;
 using Xunit;
 

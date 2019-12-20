@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ray_tracer.Lights;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 

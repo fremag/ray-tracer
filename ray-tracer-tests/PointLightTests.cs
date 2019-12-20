@@ -1,4 +1,5 @@
 using NFluent;
+using ray_tracer.Lights;
 using Xunit;
 
 namespace ray_tracer.tests

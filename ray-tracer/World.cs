@@ -1,13 +1,15 @@
+#define OPTIM_SHADOW
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ray_tracer.Lights;
 
 namespace ray_tracer
 {
     public class World
     {
         public List<IShape> Shapes { get; } = new List<IShape>();
-        public List<PointLight> Lights { get; } = new List<PointLight>();
+        public List<ILight> Lights { get; } = new List<ILight>();
 
         public void Intersect(Ray ray, Intersections intersections)
         {
@@ -60,8 +62,34 @@ namespace ray_tracer
             var color = ShadeHit(intersectionData, remaining);
             return color;
         }
+#if OPTIM_SHADOW
+        public bool IsShadowed(Tuple point, ILight light)
+        {
+            var v = light.Position - point;
+            var distance = v.Magnitude;
+            var direction = v.Normalize();
+            var r = Helper.Ray(point, direction);
+            var intersections = new Intersections();
 
-        public bool IsShadowed(Tuple point, PointLight light)
+            for (var i = 0; i < Shapes.Count; i++)
+            {
+                var shape = Shapes[i];
+                intersections.Clear();
+                shape.Intersect(ref r.Origin, ref r.Direction, intersections);
+                for (var j = 0; j < intersections.Count; j++)
+                {
+                    var intersection = intersections[j];
+                    if (intersection.T >= 0 && intersection.T < distance)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+#else
+        public bool IsShadowed(Tuple point, ILight light)
         {
             var v = light.Position - point;
             var distance = v.Magnitude;
@@ -77,6 +105,7 @@ namespace ray_tracer
 
             return false;
         }
+#endif
 
         public bool IsShadowed(Tuple point)
         {
