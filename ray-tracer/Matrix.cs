@@ -8,6 +8,8 @@ namespace ray_tracer
     {
         private double[][] Values { get; }
         private Matrix Inverted { get; set; }
+        private Matrix Transposed { get; set; }
+        
         public static readonly Matrix Identity = new Matrix(4, 
             1,0,0,0,
             0,1,0,0,
@@ -238,6 +240,12 @@ namespace ray_tracer
 
         public Matrix Transpose()
         {
+            var b = ! ReferenceEquals(Transposed, null);
+            if (b)
+            {
+                return Transposed;
+            }
+            
             var m = new Matrix(Size);
             for(int i=0; i < Size; i++)
             {
@@ -247,7 +255,8 @@ namespace ray_tracer
                 }
             }
 
-            return m;
+            Transposed = m;
+            return Transposed;
         }
 
         public Matrix SubMatrix(int row, int column)
