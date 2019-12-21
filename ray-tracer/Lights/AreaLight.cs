@@ -9,15 +9,14 @@ namespace ray_tracer.Lights
         public Tuple VVec { get; }
         public Color Intensity { get; }
 
-        public Tuple V1 { get; } 
-        public Tuple V2 { get; }
-        
         public int USteps { get; }
         public int VSteps { get; }
 
-        public AreaLight(Tuple corner, Color intensity, Tuple v1, Tuple v2, int uSteps, int vSteps)
+        private readonly Random rand = new Random(0);
+        
+        public AreaLight(Tuple position, Color intensity, Tuple v1, Tuple v2, int uSteps, int vSteps)
         {
-            Position = corner + (v1+v2)/2;
+            Position = position + (v1+v2)/2;
             Intensity = intensity;
             UVec = v1 / uSteps;
             VVec = v2 / vSteps;
@@ -25,26 +24,22 @@ namespace ray_tracer.Lights
             VSteps = vSteps;
         }
 
-        private Random rand = new Random(0);
-        public double IntensityAt(Tuple point, World world)
+        public unsafe int GetPositions(double* x, double* y, double* z)
         {
-            double intensity = 0;
-            
+            int k = 0;
             for(int i=0; i < USteps; i++)
             {
-                for (int j = 0; j < VSteps; j++)
+                for (int j = 0; j < VSteps; j++ , k++)
                 {
                     double u = -USteps / 2.0 + i + rand.NextDouble();
                     double v = -VSteps / 2.0 + j + rand.NextDouble();
-                    var dU = u * UVec;
-                    var dV = v * VVec;
-                    var p = Position + dU + dV;
-                    var isShadowed = world.IsShadowed(point, p);
-                    intensity += isShadowed ? 0: 1;
+                    x[k] = Position.X + u * UVec.X + v * VVec.X;
+                    y[k] = Position.Y + u * UVec.Y + v * VVec.Y;
+                    z[k] = Position.Z + u * UVec.Z + v * VVec.Z;
                 }
             }
 
-            return intensity / (USteps*VSteps);
+            return USteps * VSteps;
         }
     }
 }

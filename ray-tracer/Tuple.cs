@@ -6,10 +6,10 @@ namespace ray_tracer
     public struct Tuple
     {
         public double X { get; }
-
         public double Y { get; }
         public double Z { get; }
         public double W { get; }
+
         public Vector4 vector;
         
         public Tuple(double x, double y, double z, double w)

@@ -8,6 +8,7 @@ namespace ray_tracer
 {
     public class World
     {
+        private const int MAX_SAMPLE = 16*16;
         public List<IShape> Shapes { get; } = new List<IShape>();
         public List<ILight> Lights { get; } = new List<ILight>();
 
@@ -22,13 +23,26 @@ namespace ray_tracer
             intersections.Sort();
         }
 
-        public Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
+        public unsafe Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
         {
             var color = Color.Black;
+            double* x = stackalloc double[MAX_SAMPLE];
+            double* y = stackalloc double[MAX_SAMPLE];
+            double* z = stackalloc double[MAX_SAMPLE];
+            
             for (var i = 0; i < Lights.Count; i++)
             {
                 var light = Lights[i];
-                double lightIntensity = light.IntensityAt(intersectionData.OverPoint, this);
+                int nbSamples = light.GetPositions(x, y, z);
+                double lightIntensity = 0;
+                for (int j = 0; j < nbSamples; j++)
+                {
+                    bool isShadowed = IsShadowed(intersectionData.OverPoint, x[j], y[j], z[j]);
+                    lightIntensity += isShadowed ? 0 : 1;
+                }
+
+                lightIntensity /= nbSamples;
+                
                 var surface = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, lightIntensity);
                 var reflected = ReflectedColor(intersectionData, remaining);
                 var refracted = RefractedColor(intersectionData, remaining);
@@ -67,13 +81,17 @@ namespace ray_tracer
         {
             return IsShadowed(point, light.Position);
         }
-        
+
         public bool IsShadowed(Tuple point, Tuple position)
         {
-            var v = position - point;
+            return IsShadowed(point, position.X, position.Y, position.Z);
+        }
+        
+        public bool IsShadowed(Tuple point, double x, double y, double z)
+        {
+            var v = Helper.CreateVector(x - point.X, y - point.Y, z - point.Z) ;
             var distance = v.Magnitude;
             var direction = v.Normalize();
-            var r = Helper.Ray(point, direction);
             var intersections = new Intersections();
 
             for (var i = 0; i < Shapes.Count; i++)
@@ -84,7 +102,7 @@ namespace ray_tracer
                     continue;
                 }
                 intersections.Clear();
-                shape.Intersect(ref r.Origin, ref r.Direction, intersections);
+                shape.Intersect(ref point, ref direction, intersections);
                 for (var j = 0; j < intersections.Count; j++)
                 {
                     var intersection = intersections[j];

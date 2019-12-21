@@ -4,6 +4,6 @@ namespace ray_tracer.Lights
     {
         Tuple Position { get; }
         Color Intensity { get; }
-        double IntensityAt(Tuple point, World world);
+        unsafe int GetPositions(double* x, double* y, double* z);
     }
 }
