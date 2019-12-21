@@ -19,7 +19,8 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-                    typeof(SoftShadowScene),
+                    typeof(ShadowGlamourShotScene),
+//                    typeof(SoftShadowScene),
 //                    typeof(IcosahedronScene),
 //                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),

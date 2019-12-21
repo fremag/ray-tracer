@@ -11,5 +11,6 @@ namespace ray_tracer
         Tuple NormalToWorld(Tuple normal);
         Bounds Box { get; }
         bool Contains(IShape shape);
+        bool HasShadow { get; }
     }
 }

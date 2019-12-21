@@ -79,6 +79,10 @@ namespace ray_tracer
             for (var i = 0; i < Shapes.Count; i++)
             {
                 var shape = Shapes[i];
+                if (!shape.HasShadow)
+                {
+                    continue;
+                }
                 intersections.Clear();
                 shape.Intersect(ref r.Origin, ref r.Direction, intersections);
                 for (var j = 0; j < intersections.Count; j++)

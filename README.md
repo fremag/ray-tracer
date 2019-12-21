@@ -4,6 +4,10 @@
 <details>
   <summary>Bonus Chapter: soft shadows</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/soft_shadows.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/shadow_glamour_shot.png"/>
+<p>Reference:
+  <img src="http://www.raytracerchallenge.com/bonus/images/shadow-glamour-shot.jpg"/>
+</p>
 </details>
 
 <details>
@@ -14,6 +18,7 @@
 <details>
   <summary>Chapter xx: basic UI</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/demo-ui.gif"/>
+
 </details>
 
 <details>

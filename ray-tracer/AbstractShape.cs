@@ -19,6 +19,8 @@ namespace ray_tracer
             return ReferenceEquals(shape, this);
         }
 
+        public bool HasShadow { get; set; } = true;
+
         public void Intersect(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             if (ReferenceEquals(Transform, Matrix.Identity))
