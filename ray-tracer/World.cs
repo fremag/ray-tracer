@@ -65,7 +65,12 @@ namespace ray_tracer
 #if OPTIM_SHADOW
         public bool IsShadowed(Tuple point, ILight light)
         {
-            var v = light.Position - point;
+            return IsShadowed(point, light.Position);
+        }
+        
+        public bool IsShadowed(Tuple point, Tuple position)
+        {
+            var v = position - point;
             var distance = v.Magnitude;
             var direction = v.Normalize();
             var r = Helper.Ray(point, direction);

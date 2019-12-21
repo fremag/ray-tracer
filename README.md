@@ -2,15 +2,21 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details>
+  <summary>Bonus Chapter: soft shadows</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/soft_shadows.png"/>
+</details>
+
+<details>
   <summary>Chapter xx: demos</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/menger_castle.png"/>
 </details>
+
 <details>
   <summary>Chapter xx: basic UI</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/demo-ui.gif"/>
 </details>
 
-<details open>
+<details>
   <summary>Chapter xx: more triangles</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/curve_sweep.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/height_field.png"/>

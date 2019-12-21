@@ -22,11 +22,13 @@ namespace ray_tracer
             CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400, CameraX = 0, CameraY = 1, CameraZ = -1, LookX = 0, LookY = 0, LookZ = 0});
         }
 
-        public IShape DefaultFloor()
+        public IShape DefaultFloor() => DefaultFloor(Color.Black, Color.White);
+        
+        public IShape DefaultFloor(Color color1, Color color2)
         {
             var floor = new Plane
             {
-                Material = new Material(new CheckerPattern(Color.Black, Color.White))
+                Material = new Material(new CheckerPattern(color1, color2))
             };
             World.Add(floor);
             return floor;
@@ -56,6 +58,11 @@ namespace ray_tracer
         protected void Light(double x, double y, double z, Color c)
         {
             World.Lights.Add(new PointLight(Helper.CreatePoint(x, y, z), c));
+        }
+
+        public void Add(ILight light)
+        {
+            World.Lights.Add(light);
         }
     }
 }
