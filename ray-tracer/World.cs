@@ -24,17 +24,22 @@ namespace ray_tracer
 
         public unsafe Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
         {
-            var color = Color.Black;
             double* x = stackalloc double[ILight.MAX_SAMPLE];
             double* y = stackalloc double[ILight.MAX_SAMPLE];
             double* z = stackalloc double[ILight.MAX_SAMPLE];
             
+            var overPoint = intersectionData.OverPoint;
+            var eyeVector = intersectionData.EyeVector;
+            var normal = intersectionData.Normal;
+            var material = intersectionData.Object.Material;
+            var shapeColor = material.Pattern.GetColorAtShape(intersectionData.Object, ref overPoint);
+
+            var surface = Color.Black;
             for (var i = 0; i < Lights.Count; i++)
             {
                 var light = Lights[i];
                 int nbSamples = light.GetPositions(x, y, z);
                 double lightIntensity = 0;
-                var overPoint = intersectionData.OverPoint;
                 for (int j = 0; j < nbSamples; j++)
                 {
                     bool isShadowed = IsShadowed(overPoint, x[j], y[j], z[j]);
@@ -43,26 +48,23 @@ namespace ray_tracer
 
                 lightIntensity /= nbSamples;
 
-                var material = intersectionData.Object.Material;
-                var shapeColor = material.Pattern.GetColorAtShape(intersectionData.Object, ref overPoint);
-                var eyeVector = intersectionData.EyeVector;
-                var normal = intersectionData.Normal;
-                var surface = material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, light.Intensity);
-                var reflected = ReflectedColor(intersectionData, remaining);
-                var refracted = RefractedColor(intersectionData, remaining);
-
-                if (material.Reflective > 0 && material.Transparency > 0)
-                {
-                    var reflectance = intersectionData.Schlick();
-                    color += surface + reflected * reflectance + refracted * (1 - reflectance);
-                }
-                else
-                {
-                    color += surface + reflected + refracted;
-                }
+                surface += material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, light.Intensity);
             }
 
-            return color;
+            var reflected = ReflectedColor(intersectionData, remaining);
+            var refracted = RefractedColor(intersectionData, remaining);
+
+            if (material.Reflective > 0 && material.Transparency > 0)
+            {
+                var reflectance = intersectionData.Schlick();
+                var color = surface + reflected * reflectance + refracted * (1 - reflectance);
+                return color;
+            }
+            else
+            {
+                var color = surface + reflected + refracted;
+                return color;
+            }
         }
 
         public Color ColorAt(Ray ray, int remaining = 5)

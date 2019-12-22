@@ -64,10 +64,11 @@ namespace ray_tracer
         public unsafe Color Lighting(int nbLights, double* x, double* y, double* z, ref Tuple point, ref Tuple eye, ref Tuple normal, double lightIntensity, Color color, Color lightColor)
         {
             var effectiveColor = color * lightColor;
-            var diffuseColor = effectiveColor * Diffuse;
-            var specularColor = lightColor * Specular;
             // compute the ambient contribution
             var ambient = effectiveColor * Ambient;
+            var diffuseColor = effectiveColor * Diffuse;
+            var specularColor = lightColor * Specular;
+
             Color diffuse = Color.Black;
             Color specular = Color.Black;
 

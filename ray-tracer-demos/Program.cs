@@ -17,12 +17,12 @@ namespace ray_tracer_demos
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+4;
-            if (true)
+            if (!true)
             {
                 Run(new List<Type>
                 {
                     typeof(ShadowGlamourShotScene),
-                    typeof(SoftShadowScene),
+//                    typeof(SoftShadowScene),
 //                    typeof(IcosahedronScene),
 //                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),
