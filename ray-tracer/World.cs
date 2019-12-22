@@ -8,7 +8,6 @@ namespace ray_tracer
 {
     public class World
     {
-        private const int MAX_SAMPLE = 16*16;
         public List<IShape> Shapes { get; } = new List<IShape>();
         public List<ILight> Lights { get; } = new List<ILight>();
 
@@ -26,9 +25,9 @@ namespace ray_tracer
         public unsafe Color ShadeHit(IntersectionData intersectionData, int remaining = 5)
         {
             var color = Color.Black;
-            double* x = stackalloc double[MAX_SAMPLE];
-            double* y = stackalloc double[MAX_SAMPLE];
-            double* z = stackalloc double[MAX_SAMPLE];
+            double* x = stackalloc double[ILight.MAX_SAMPLE];
+            double* y = stackalloc double[ILight.MAX_SAMPLE];
+            double* z = stackalloc double[ILight.MAX_SAMPLE];
             
             for (var i = 0; i < Lights.Count; i++)
             {
@@ -42,12 +41,13 @@ namespace ray_tracer
                 }
 
                 lightIntensity /= nbSamples;
-                
-                var surface = intersectionData.Object.Material.Lighting(light, intersectionData.Object, intersectionData.OverPoint, intersectionData.EyeVector, intersectionData.Normal, lightIntensity);
+
+                var material = intersectionData.Object.Material;
+                var shapeColor = material.Pattern.GetColorAtShape(intersectionData.Object, intersectionData.OverPoint);
+                var surface = material.Lighting(nbSamples, x, y, z, intersectionData.OverPoint, intersectionData.EyeVector,intersectionData.Normal, lightIntensity, shapeColor, light.Intensity);
                 var reflected = ReflectedColor(intersectionData, remaining);
                 var refracted = RefractedColor(intersectionData, remaining);
 
-                var material = intersectionData.Object.Material;
                 if (material.Reflective > 0 && material.Transparency > 0)
                 {
                     var reflectance = intersectionData.Schlick();

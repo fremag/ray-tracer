@@ -36,26 +36,39 @@ namespace ray_tracer
                 
         }
 
-        public Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
+        public unsafe Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
         {
             var color = Pattern.GetColorAtShape(shape, point);
-            return Lighting(light, point, eye, normal, lightIntensity, color);
+            double* x = stackalloc double[1];
+            double* y = stackalloc double[1];
+            double* z = stackalloc double[1];
+            x[0] = light.Position.X;
+            y[0] = light.Position.Y;
+            z[0] = light.Position.Z;
+            return Lighting(1, x, y, z, point, eye, normal, lightIntensity, color, light.Intensity);
         }
 
-        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
+        public unsafe Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
         {
             var color = Pattern.GetColor(point);
-            return Lighting(light, point, eye, normal, lightIntensity, color);
+            double* x = stackalloc double[1];
+            double* y = stackalloc double[1];
+            double* z = stackalloc double[1];
+            x[0] = light.Position.X;
+            y[0] = light.Position.Y;
+            z[0] = light.Position.Z;
+            
+            return Lighting(1, x, y, z, point, eye, normal, lightIntensity, color, light.Intensity);
         }
         
-        public Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity, Color color)
+        public unsafe Color Lighting(int nbLights, double* x, double* y, double* z, Tuple point, Tuple eye, Tuple normal, double lightIntensity, Color color, Color lightColor)
         {
-            var effectiveColor = color * light.Intensity;
+            var effectiveColor = color * lightColor;
             // compute the ambient contribution
             var ambient = effectiveColor * Ambient;
 
             // find the direction to the light source
-            var lightv = (light.Position - point).Normalize();
+            var lightv = Helper.CreateVector(x[0] - point.X, y[0] - point.Y, z[0] - point.Z).Normalize();
             
             // light_dot_normal represents the cosine of the angle between the
             // light vector and the normal vector. A negative number means the
@@ -86,16 +99,16 @@ namespace ray_tracer
                 {
                     // compute the specular contribution
                     var factor = Math.Pow(reflectDotEye, Shininess);
-                    specular = light.Intensity * Specular * factor;
+                    specular = lightColor * Specular * factor;
                 }
             }
             // Add the three contributions together to get the final shading
-            var lightColor = diffuse + specular;
+            var colorFromLight = diffuse + specular;
             if (lightIntensity < 1)
             {
-                lightColor *= lightIntensity;
+                colorFromLight *= lightIntensity;
             }
-            return ambient + lightColor;
+            return ambient + colorFromLight;
         }
 
 #region EqualsHashCode
