@@ -34,17 +34,20 @@ namespace ray_tracer
                 var light = Lights[i];
                 int nbSamples = light.GetPositions(x, y, z);
                 double lightIntensity = 0;
+                var overPoint = intersectionData.OverPoint;
                 for (int j = 0; j < nbSamples; j++)
                 {
-                    bool isShadowed = IsShadowed(intersectionData.OverPoint, x[j], y[j], z[j]);
+                    bool isShadowed = IsShadowed(overPoint, x[j], y[j], z[j]);
                     lightIntensity += isShadowed ? 0 : 1;
                 }
 
                 lightIntensity /= nbSamples;
 
                 var material = intersectionData.Object.Material;
-                var shapeColor = material.Pattern.GetColorAtShape(intersectionData.Object, intersectionData.OverPoint);
-                var surface = material.Lighting(nbSamples, x, y, z, intersectionData.OverPoint, intersectionData.EyeVector,intersectionData.Normal, lightIntensity, shapeColor, light.Intensity);
+                var shapeColor = material.Pattern.GetColorAtShape(intersectionData.Object, ref overPoint);
+                var eyeVector = intersectionData.EyeVector;
+                var normal = intersectionData.Normal;
+                var surface = material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, light.Intensity);
                 var reflected = ReflectedColor(intersectionData, remaining);
                 var refracted = RefractedColor(intersectionData, remaining);
 

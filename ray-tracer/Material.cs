@@ -36,19 +36,19 @@ namespace ray_tracer
                 
         }
 
-        public unsafe Color Lighting(ILight light, IShape shape, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
+        public unsafe Color Lighting(ILight light, IShape shape, ref Tuple point, ref Tuple eye, ref Tuple normal, double lightIntensity)
         {
-            var color = Pattern.GetColorAtShape(shape, point);
+            var color = Pattern.GetColorAtShape(shape, ref point);
             double* x = stackalloc double[1];
             double* y = stackalloc double[1];
             double* z = stackalloc double[1];
             x[0] = light.Position.X;
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
-            return Lighting(1, x, y, z, point, eye, normal, lightIntensity, color, light.Intensity);
+            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, light.Intensity);
         }
 
-        public unsafe Color Lighting(ILight light, Tuple point, Tuple eye, Tuple normal, double lightIntensity)
+        public unsafe Color Lighting(ILight light, ref Tuple point, ref  Tuple eye, ref Tuple normal, double lightIntensity)
         {
             var color = Pattern.GetColor(point);
             double* x = stackalloc double[1];
@@ -58,57 +58,61 @@ namespace ray_tracer
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
             
-            return Lighting(1, x, y, z, point, eye, normal, lightIntensity, color, light.Intensity);
+            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, light.Intensity);
         }
         
-        public unsafe Color Lighting(int nbLights, double* x, double* y, double* z, Tuple point, Tuple eye, Tuple normal, double lightIntensity, Color color, Color lightColor)
+        public unsafe Color Lighting(int nbLights, double* x, double* y, double* z, ref Tuple point, ref Tuple eye, ref Tuple normal, double lightIntensity, Color color, Color lightColor)
         {
             var effectiveColor = color * lightColor;
+            var diffuseColor = effectiveColor * Diffuse;
+            var specularColor = lightColor * Specular;
             // compute the ambient contribution
             var ambient = effectiveColor * Ambient;
+            Color diffuse = Color.Black;
+            Color specular = Color.Black;
 
-            // find the direction to the light source
-            var lightv = Helper.CreateVector(x[0] - point.X, y[0] - point.Y, z[0] - point.Z).Normalize();
-            
-            // light_dot_normal represents the cosine of the angle between the
-            // light vector and the normal vector. A negative number means the
-            // light is on the other side of the surface.
-            var lightDotNormal = lightv.DotProduct(normal);
-            Color diffuse;
-            Color specular;
-            
-            if (lightDotNormal < 0)
+            for (int i = 0; i < nbLights; i++)
             {
-                diffuse = Color.Black;
-                specular= Color.Black;
-            }
-            else
-            {
+                // find the direction to the light source
+                var lightVx = x[i] - point.X;
+                var lightVy = y[i] - point.Y;
+                var lightVz = z[i] - point.Z;
+
+                // light_dot_normal represents the cosine of the angle between the
+                // light vector and the normal vector. A negative number means the
+                // light is on the other side of the surface.
+                var lightDotNormal = lightVx * normal.X + lightVy * normal.Y + lightVz * normal.Z;
+                if (lightDotNormal < 0)
+                {
+                    continue;
+                }
+
+                double norm = Math.Sqrt(lightVx * lightVx + lightVy * lightVy + lightVz * lightVz);
+                double coeff = lightDotNormal / norm;
                 // compute the diffuse contribution
-                diffuse = effectiveColor * Diffuse * lightDotNormal;
+                diffuse += diffuseColor * coeff;
+                
                 // reflect_dot_eye represents the cosine of the angle between the
                 // reflection vector and the eye vector. A negative number means the
                 // light reflects away from the eye.
-                var reflect = (-lightv).Reflect(normal);
+                var reflect = Helper.CreateVector(-lightVx, -lightVy, -lightVz).Reflect(normal);
                 var reflectDotEye = reflect.DotProduct(eye);
-                if (reflectDotEye <= 0)
-                {
-                    specular = Color.Black;
-                }
-                else
+                if (reflectDotEye > 0)
                 {
                     // compute the specular contribution
-                    var factor = Math.Pow(reflectDotEye, Shininess);
-                    specular = lightColor * Specular * factor;
+                    var factor = Math.Pow(reflectDotEye / norm, Shininess);
+                    specular += specularColor * factor;
                 }
             }
+
             // Add the three contributions together to get the final shading
             var colorFromLight = diffuse + specular;
             if (lightIntensity < 1)
             {
                 colorFromLight *= lightIntensity;
             }
-            return ambient + colorFromLight;
+            
+            return ambient + colorFromLight / nbLights;
         }
 
 #region EqualsHashCode
@@ -140,7 +144,4 @@ namespace ray_tracer
         }
     }
 #endregion
-
-    
-
 }

@@ -266,7 +266,7 @@ namespace ray_tracer.tests.Shapes
                         var hitObject = hit.Object;
                         var normal = hitObject.NormalAt(point);
                         var eye = -ray.Direction;
-                        var color = hitObject.Material.Lighting(light, point, eye, normal, 1);
+                        var color = hitObject.Material.Lighting(light, ref point, ref eye, ref normal, 1);
 
                         canvas.SetPixel(x, y, color);
                     }

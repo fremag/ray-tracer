@@ -17,7 +17,7 @@ namespace ray_tracer_demos
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+4;
-            if (!true)
+            if (true)
             {
                 Run(new List<Type>
                 {
@@ -75,8 +75,6 @@ namespace ray_tracer_demos
                 Helper.Display(dir);
             }
         }
-
-        public const int L = 30;
 
         public static void Run(string dir, int nbThreads, params Type[] sceneTypes)
         {

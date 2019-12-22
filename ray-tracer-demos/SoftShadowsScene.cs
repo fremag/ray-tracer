@@ -20,7 +20,7 @@ namespace ray_tracer_demos
             var corner = Helper.CreatePoint(0, 4, 10);
             var v1 = Helper.CreatePoint(1,0,0);
             var v2 = Helper.CreatePoint(0,1,0);
-            Add(new AreaLight(corner, Color.White, v1, v2, 8, 16));
+            Add(new AreaLight(corner, Color.White, v1, v2, 8, 8));
 
             var material = new Material(Color.White / 2, ambient: 0.6);
             Add(new Cube   {Material = material}.Scale(sx: 0.5, sy: 1, sz: 0.1).Translate(tx: -2));

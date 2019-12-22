@@ -6,7 +6,7 @@ namespace ray_tracer.Patterns
 
         public abstract Color GetColor(Tuple point);
         
-        public Color GetColorAtShape(IShape shape, Tuple point)
+        public Color GetColorAtShape(IShape shape, ref Tuple point)
         {
             var objectPoint = shape.WorldToObject(point);
             var patternPoint = Transform.Invert() * objectPoint;
