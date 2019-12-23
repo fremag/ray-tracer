@@ -45,7 +45,7 @@ namespace ray_tracer
 
         public bool Equals(Color other)
         {
-            return Red.Equals(other.Red) && Green.Equals(other.Green) && Blue.Equals(other.Blue);
+            return Helper.AreEquals(Red, other.Red) && Helper.AreEquals(Green, other.Green) && Helper.AreEquals(Blue, other.Blue);
         }
 
         public override bool Equals(object obj)
