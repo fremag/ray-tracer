@@ -16,12 +16,13 @@ namespace ray_tracer_demos
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            int nbThreads = Environment.ProcessorCount*0+4;
-            if (!true)
+            int nbThreads = Environment.ProcessorCount*0+0;
+            if (true)
             {
                 Run(new List<Type>
                 {
-                    typeof(ShadowGlamourShotScene),
+                    typeof(PerlinScene),
+//                    typeof(ShadowGlamourShotScene),
 //                    typeof(SoftShadowScene),
 //                    typeof(IcosahedronScene),
 //                    typeof(PrismMeshScene),
@@ -39,11 +40,11 @@ namespace ray_tracer_demos
             }
             else
             {
-                BenchmarkFull();
+                BenchmarkFull(nbThreads);
             }
         }
 
-        private static void BenchmarkFull()
+        private static void BenchmarkFull(int nbThreads)
         {
             var scenes = Helper.GetScenes<IcosahedronScene>().Values
                 .Except(new []{
@@ -51,7 +52,7 @@ namespace ray_tracer_demos
                     typeof(ShadowGlamourShotScene),
                     typeof(SoftShadowScene)
                     }).ToList();
-            Run(scenes, nbThreads: 4, display: !true);
+            Run(scenes, nbThreads: nbThreads, display: !true);
         }
 
         public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)

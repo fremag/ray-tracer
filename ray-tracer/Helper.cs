@@ -211,13 +211,13 @@ namespace ray_tracer
             return w;
         }
 
-        public static T Scale<T>(this T shape, double scale) where T: IShape
+        public static T Scale<T>(this T shape, double scale) where T: ITransformable
         {
             TransformScale(shape, scale, scale, scale);
             return shape;
         }
         
-        public static T Scale<T>(this T shape, double sx=1, double sy=1, double sz=1) where T : IShape
+        public static T Scale<T>(this T shape, double sx=1, double sy=1, double sz=1) where T : ITransformable
         {
             TransformScale(shape, sx, sy, sz);
             return shape;
@@ -234,12 +234,12 @@ namespace ray_tracer
             transformable.Transform = Scaling(scaleX, scaleY, scaleZ) * transformable.Transform;
         }
 
-        public static T Translate<T>(this T shape, Tuple v) where T : IShape
+        public static T Translate<T>(this T shape, Tuple v) where T : ITransformable
         {
             return shape.Translate(v.X, v.Y, v.Z);
         }
         
-        public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz=0) where T: IShape
+        public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz=0) where T: ITransformable
         {
             TransformTranslate(shape, tx, ty, tz);
             return shape;
@@ -247,7 +247,7 @@ namespace ray_tracer
         
         public static IPattern Translate(this IPattern pattern, double tx = 0, double ty = 0, double tz=0)
         {
-            TransformScale(pattern, tx, ty, tz);
+            TransformTranslate(pattern, tx, ty, tz);
             return pattern;
         }
 
@@ -256,7 +256,7 @@ namespace ray_tracer
             transformable.Transform = Translation(tx, ty, tz) * transformable.Transform ;
         }
         
-        public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz=0) where T: IShape 
+        public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz=0) where T: ITransformable 
         {
             TransformRotate(shape, rx, ry, rz);
             return shape;
