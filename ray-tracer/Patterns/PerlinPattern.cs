@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace ray_tracer.Patterns
 {
@@ -8,8 +9,7 @@ namespace ray_tracer.Patterns
 
         public PerlinPattern()
         {
-            ColorMap = new ColorMap();
-            ColorMap.Add(1, Color.White);
+            ColorMap = new ColorMap((1, Color.White));
         }
 
         public PerlinPattern(ColorMap colorMap)
@@ -21,7 +21,8 @@ namespace ray_tracer.Patterns
         public override Color GetColor(Tuple point)
         {
             var p = perlin.perlin(Math.Abs(point.X), Math.Abs(point.Y), Math.Abs(point.Z));
-            return ColorMap.GetColor(p);
+            var c =  ColorMap.GetColor(p);
+            return c;
         }
     }
 }

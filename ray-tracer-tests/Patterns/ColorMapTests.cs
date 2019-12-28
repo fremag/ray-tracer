@@ -9,9 +9,7 @@ namespace ray_tracer.tests.Patterns
         [Fact]
         public void BasicTest()
         {
-            ColorMap map = new ColorMap();
-            map.Add(0.5, Color.White);
-            map.Add(0.75, Color._Red);
+            ColorMap map = new ColorMap((0.5, Color.White), (0.75, Color._Red));
 
             var c = map.GetColor(0);
             Check.That(c).IsEqualTo(new Color(0,0,0));

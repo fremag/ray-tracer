@@ -13,6 +13,8 @@ namespace ray_tracer
         protected static readonly Color Red = Color._Red;
         protected static readonly Color Green = Color._Green;
         protected static readonly Color Blue = Color._Blue;
+        protected static readonly  Color Black = Color.Black;
+        protected static readonly  Color White = Color.White;
 
         public List<CameraParameters> CameraParameters { get; set; } = new List<CameraParameters>(); 
         public abstract void InitWorld();

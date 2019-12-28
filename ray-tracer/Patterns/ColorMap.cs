@@ -8,28 +8,64 @@ namespace ray_tracer.Patterns
         public double Key { get; }
         public Color Color { get; }
 
-        public ColorMapEntry(double key, double r, double g, double b) 
+        public ColorMapEntry(double key, double r, double g, double b)
             : this(key, new Color(r, g, b))
         {
-            
         }
-        
+
         public ColorMapEntry(double key, Color color)
         {
             Key = key;
             Color = color;
         }
+        
+        public static implicit operator ColorMapEntry (Tuple<double, double , double , double> tuple) => new ColorMapEntry(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);        
     }
-    
+
     public class ColorMap
     {
         private List<ColorMapEntry> Entries { get; } = new List<ColorMapEntry>();
 
-        public void Add(double key, Color color)
+        public ColorMap(params (double key, Color color)[] entries)
         {
-            Entries.Add(new ColorMapEntry(key, color));
+            Add(entries);
         }
 
+        private void Add(params (double key, Color color)[] entries)
+        {
+            foreach (var entry in entries)
+            {
+                Add(entry.key, entry.color);
+            }
+        }
+
+        public ColorMap(params (double key, double red, double green, double blue)[] entries)
+        {
+            Add(entries);
+        }
+
+        public ColorMap Add(params (double key, double red, double green, double blue)[] entries)
+        {
+            foreach (var entry in entries)
+            {
+                Add(entry.key, entry.red, entry.green, entry.blue);
+            }
+
+            return this;
+        }
+
+        public ColorMap Add(double key, Color color)
+        {
+            Entries.Add(new ColorMapEntry(key, color));
+            return this;
+        }
+
+        public ColorMap Add(double key, double red, double green, double blue)
+        {
+            Entries.Add(new ColorMapEntry(key, new Color(red, green, blue)));
+            return this;
+        }
+        
         public Color GetColor(double key)
         {
             if (key < Entries[0].Key)
@@ -47,14 +83,15 @@ namespace ray_tracer.Patterns
             for (int i = 0; i < Entries.Count - 1; i++)
             {
                 var k1 = Entries[i].Key;
-                var k2 = Entries[i+1].Key;
+                var k2 = Entries[i + 1].Key;
 
                 if (key >= k1 && key <= k2)
                 {
-                    var c = Interpolate(k1, k2, key, Entries[i].Color, Entries[i+1].Color);
+                    var c = Interpolate(k1, k2, key, Entries[i].Color, Entries[i + 1].Color);
                     return c;
                 }
             }
+
             return Color.Black;
         }
 
@@ -65,9 +102,10 @@ namespace ray_tracer.Patterns
             {
                 return (y0 + y1) / 2;
             }
+
             return y0 + (x - x0) * (y1 - y0) / deltaX;
-        }        
-        
+        }
+
         private Color Interpolate(double key1, double key2, double key, Color c1, Color c2)
         {
             var delta = (key2 - key1);
