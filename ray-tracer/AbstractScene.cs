@@ -47,6 +47,11 @@ namespace ray_tracer
             World.Add(shapes);
         }
 
+        protected void Add(params ILight[] lights)
+        {
+            World.Lights.AddRange(lights);
+        }
+
         protected void Light(Tuple position)
         {
             Light(position.X, position.Y, position.Z);

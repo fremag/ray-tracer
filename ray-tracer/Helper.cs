@@ -31,7 +31,7 @@ namespace ray_tracer
 
             return m;
         }
-        
+
         public static IEnumerable<string> ToPPM(this Canvas canvas)
         {
             yield return "P3";
@@ -52,7 +52,7 @@ namespace ray_tracer
                         row.Length = 0;
                         row.Append(c);
                     }
-                    
+
                     c = Color.Normalize(pixel.Green);
                     if (!PrintComponent(row, c))
                     {
@@ -60,7 +60,7 @@ namespace ray_tracer
                         row.Length = 0;
                         row.Append(c);
                     }
-                    
+
                     c = Color.Normalize(pixel.Blue);
                     if (!PrintComponent(row, c))
                     {
@@ -69,6 +69,7 @@ namespace ray_tracer
                         row.Append(c);
                     }
                 }
+
                 if (row.Length != 0)
                 {
                     yield return row.ToString();
@@ -83,12 +84,13 @@ namespace ray_tracer
                 row.Append(normalizedColorComponent);
                 return true;
             }
-            
+
             int l = normalizedColorComponent < 10 ? 1 : normalizedColorComponent < 100 ? 2 : 3;
             if (row.Length + l + 1 > 70)
             {
                 return false;
             }
+
             row.Append(' ');
             row.Append(normalizedColorComponent);
             return true;
@@ -106,54 +108,55 @@ namespace ray_tracer
 
         public static Matrix Translation(double x, double y, double z)
         {
-            return new Matrix(4, 
+            return new Matrix(4,
                 1, 0, 0, x,
                 0, 1, 0, y,
                 0, 0, 1, z,
                 0, 0, 0, 1
-                );
+            );
         }
 
         public static Matrix Scaling(double x, double y, double z)
         {
-            return new Matrix(4, 
+            return new Matrix(4,
                 x, 0, 0, 0,
                 0, y, 0, 0,
                 0, 0, z, 0,
                 0, 0, 0, 1
             );
         }
-        
-        public static Matrix RotationX( double a)
+
+        public static Matrix RotationX(double a)
         {
-            return new Matrix(4, 
+            return new Matrix(4,
                 1, 0, 0, 0,
                 0, Math.Cos(a), -Math.Sin(a), 0,
                 0, Math.Sin(a), Math.Cos(a), 0,
                 0, 0, 0, 1
             );
         }
-        public static Matrix RotationY( double a)
+
+        public static Matrix RotationY(double a)
         {
-            return new Matrix(4, 
+            return new Matrix(4,
                 Math.Cos(a), 0, Math.Sin(a), 0,
                 0, 1, 0, 0,
                 -Math.Sin(a), 0, Math.Cos(a), 0,
                 0, 0, 0, 1
             );
         }
-        
-        public static Matrix RotationZ( double a)
+
+        public static Matrix RotationZ(double a)
         {
-            return new Matrix(4, 
+            return new Matrix(4,
                 Math.Cos(a), -Math.Sin(a), 0, 0,
-                Math.Sin(a),  Math.Cos(a), 0, 0,
+                Math.Sin(a), Math.Cos(a), 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1
             );
         }
-        
-        public static Matrix Shearing( double xy, double xz, double yx, double yz, double zx, double zy)
+
+        public static Matrix Shearing(double xy, double xz, double yx, double yz, double zx, double zy)
         {
             return new Matrix(4,
                 1, xy, xz, 0,
@@ -211,25 +214,25 @@ namespace ray_tracer
             return w;
         }
 
-        public static T Scale<T>(this T shape, double scale) where T: ITransformable
+        public static T Scale<T>(this T shape, double scale) where T : ITransformable
         {
             TransformScale(shape, scale, scale, scale);
             return shape;
         }
-        
-        public static T Scale<T>(this T shape, double sx=1, double sy=1, double sz=1) where T : ITransformable
+
+        public static T Scale<T>(this T shape, double sx = 1, double sy = 1, double sz = 1) where T : ITransformable
         {
             TransformScale(shape, sx, sy, sz);
             return shape;
         }
-        
+
         public static IPattern Scale(this IPattern pattern, double scale)
         {
             TransformScale(pattern, scale, scale, scale);
             return pattern;
         }
 
-        private static void TransformScale( ITransformable transformable, double scaleX, double scaleY, double scaleZ)
+        private static void TransformScale(ITransformable transformable, double scaleX, double scaleY, double scaleZ)
         {
             transformable.Transform = Scaling(scaleX, scaleY, scaleZ) * transformable.Transform;
         }
@@ -238,48 +241,48 @@ namespace ray_tracer
         {
             return shape.Translate(v.X, v.Y, v.Z);
         }
-        
-        public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz=0) where T: ITransformable
+
+        public static T Translate<T>(this T shape, double tx = 0, double ty = 0, double tz = 0) where T : ITransformable
         {
             TransformTranslate(shape, tx, ty, tz);
             return shape;
         }
-        
-        public static IPattern Translate(this IPattern pattern, double tx = 0, double ty = 0, double tz=0)
+
+        public static IPattern Translate(this IPattern pattern, double tx = 0, double ty = 0, double tz = 0)
         {
             TransformTranslate(pattern, tx, ty, tz);
             return pattern;
         }
 
-        private static void TransformTranslate( ITransformable transformable, double tx = 0, double ty = 0, double tz=0)
+        private static void TransformTranslate(ITransformable transformable, double tx = 0, double ty = 0, double tz = 0)
         {
-            transformable.Transform = Translation(tx, ty, tz) * transformable.Transform ;
+            transformable.Transform = Translation(tx, ty, tz) * transformable.Transform;
         }
-        
-        public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz=0) where T: ITransformable 
+
+        public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz = 0) where T : ITransformable
         {
             TransformRotate(shape, rx, ry, rz);
             return shape;
         }
-        
-        public static IPattern Rotate(this IPattern pattern, double rx = 0, double ry = 0, double rz=0)
+
+        public static IPattern Rotate(this IPattern pattern, double rx = 0, double ry = 0, double rz = 0)
         {
             TransformScale(pattern, rx, ry, rz);
             return pattern;
         }
 
-        private static void TransformRotate(ITransformable transformable, double rx = 0, double ry = 0, double rz=0)
+        private static void TransformRotate(ITransformable transformable, double rx = 0, double ry = 0, double rz = 0)
         {
-            transformable.Transform = RotationX(rx)*RotationY(ry)*RotationZ(rz) * transformable.Transform ;
+            transformable.Transform = RotationX(rx) * RotationY(ry) * RotationZ(rz) * transformable.Transform;
         }
 
         public static Ray Ray(double ox, double oy, double oz, double dx, double dy, double dz) => new Ray(CreatePoint(ox, oy, oz), CreateVector(dx, dy, dz));
-        
-        public static void CheckAxis(double origin, double direction, out double tMin, out double tMax, double min=-1, double max=1)
+
+        public static void CheckAxis(double origin, double direction, out double tMin, out double tMax, double min = -1, double max = 1)
         {
             var tMinNumerator = (min - origin);
             var tMaxNumerator = (max - origin);
-            
+
             if (Math.Abs(direction) >= double.Epsilon)
             {
                 tMin = tMinNumerator / direction;
@@ -337,8 +340,8 @@ namespace ray_tracer
 
         public static double Radius(double u, double v)
         {
-            var radius = Math.Sqrt(u * u + v*v);
-            return  radius;
+            var radius = Math.Sqrt(u * u + v * v);
+            return radius;
         }
 
         public static Cylinder Cylinder(Tuple p1, Tuple p2, double radius)
@@ -347,7 +350,7 @@ namespace ray_tracer
             var m = Rotation(Helper.CreateVector(0, 1, 0), v.Normalize());
             var cyl = new Cylinder(0, 1, true);
             cyl.Scale(radius, v.Magnitude, radius);
-            cyl.Transform =  m * cyl.Transform;
+            cyl.Transform = m * cyl.Transform;
             cyl.Translate(p1);
             return cyl;
         }
@@ -360,6 +363,37 @@ namespace ray_tracer
                 .Where(type => !type.IsAbstract)
                 .ToDictionary(type => type.Name);
             return sceneTypes;
+        }
+
+        // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+        public static bool IntersectPlane(ref Tuple normal, ref Tuple p0, ref Tuple l0, ref Tuple l, ref double t)
+        {
+            // assuming vectors are all normalized
+            double denom = normal.DotProduct(l);
+            if (Math.Abs(denom) > Epsilon)
+            {
+                var p0l0 = p0 - l0;
+                t = p0l0.DotProduct(normal) / denom;
+                return (t >= 0);
+            }
+
+            return false;
+        }
+
+        public static bool IntersectDisk(ref Tuple normal, ref Tuple p0, double radius, ref Tuple l0, ref Tuple l)
+        {
+            double t = 0;
+            if (IntersectPlane(ref normal, ref p0, ref l0, ref l, ref t))
+            {
+                var p = l0 + l * t;
+                var v = p - p0;
+                double d2 = v.Magnitude;
+                return (Math.Sqrt(d2) <= radius);
+                // or you can use the following optimisation (and precompute radius^2)
+                // return d2 <= radius2; // where radius2 = radius * radius
+            }
+
+            return false;
         }
     }
 }

@@ -38,6 +38,12 @@ namespace ray_tracer
             for (var i = 0; i < Lights.Count; i++)
             {
                 var light = Lights[i];
+                var lightColor = light.GetIntensityAt(ref overPoint);
+                if (lightColor.Equals(Color.Black))
+                {
+                    continue;
+                }
+                
                 int nbSamples = light.GetPositions(x, y, z);
                 double lightIntensity = 0;
                 for (int j = 0; j < nbSamples; j++)
@@ -47,8 +53,7 @@ namespace ray_tracer
                 }
 
                 lightIntensity /= nbSamples;
-
-                surface += material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, light.Intensity);
+                surface += material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, lightColor);
             }
 
             var reflected = ReflectedColor(intersectionData, remaining);

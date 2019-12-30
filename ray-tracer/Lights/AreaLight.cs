@@ -5,9 +5,10 @@ namespace ray_tracer.Lights
     public class AreaLight : ILight
     {
         public Tuple Position { get; }
+        public Color Intensity { get; }
+
         public Tuple UVec { get; }
         public Tuple VVec { get; }
-        public Color Intensity { get; }
 
         public int USteps { get; }
         public int VSteps { get; }
@@ -23,6 +24,8 @@ namespace ray_tracer.Lights
             USteps = uSteps;
             VSteps = vSteps;
         }
+
+        public Color GetIntensityAt(ref Tuple point) => Intensity;
 
         public unsafe int GetPositions(double* x, double* y, double* z)
         {

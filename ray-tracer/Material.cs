@@ -45,7 +45,8 @@ namespace ray_tracer
             x[0] = light.Position.X;
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
-            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, light.Intensity);
+            var lightColor = light.GetIntensityAt(ref point);
+            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, lightColor);
         }
 
         public unsafe Color Lighting(ILight light, ref Tuple point, ref  Tuple eye, ref Tuple normal, double lightIntensity)
@@ -58,7 +59,8 @@ namespace ray_tracer
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
             
-            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, light.Intensity);
+            var lightColor = light.GetIntensityAt(ref point);
+            return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, lightColor);
         }
         
         public unsafe Color Lighting(int nbLights, double* x, double* y, double* z, ref Tuple point, ref Tuple eye, ref Tuple normal, double lightIntensity, Color color, Color lightColor)

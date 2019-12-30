@@ -11,6 +11,8 @@ namespace ray_tracer.Lights
             Intensity = intensity;
         }
 
+        public Color GetIntensityAt(ref Tuple point) => Intensity;
+        
         public unsafe int GetPositions(double* x, double* y, double* z)
         {
             x[0] = Position.X;
