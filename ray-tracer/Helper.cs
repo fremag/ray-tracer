@@ -395,5 +395,8 @@ namespace ray_tracer
 
             return false;
         }
+
+        private static Random rand = new Random(0); 
+        public static Tuple RandomVector() => CreateVector(rand.NextDouble(), rand.NextDouble(), rand.NextDouble()).Normalize();
     }
 }

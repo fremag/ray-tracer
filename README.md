@@ -1,8 +1,9 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
-  <summary>Cone lights</summary>
-  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/cone_lights.png"/>
+  <summary>Spot lights</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/spot_lights.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/spot_light_soft_shadow.png"/>
 </details>
 
 <details>

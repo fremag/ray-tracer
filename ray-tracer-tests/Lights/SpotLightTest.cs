@@ -4,7 +4,7 @@ using Xunit;
 
 namespace ray_tracer.tests.Lights
 {
-    public class ConeLightTest
+    public class SpotLightTest
     {
         [Fact]
         public void BasicTest()
@@ -12,14 +12,14 @@ namespace ray_tracer.tests.Lights
             var p1 = Helper.CreatePoint(0, 2, 0);
             var p2 = Helper.CreatePoint(0, 1, 0);
             
-            ConeLight coneLight = new ConeLight(p1, Color.White, p2, 1, 1);
+            SpotLight spotLight = new SpotLight(p1, Color.White, p2, 1, 1);
 
             var p3 = Helper.CreatePoint(0, 0, 0);
-            var c= coneLight.GetIntensityAt(ref p3);
+            var c= spotLight.GetIntensityAt(p1.X, p1.Y, p1.Z, ref p3);
             Check.That(c).IsEqualTo(Color.White);
             
             var p4 = Helper.CreatePoint(-5, 0, 0);
-            c= coneLight.GetIntensityAt(ref p4);
+            c= spotLight.GetIntensityAt(p1.X, p1.Y, p1.Z, ref p4);
             Check.That(c).IsEqualTo(Color.Black);
         }
     }

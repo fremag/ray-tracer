@@ -21,7 +21,8 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-                    typeof(ConeLightScene),
+                    typeof(SpotLightSoftShadowScene),
+//                    typeof(SpotLightScene),
 //                    typeof(PerlinScene),
 //                    typeof(ShadowGlamourShotScene),
 //                    typeof(SoftShadowScene),

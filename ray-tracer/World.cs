@@ -38,21 +38,24 @@ namespace ray_tracer
             for (var i = 0; i < Lights.Count; i++)
             {
                 var light = Lights[i];
-                var lightColor = light.GetIntensityAt(ref overPoint);
-                if (lightColor.Equals(Color.Black))
-                {
-                    continue;
-                }
                 
                 int nbSamples = light.GetPositions(x, y, z);
                 double lightIntensity = 0;
+                var lightColor = Color.Black;
                 for (int j = 0; j < nbSamples; j++)
                 {
+                    var sampleLightColor = light.GetIntensityAt(x[j], y[j], z[j], ref overPoint);
+                    lightColor += sampleLightColor;
+                    if (lightColor.Equals(Color.Black))
+                    {
+                        continue;
+                    }
                     bool isShadowed = IsShadowed(overPoint, x[j], y[j], z[j]);
                     lightIntensity += isShadowed ? 0 : 1;
                 }
 
                 lightIntensity /= nbSamples;
+                lightColor /= nbSamples;
                 surface += material.Lighting(nbSamples, x, y, z, ref overPoint, ref eyeVector, ref normal, lightIntensity, shapeColor, lightColor);
             }
 

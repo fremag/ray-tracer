@@ -4,7 +4,7 @@ namespace ray_tracer.Lights
     {
         public const int MAX_SAMPLE = 16*16;
         Tuple Position { get; }
-        Color GetIntensityAt(ref Tuple point);
+        Color GetIntensityAt(double x, double y, double z, ref Tuple point);
         unsafe int GetPositions(double* x, double* y, double* z);
     }
 }

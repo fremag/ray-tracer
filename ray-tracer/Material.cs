@@ -45,7 +45,7 @@ namespace ray_tracer
             x[0] = light.Position.X;
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
-            var lightColor = light.GetIntensityAt(ref point);
+            var lightColor = light.GetIntensityAt(x[0], y[0], z[0], ref point);
             return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, lightColor);
         }
 
@@ -59,7 +59,7 @@ namespace ray_tracer
             y[0] = light.Position.Y;
             z[0] = light.Position.Z;
             
-            var lightColor = light.GetIntensityAt(ref point);
+            var lightColor = light.GetIntensityAt(x[0], y[0], z[0], ref point);
             return Lighting(1, x, y, z, ref point, ref eye, ref normal, lightIntensity, color, lightColor);
         }
         
