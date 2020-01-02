@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Runtime;
 using System.Timers;
 using ray_tracer;
+using ray_tracer_demos.Basic;
 
 namespace ray_tracer_demos
 {
@@ -17,11 +18,12 @@ namespace ray_tracer_demos
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             int nbThreads = Environment.ProcessorCount*0+8;
-            if (true)
+            if (!true)
             {
                 Run(new List<Type>
                 {
-                    typeof(SpotLightSoftShadowScene),
+                    typeof(RingPerlinScene),
+//                    typeof(SpotLightSoftShadowScene),
 //                    typeof(SpotLightScene),
 //                    typeof(PerlinScene),
 //                    typeof(ShadowGlamourShotScene),
@@ -48,12 +50,7 @@ namespace ray_tracer_demos
 
         private static void BenchmarkFull(int nbThreads)
         {
-            var scenes = Helper.GetScenes<IcosahedronScene>().Values
-                .Except(new []{
-                    typeof(MengerCastleScene),    
-                    typeof(ShadowGlamourShotScene),
-                    typeof(SoftShadowScene)
-                    }).ToList();
+            var scenes = Helper.GetScenes<ConeScene>(typeof(ConeScene).Namespace).Values.ToList();
             Run(scenes, nbThreads: nbThreads, display: !true);
         }
 

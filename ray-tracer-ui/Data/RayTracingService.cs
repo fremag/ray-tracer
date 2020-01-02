@@ -5,11 +5,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Timers;
 using ray_tracer;
-using ray_tracer_demos;
+using ray_tracer_demos.Basic;
 using Color = System.Drawing.Color;
 
 namespace ray_tracer_ui.Data
@@ -26,6 +25,7 @@ namespace ray_tracer_ui.Data
 
         public RayTracingService()
         {
+            
             SceneTypes = Helper.GetScenes<IcosahedronScene>();
             RenderManager = new RenderManager();
             timer = new Timer {Interval = 1000, AutoReset = true};

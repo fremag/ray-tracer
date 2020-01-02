@@ -1,17 +1,16 @@
 using System;
 using ray_tracer;
-using ray_tracer.Shapes;
 using ray_tracer.Shapes.Mesh;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
-    internal class WireFrameScene : AbstractScene
+    internal class SquareMeshScene : AbstractScene
     {
-        public WireFrameScene()
+        public SquareMeshScene()
         {
             CameraParameters.Clear();
             CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400,
-                CameraX = 0, CameraY = 1, CameraZ = -1,
+                CameraX = 0, CameraY = 1, CameraZ = -2,
                 LookX = 0, LookY = 0, LookZ = 0});
         }
 
@@ -23,14 +22,14 @@ namespace ray_tracer_demos
             double Altitude(double u, double v)
             {
                 var r = 8*Helper.Radius(u-0.5, v-0.5);
-                return 0.05 * (1+Math.Cos(2 * Pi * r));
+                return 0.2 * Math.Exp(-r/4)*(1+Math.Cos(2 * Pi * r));
             }
 
             var mesh = new HeightField(50, 50, Altitude);
             var triangleMeshFactory = new TriangleMeshFactory(false, false);
-            Add(triangleMeshFactory.Build(mesh).Translate(tx: 0.5, tz: 0));
-            var wireFrameMeshFactory = new WireFrameMeshFactory(0.001, 0.0025);
-            Add(wireFrameMeshFactory.Build(mesh).Translate(tx: -0.5, tz: 0));
+            Add(triangleMeshFactory.Build(mesh).Translate(-0.5));
+            var sphereMeshFactory = new SphereMeshFactory(0.05);
+            Add(sphereMeshFactory.Build(mesh).Translate(0.5));
         }
     }
 }

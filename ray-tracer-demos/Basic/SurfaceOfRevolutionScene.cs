@@ -1,9 +1,8 @@
 using System;
 using ray_tracer;
-using ray_tracer.Shapes;
 using ray_tracer.Shapes.Mesh;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
     internal class SurfaceOfRevolutionScene : AbstractScene
     {

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using ray_tracer;
-using ray_tracer_demos;
+using ray_tracer_demos.Basic;
 using ray_tracer_ui.Data;
 
 namespace ray_tracer_ui.Pages

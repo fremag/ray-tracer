@@ -4,7 +4,7 @@ using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
     public class TeapotScene : AbstractScene
     {
@@ -25,7 +25,7 @@ namespace ray_tracer_demos
             Add(floor);
 
             var assembly = typeof(TeapotScene).GetTypeInfo().Assembly;
-            Stream resource = assembly.GetManifestResourceStream("ray_tracer_demos.teapot.obj");
+            Stream resource = assembly.GetManifestResourceStream("ray_tracer_demos.Basic.teapot.obj");
             ObjFileReader teapotObj = new ObjFileReader(resource, false);
             var teapot = teapotObj.ObjToGroup();
             Add(teapot);

@@ -17,12 +17,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Pikachu.obj" />
-      <EmbeddedResource Include="Pikachu.obj">
+      <EmbeddedResource Include="Basic\Pikachu.obj">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </EmbeddedResource>
-      <None Remove="teapot.obj" />
-      <EmbeddedResource Include="teapot.obj">
+      <EmbeddedResource Include="Basic\teapot.obj">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>

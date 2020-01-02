@@ -4,11 +4,9 @@ using System.Linq;
 using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
-using ray_tracer.Shapes.Mesh;
 using ray_tracer.Triangulation;
-using Tuple = ray_tracer.Tuple;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
     public class PrismMeshScene : AbstractScene
     {

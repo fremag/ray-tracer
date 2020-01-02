@@ -5,7 +5,7 @@ using ray_tracer;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
     public class PikachuScene : AbstractScene
     {
@@ -27,13 +27,13 @@ namespace ray_tracer_demos
             Add(floor);
 
             var assembly = typeof(PikachuScene).GetTypeInfo().Assembly;
-            Stream resource = assembly.GetManifestResourceStream("ray_tracer_demos.Pikachu.obj");
+            Stream resource = assembly.GetManifestResourceStream("ray_tracer_demos.Basic.Pikachu.obj");
             ObjFileReader smoothPikachuObj = new ObjFileReader(resource, true);
             var smoothPikachu = smoothPikachuObj.ObjToGroup();
             smoothPikachu.Rotate(ry: Math.PI).Translate(tx: 0.5);
             Add(smoothPikachu);
 
-            resource = assembly.GetManifestResourceStream("ray_tracer_demos.Pikachu.obj");
+            resource = assembly.GetManifestResourceStream("ray_tracer_demos.Basic.Pikachu.obj");
             ObjFileReader pikachuObj = new ObjFileReader(resource, false);
             var pikachu = pikachuObj.ObjToGroup();
             pikachu.Rotate(ry: Math.PI).Translate(tx: -4);

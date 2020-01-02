@@ -355,12 +355,14 @@ namespace ray_tracer
             return cyl;
         }
 
-        public static Dictionary<string, Type> GetScenes<T>()
+        public static Dictionary<string, Type> GetScenes<T>(string nameSpace = null)
         {
             var types = Assembly.GetAssembly(typeof(T)).GetTypes();
             var sceneTypes = types
                 .Where(type => typeof(AbstractScene).IsAssignableFrom(type))
                 .Where(type => !type.IsAbstract)
+                .Where(type => nameSpace == null || type.Namespace == nameSpace)
+                .OrderBy(type => type.Name)
                 .ToDictionary(type => type.Name);
             return sceneTypes;
         }

@@ -1,7 +1,7 @@
 using ray_tracer;
 using ray_tracer.Shapes;
 
-namespace ray_tracer_demos
+namespace ray_tracer_demos.Basic
 {
     public class MengerSpongeScene : AbstractScene
     {
