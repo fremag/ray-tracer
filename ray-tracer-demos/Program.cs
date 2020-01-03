@@ -23,7 +23,7 @@ namespace ray_tracer_demos
                 Run(new List<Type>
                 {
                     typeof(TorusWireScene),
-//                    typeof(WireFrameScene),
+                    typeof(WireFrameScene),
 //                    typeof(RingPerlinScene),
 //                    typeof(SpotLightSoftShadowScene),
 //                    typeof(SpotLightScene),

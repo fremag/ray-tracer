@@ -13,6 +13,9 @@ namespace ray_tracer
         public double Red { get; }
         public double Green { get; }
         public double Blue { get; }
+        public static readonly Color Yellow = _Green + _Red;
+        public static readonly Color Magenta = _Blue + _Red;
+        public static readonly Color Cyan = _Blue + _Green;
 
         public Color(double c) : this(c, c, c)
         {

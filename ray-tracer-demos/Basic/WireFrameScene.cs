@@ -28,7 +28,7 @@ namespace ray_tracer_demos.Basic
             var mesh = new HeightField(50, 50, Altitude);
             var triangleMeshFactory = new TriangleMeshFactory(false, false);
             Add(triangleMeshFactory.Build(mesh).Translate(tx: 0.5, tz: 0));
-            var wireFrameMeshFactory = new WireFrameMeshFactory(0.001, 0.0025);
+            var wireFrameMeshFactory = new WireFrameMeshFactory(0.001);
             Add(wireFrameMeshFactory.Build(mesh).Translate(tx: -0.5, tz: 0));
         }
     }

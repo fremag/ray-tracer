@@ -11,9 +11,9 @@ namespace ray_tracer_demos
             CameraParameters.Clear();
             CameraParameters.Add(new CameraParameters
             {
-                Name = "Default", Width = 640, Height = 400,
-                CameraX = -10, CameraY = 8, CameraZ = -10,
-                LookX = 0, LookY = 1, LookZ = 0
+                Name = "Default", Width = 1600, Height = 1200,
+                CameraX = -6, CameraY = 6, CameraZ = -6,
+                LookX = 0, LookY = 0, LookZ = 0
             });
         }
 
@@ -38,13 +38,21 @@ namespace ray_tracer_demos
             }
 
             CurveSweepMesh mesh = new CurveSweepMesh(40, 10, CirclePath, CircleCurve);
-            WireFrameMeshFactory factory = new WireFrameMeshFactory(r0, 0*r0, true, true);
-            var torus = factory.Build(mesh);
+            WireFrameMeshFactory factory = new WireFrameMeshFactory(r0, true, true);
+            var torusWire = factory.Build(mesh);
+            torusWire.Material = new Material(Magenta);
+            Add(torusWire).Translate(ty: r2+r0);
+
             TriangleMeshFactory triFactory = new TriangleMeshFactory();
             var torusTriangle = triFactory.Build(mesh);
-            Add(torus).Translate(ty: r2+r0);
+            torusTriangle.Material = new Material(Cyan) {Transparency = 0.99};
             Add(torusTriangle).Translate(ty: r2+r0);
-            torusTriangle.Material = new Material(Blue) {Transparency = 0.9};
+            
+            SphereMeshFactory sphereFactory = new SphereMeshFactory(2*r0);
+            var torusSphere = sphereFactory.Build(mesh);
+            torusSphere.Material = new Material(Yellow);
+            Add(torusSphere).Translate(ty: r2+r0);
+            
             DefaultFloor();
         }
     }
