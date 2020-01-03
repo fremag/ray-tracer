@@ -13,8 +13,9 @@ namespace ray_tracer
         protected static readonly Color Red = Color._Red;
         protected static readonly Color Green = Color._Green;
         protected static readonly Color Blue = Color._Blue;
-        protected static readonly  Color Black = Color.Black;
-        protected static readonly  Color White = Color.White;
+        protected static readonly Color Black = Color.Black;
+        protected static readonly Color White = Color.White;
+        protected static readonly Color Magenta = Blue + Red;
 
         public List<CameraParameters> CameraParameters { get; set; } = new List<CameraParameters>(); 
         public abstract void InitWorld();
@@ -71,5 +72,8 @@ namespace ray_tracer
         {
             World.Lights.Add(light);
         }
+        
+        public Tuple V(double x, double y, double z) => Helper.CreateVector(x, y, z);
+        public Tuple P(double x, double y, double z) => Helper.CreatePoint(x, y, z);
     }
 }
