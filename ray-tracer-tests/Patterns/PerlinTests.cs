@@ -1,3 +1,4 @@
+using NFluent;
 using ray_tracer.Patterns;
 using Xunit;
 
@@ -13,7 +14,9 @@ namespace ray_tracer.tests.Patterns
             var p2 = perlin.perlin(1,0,0);
             var p3 = perlin.perlin(2,0,0);
             var p4 = perlin.perlin(3,0,0);
-            
+            Check.That(p1).IsEqualTo(p2);
+            Check.That(p1).IsEqualTo(p3);
+            Check.That(p1).IsEqualTo(p4);
         }
     }
 }

@@ -28,11 +28,11 @@ namespace ray_tracer_demos
 
         private void Ring()
         {
-            var csgRing = new CsgDifference().Rotate(rx: Pi/2);;
-            var outterRing = new Cylinder(-0.01, 0.01, true);
+            var csgRing = new CsgDifference().Rotate(rx: Pi/2);
+            var outerRing = new Cylinder(-0.01, 0.01, true);
             double  ringThickness = 0.05;
             var innerRing = new Cylinder(-0.011, 0.011, true).Scale(sx: 1-ringThickness, sz: 1-ringThickness);
-            csgRing.Init(outterRing, innerRing);
+            csgRing.Init(outerRing, innerRing);
 
             double delta = 0.005;
             ColorMap ringMap = new ColorMap(
