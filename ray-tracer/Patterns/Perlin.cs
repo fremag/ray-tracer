@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace ray_tracer.Patterns
 {
     // https://flafla2.github.io/2014/08/09/perlinnoise.html
@@ -18,7 +20,8 @@ namespace ray_tracer.Patterns
             double maxValue = 0; // Used for normalizing result to 0.0 - 1.0
             for (int i = 0; i < octaves; i++)
             {
-                total += perlin(x * frequency, y * frequency, z * frequency) * amplitude;
+                var p = perlin(x * frequency, y * frequency, z * frequency) * amplitude;
+                total += p;
 
                 maxValue += amplitude;
 
@@ -105,7 +108,12 @@ namespace ray_tracer.Patterns
                 u);
             y2 = lerp(x1, x2, v);
 
-            return (lerp(y1, y2, w) + 1) / 2; // For convenience we bound it to 0 - 1 (theoretical min/max before is -1 - 1)
+            var result =  (lerp(y1, y2, w) + 1) / 2; // For convenience we bound it to 0 - 1 (theoretical min/max before is -1 - 1)
+            if (result < 0 || result > 1)
+            {
+                Debug.WriteLine("Hey !");
+            }
+            return result;
         }
 
         public int inc(int num)

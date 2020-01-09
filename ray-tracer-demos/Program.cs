@@ -17,14 +17,15 @@ namespace ray_tracer_demos
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            int nbThreads = Environment.ProcessorCount*0+8;
+            int nbThreads = Environment.ProcessorCount*0+0;
+            bool display = true;
             if (true)
             {
                 Run(new List<Type>
                 {
-                    typeof(TorusWireScene),
-                    typeof(WireFrameScene),
-//                    typeof(RingPerlinScene),
+//                    typeof(TorusWireScene),
+//                    typeof(WireFrameScene),
+                    typeof(RingPerlinScene),
 //                    typeof(SpotLightSoftShadowScene),
 //                    typeof(SpotLightScene),
 //                    typeof(PerlinScene),
@@ -42,7 +43,7 @@ namespace ray_tracer_demos
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
 //                typeof(LabyrinthScene),
-                }, nbThreads, true);
+                }, nbThreads, display);
             }
             else
             {
@@ -68,18 +69,19 @@ namespace ray_tracer_demos
 
             Stopwatch sw = Stopwatch.StartNew();
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
-            Run(dir, nbThreads, scenes.ToArray());
+            var files = Run(dir, nbThreads, scenes.ToArray());
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
             if (display)
             {
-                Helper.Display(dir);
+                Helper.Display(files.Count == 1 ? files[0] : dir);
             }
         }
 
-        public static void Run(string dir, int nbThreads, params Type[] sceneTypes)
+        public static List<string> Run(string dir, int nbThreads, params Type[] sceneTypes)
         {
+            var files = new List<string>();
             RenderManager renderMgr = new RenderManager(dir);
 
             foreach (var sceneType in sceneTypes)
@@ -96,8 +98,11 @@ namespace ray_tracer_demos
 
                 Print(sceneType.Name, renderMgr);
                 Console.WriteLine();
-                renderMgr.Save($"{scene.GetType().Name}.ppm");
+               var file = renderMgr.Save($"{scene.GetType().Name}.ppm");
+               files.Add(file);
             }
+
+            return files;
         }
 
         private static void Print(string sceneTypeName, RenderManager renderMgr)
