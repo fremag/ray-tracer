@@ -71,5 +71,7 @@ namespace ray_tracer
         }
 
         public override string ToString() => $"R: {Red} G: {Green} B: {Blue}";
+
+        public static Color Rgb(int r, int g, int b) => new Color(r / 255.0, g / 255.0, b / 255.0);
     }
 }

@@ -25,7 +25,8 @@ namespace ray_tracer_demos
                 {
 //                    typeof(TorusWireScene),
 //                    typeof(WireFrameScene),
-                    typeof(RingPerlinScene),
+//                    typeof(RingPerlinScene),
+                    typeof(OneRingPerlinScene),
 //                    typeof(SpotLightSoftShadowScene),
 //                    typeof(SpotLightScene),
 //                    typeof(PerlinScene),
