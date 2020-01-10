@@ -23,10 +23,10 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-//                    typeof(TorusWireScene),
+                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),
 //                    typeof(RingPerlinScene),
-                    typeof(OneRingPerlinScene),
+//                    typeof(OneRingPerlinScene),
 //                    typeof(SpotLightSoftShadowScene),
 //                    typeof(SpotLightScene),
 //                    typeof(PerlinScene),
@@ -65,7 +65,7 @@ namespace ray_tracer_demos
             {
                 Directory.Delete(dir, true);
             }
-
+            Console.WriteLine($"CreateDirectory: {dir}");
             Directory.CreateDirectory(dir);
 
             Stopwatch sw = Stopwatch.StartNew();
