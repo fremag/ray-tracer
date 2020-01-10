@@ -2,12 +2,12 @@ namespace ray_tracer.Shapes.Mesh
 {
     public class CurveSweepMesh : AbstractMesh
     {
-        public CurveSweepMesh(int n, int m, Path3D path, Curve2D curve, bool triangle = true) : this(n, m, new Path3DAdapter(path), new Curve2DAdapter(curve), triangle)
+        public CurveSweepMesh(int n, int m, Path3D path, Curve2D curve) : this(n, m, new Path3DAdapter(path), new Curve2DAdapter(curve))
         {
             
         } 
         
-        public CurveSweepMesh(int n, int m, IPath3D path, ICurve2D curve, bool triangle=true) : base(n, m)
+        public CurveSweepMesh(int n, int m, IPath3D path, ICurve2D curve) : base(n, m)
         {
             var vectorY = Helper.CreateVector(0, 1, 0);
             for(int i=0; i < n; i++)

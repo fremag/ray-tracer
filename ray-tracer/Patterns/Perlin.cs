@@ -109,10 +109,6 @@ namespace ray_tracer.Patterns
             y2 = lerp(x1, x2, v);
 
             var result =  (lerp(y1, y2, w) + 1) / 2; // For convenience we bound it to 0 - 1 (theoretical min/max before is -1 - 1)
-            if (result < 0 || result > 1)
-            {
-                Debug.WriteLine("Hey !");
-            }
             return result;
         }
 
