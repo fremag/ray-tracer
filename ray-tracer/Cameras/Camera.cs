@@ -1,14 +1,10 @@
-#define OPTIM_PARALLEL
 using System;
 
 namespace ray_tracer.Cameras
 {
-    public class Camera : ICamera
+    public class Camera : AbstractCamera
     {
-        public int HSize { get; }
-        public int VSize { get; }
         public double FieldOfView { get; }
-        public Matrix Transform { get; }
         public double PixelSize { get; }
         public double HalfHeight { get; }
         public double HalfWidth { get; }
@@ -20,13 +16,10 @@ namespace ray_tracer.Cameras
         {
         }
 
-        public Camera(int hSize, int vSize, double fieldOfView, Matrix transform)
+        public Camera(int hSize, int vSize, double fieldOfView, Matrix transform) 
+            : base(hSize, vSize, transform)
         {
-            HSize = hSize;
-            VSize = vSize;
             FieldOfView = fieldOfView;
-            Transform = transform;
-
             var halfView = Math.Tan(fieldOfView / 2);
             var aspect = (double) HSize / VSize;
             if (aspect >= 1)
@@ -45,7 +38,7 @@ namespace ray_tracer.Cameras
             InverseTransform = Transform.Invert();
         }
 
-        public Ray RayForPixel(int px, int py)
+        public override Ray RayForPixel(int px, int py)
         {
             var pixel = GetPixel(px, py);
             var origin = InverseTransform * Helper.CreatePoint(0, 0, 0);

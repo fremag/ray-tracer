@@ -22,7 +22,7 @@ namespace ray_tracer_ui.Pages
             }
         }
 
-        protected readonly CameraParameters cameraParameters = new CameraParameters();
+        protected CameraParameters cameraParameters = new CameraParameters();
         protected readonly RenderParameters renderParameters = new RenderParameters();
         protected string img;
         protected string time;
@@ -76,14 +76,17 @@ namespace ray_tracer_ui.Pages
         {
             var camParams = RayTracingService.CameraParameters(SceneName);
             var cameraParameter = camParams[0];
-            cameraParameters.Height =  cameraParameter.Height;
-            cameraParameters.Width =  cameraParameter.Width;
-            cameraParameters.CameraX =  cameraParameter.CameraX;
-            cameraParameters.CameraY =  cameraParameter.CameraY;
-            cameraParameters.CameraZ =  cameraParameter.CameraZ;
-            cameraParameters.LookX =  cameraParameter.LookX;
-            cameraParameters.LookY =  cameraParameter.LookY;
-            cameraParameters.LookZ =  cameraParameter.LookZ;
+            cameraParameters = new CameraParameters
+            {
+                Height = cameraParameter.Height,
+                Width = cameraParameter.Width,
+                CameraX = cameraParameter.CameraX,
+                CameraY = cameraParameter.CameraY,
+                CameraZ = cameraParameter.CameraZ,
+                LookX = cameraParameter.LookX,
+                LookY = cameraParameter.LookY,
+                LookZ = cameraParameter.LookZ,
+            };
             InvokeAsync(StateHasChanged);
         }
     }

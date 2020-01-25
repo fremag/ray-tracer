@@ -27,7 +27,7 @@ namespace ray_tracer
             OutputDir = outputDir;
         }
 
-        public void Render(CameraParameters camParams, RenderParameters renderParameters, World world)
+        public void Render(ICameraParameters camParams, RenderParameters renderParameters, World world)
         {
             Image = new Canvas(camParams.Width, camParams.Height);
             var camera = camParams.BuildCamera();

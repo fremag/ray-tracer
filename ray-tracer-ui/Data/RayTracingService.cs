@@ -46,15 +46,15 @@ namespace ray_tracer_ui.Data
 
         public RenderStatistics GetStatistics() => RenderManager.RenderStatistics;
 
-        public List<CameraParameters> CameraParameters(string sceneName)
+        public List<ICameraParameters> CameraParameters(string sceneName)
         {
             var scene = CreateScene(sceneName);
-            return scene == null ? new List<CameraParameters>() : scene.CameraParameters;
+            return scene == null ? new List<ICameraParameters>() : scene.CameraParameters;
         }
 
         public List<string> GetScenes() => SceneTypes.Keys.ToList();
 
-        public void Run(string sceneName, CameraParameters cameraParameters, RenderParameters renderParameters)
+        public void Run(string sceneName, ICameraParameters cameraParameters, RenderParameters renderParameters)
         {
             timer.Start();
             Scene = CreateScene(sceneName);

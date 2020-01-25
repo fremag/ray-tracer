@@ -21,7 +21,7 @@ namespace ray_tracer
         protected static readonly Color Brown = Color.Rgb(165, 42, 42);
         protected static readonly Color Cyan = Color.Cyan;
 
-        public List<CameraParameters> CameraParameters { get; set; } = new List<CameraParameters>(); 
+        public List<ICameraParameters> CameraParameters { get; set; } = new List<ICameraParameters>(); 
         public abstract void InitWorld();
 
         protected AbstractScene()

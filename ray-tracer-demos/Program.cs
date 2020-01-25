@@ -23,8 +23,8 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-                    typeof(PenroseTriangleScene),
-//                    typeof(CloverWireScene),
+//                    typeof(PenroseTriangleScene),
+                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),
 //                    typeof(RingPerlinScene),
 //                    typeof(OneRingPerlinScene),
