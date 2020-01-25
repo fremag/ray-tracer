@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using ray_tracer;
+using ray_tracer.Cameras;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
 

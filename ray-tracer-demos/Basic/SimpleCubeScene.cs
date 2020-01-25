@@ -1,5 +1,6 @@
 using System;
 using ray_tracer;
+using ray_tracer.Cameras;
 
 namespace ray_tracer_demos.Basic
 {

@@ -1,14 +1,9 @@
 #define OPTIM_PARALLEL
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace ray_tracer
+namespace ray_tracer.Cameras
 {
-    public class Camera
+    public class Camera : ICamera
     {
         public int HSize { get; }
         public int VSize { get; }
@@ -52,6 +47,16 @@ namespace ray_tracer
 
         public Ray RayForPixel(int px, int py)
         {
+            var pixel = GetPixel(px, py);
+            var origin = InverseTransform * Helper.CreatePoint(0, 0, 0);
+            var direction = (pixel - origin).Normalize();
+            var ray =  Helper.Ray(origin, direction);
+
+            return ray;
+        }
+
+        private Tuple GetPixel(in int px, in int py)
+        {
 // the offset from the edge of the canvas to the pixel's center
             var xOffset = (px + 0.5) * PixelSize;
             var yOffset = (py + 0.5) * PixelSize;
@@ -63,10 +68,7 @@ namespace ray_tracer
 // and then compute the ray's direction vector.
 // (remember that the canvas is at z=-1)
             var pixel = InverseTransform * Helper.CreatePoint(worldX, worldY, -1);
-            var origin = InverseTransform * Helper.CreatePoint(0, 0, 0);
-            var direction = (pixel - origin).Normalize();
-            return Helper.Ray(origin, direction);
+            return pixel;
         }
-
     }
 }

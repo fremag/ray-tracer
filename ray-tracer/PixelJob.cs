@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ray_tracer.Cameras;
 
 namespace ray_tracer
 {
@@ -10,9 +11,9 @@ namespace ray_tracer
         public World World { get; }
         public int MaxRecursion { get; }
         public RenderStatistics RenderStatistics { get; }
-        public Camera Camera { get; }
+        public ICamera Camera { get; }
 
-        public PixelJob(Canvas canvas, World world, int maxRecursion, RenderStatistics renderStatistics, Camera camera)
+        public PixelJob(Canvas canvas, World world, int maxRecursion, RenderStatistics renderStatistics, ICamera camera)
         {
             Canvas = canvas;
             World = world;

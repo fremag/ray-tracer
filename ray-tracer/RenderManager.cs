@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using ray_tracer.Cameras;
 
 namespace ray_tracer
 {
@@ -29,14 +30,10 @@ namespace ray_tracer
         public void Render(CameraParameters camParams, RenderParameters renderParameters, World world)
         {
             Image = new Canvas(camParams.Width, camParams.Height);
-            var point = Helper.CreatePoint(camParams.CameraX, camParams.CameraY, camParams.CameraZ);
-            var look = Helper.CreatePoint(camParams.LookX, camParams.LookY, camParams.LookZ);
-
-            var viewTransform = Helper.ViewTransform(point, look, Helper.CreateVector(0, 1, 0));
-            var camera = new Camera(camParams.Width, camParams.Height, Math.PI / 3, viewTransform);
+            var camera = camParams.BuildCamera();
             stopRequested = false;
             RenderStatistics = new RenderStatistics {Start =  DateTime.Now, TotalPixels = camParams.Width * camParams.Height};
-            Render(camera, world, renderParameters.NbThreads);
+            Render(camera, world, renderParameters.NbThreads, shuffle: renderParameters.Shuffle);
         }
 
         public void Stop()
@@ -66,9 +63,8 @@ namespace ray_tracer
             Render(camParams, renderParameters, world);
         }
         
-        public void Render(Camera camera, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
+        public void Render(ICamera camera, World world, int nbThreads = 4, int maxRecursion = 10, bool shuffle=true)
         {
-
             var pixels = new List<Tuple<int, int>>();
             for (int y = 0; y < camera.VSize; y++)
             {
@@ -146,7 +142,7 @@ namespace ray_tracer
         {
             Render(scene.CameraParameters[0], new RenderParameters
             {
-                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount
+                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount, Shuffle = false
             }, scene.World);
         }
 

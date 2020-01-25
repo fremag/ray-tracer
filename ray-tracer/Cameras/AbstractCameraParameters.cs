@@ -1,14 +1,6 @@
-using System;
-
-namespace ray_tracer
+namespace ray_tracer.Cameras
 {
-    public class RenderParameters
-    {
-        public int NbThreads { get; set; } = Environment.ProcessorCount;
-        public bool Shuffle { get; set; } = true;
-    }
-    
-    public class CameraParameters
+    public abstract class AbstractCameraParameters : ICameraParameters
     {
         public string Name { get; set; }
         public double CameraX { get; set; } = 0;
@@ -21,5 +13,6 @@ namespace ray_tracer
         
         public int Height { get; set;} = 400;
         public int Width { get; set;} = 600;
+        public abstract ICamera BuildCamera();
     }
 }

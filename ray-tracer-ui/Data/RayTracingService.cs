@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using ray_tracer;
+using ray_tracer.Cameras;
 using ray_tracer_demos.Basic;
 using Color = System.Drawing.Color;
 

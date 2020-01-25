@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using ray_tracer;
+using ray_tracer.Cameras;
 using ray_tracer_demos.Basic;
 using ray_tracer_ui.Data;
 

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using NFluent;
+using ray_tracer.Cameras;
 using Xunit;
 
 namespace ray_tracer.tests
