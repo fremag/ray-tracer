@@ -23,7 +23,7 @@ namespace ray_tracer_demos
             {
                 Name = "Default", Width = 400, Height = 400,
                 CameraX = -2, CameraY = -2, CameraZ = -5,
-                Direction = V(0, 0, 1)
+                LookX = 0, LookY = 0, LookZ = 1
             });
         }
 

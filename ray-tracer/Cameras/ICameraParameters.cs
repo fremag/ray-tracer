@@ -9,6 +9,10 @@ namespace ray_tracer.Cameras
         double CameraY { get; }
         double CameraZ { get; }
 
+        double LookX { get; }
+        double LookY { get; }
+        double LookZ { get; }
+
         ICamera BuildCamera();
     }
 }

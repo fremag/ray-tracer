@@ -4,7 +4,6 @@ namespace ray_tracer.Cameras
     {
         public Tuple Up { get; }
         public Tuple Right { get; }
-        public Tuple Direction { get; set; }
 
         public OrthographicCameraParameters(double upX, double upY, double upZ, double rightX, double rightY, double rightZ)
         {
@@ -14,7 +13,7 @@ namespace ray_tracer.Cameras
 
         public override ICamera BuildCamera()
         {
-            return new OrthographicCamera(Width, Height, Position, Direction, Up, Right);
+            return new OrthographicCamera(Width, Height, Position, LookAt, Up, Right);
         }
     }
 }
