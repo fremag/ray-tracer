@@ -6,13 +6,11 @@ namespace ray_tracer.Cameras
         
         public int HSize { get; }
         public int VSize { get; }
-        public Matrix Transform { get; }
 
-        protected AbstractCamera(int hSize, int vSize, Matrix transform)
+        protected AbstractCamera(int hSize, int vSize)
         {
             HSize = hSize;
             VSize = vSize;
-            Transform = transform;
         }
     }
 }

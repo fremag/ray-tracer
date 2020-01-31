@@ -10,14 +10,15 @@ namespace ray_tracer.Cameras
         public double HalfWidth { get; }
 
         private Matrix InverseTransform { get; }
-
+        public Matrix Transform { get; }
+        
         public Camera(int hSize, int vSize, double fieldOfView) :
             this(hSize, vSize, fieldOfView, Helper.CreateIdentity())
         {
         }
 
         public Camera(int hSize, int vSize, double fieldOfView, Matrix transform) 
-            : base(hSize, vSize, transform)
+            : base(hSize, vSize)
         {
             FieldOfView = fieldOfView;
             var halfView = Math.Tan(fieldOfView / 2);
@@ -35,6 +36,7 @@ namespace ray_tracer.Cameras
 
             PixelSize = HalfWidth * 2 / HSize;
 
+            Transform = transform;
             InverseTransform = Transform.Invert();
         }
 

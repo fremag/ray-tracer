@@ -138,11 +138,11 @@ namespace ray_tracer
             return outFilePath;
         }
 
-        public void Render(AbstractScene scene, int nbThreads=-1)
+        public void Render(AbstractScene scene, int nbThreads=-1, bool shuffle=true)
         {
             Render(scene.CameraParameters[0], new RenderParameters
             {
-                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount, Shuffle = false
+                NbThreads = nbThreads >= 0 ? nbThreads : Environment.ProcessorCount, Shuffle = shuffle
             }, scene.World);
         }
 
@@ -151,7 +151,7 @@ namespace ray_tracer
             return Render(typeof(T), nbThreads);
         }
         
-        public AbstractScene Render(Type sceneType, int nbThreads=-1)
+        public AbstractScene Render(Type sceneType, int nbThreads=-1, bool shuffle=false)
         {
             AbstractScene scene = Activator.CreateInstance(sceneType) as AbstractScene;
             if (scene == null)
@@ -159,7 +159,7 @@ namespace ray_tracer
                 throw new InvalidOperationException($"Wrong scene type: {sceneType}");
             }
             scene.InitWorld();
-            Render(scene, nbThreads);
+            Render(scene, nbThreads, shuffle);
             return scene;
         }
     }

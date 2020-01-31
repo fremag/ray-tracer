@@ -24,12 +24,12 @@ namespace ray_tracer
         public List<ICameraParameters> CameraParameters { get; set; } = new List<ICameraParameters>(); 
         public abstract void InitWorld();
 
-        protected AbstractScene()
+        public IShape DefaultFloor() => DefaultFloor(Color.Black, Color.White);
+
+        public void DefaultCamera()
         {
             CameraParameters.Add(new CameraParameters{Name = "Default", Width = 640, Height = 400, CameraX = 0, CameraY = 1, CameraZ = -1, LookX = 0, LookY = 0, LookZ = 0});
         }
-
-        public IShape DefaultFloor() => DefaultFloor(Color.Black, Color.White);
         
         public IShape DefaultFloor(Color color1, Color color2)
         {

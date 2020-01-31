@@ -40,6 +40,10 @@ namespace ray_tracer
 
         public static int Normalize(double c)
         {
+            if (double.IsNaN(c))
+            {
+                return 0;
+            }
             var d = Math.Min(c, 1);
             d = Math.Max(d, 0);
 

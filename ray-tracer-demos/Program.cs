@@ -17,14 +17,15 @@ namespace ray_tracer_demos
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            int nbThreads = Environment.ProcessorCount*1+0;
+            int nbThreads = Environment.ProcessorCount*0+1;
             bool display = true;
+            bool shuffle = !true;
             if (true)
             {
                 Run(new List<Type>
                 {
-//                    typeof(PenroseTriangleScene),
-                    typeof(CloverWireScene),
+                    typeof(PenroseTriangleScene),
+//                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),
 //                    typeof(RingPerlinScene),
 //                    typeof(OneRingPerlinScene),
@@ -45,7 +46,7 @@ namespace ray_tracer_demos
 //                typeof(SurfaceOfRevolutionScene),
 //                typeof(CurveSweepScene),
 //                typeof(LabyrinthScene),
-                }, nbThreads, display);
+                }, nbThreads, display, shuffle);
             }
             else
             {
@@ -56,10 +57,10 @@ namespace ray_tracer_demos
         private static void BenchmarkFull(int nbThreads)
         {
             var scenes = Helper.GetScenes<ConeScene>(typeof(ConeScene).Namespace).Values.ToList();
-            Run(scenes, nbThreads: nbThreads, display: !true);
+            Run(scenes, nbThreads: nbThreads, display: !true, shuffle: false);
         }
 
-        public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false)
+        public static void Run(IEnumerable<Type> scenes, int nbThreads = -1, bool display = false, bool shuffle=true)
         {
             string dir = Path.Combine(Path.GetTempPath(), "raytracer");
             if (Directory.Exists(dir))
@@ -71,7 +72,7 @@ namespace ray_tracer_demos
 
             Stopwatch sw = Stopwatch.StartNew();
             Console.WriteLine($"Start time: {DateTime.Now:HH:mm:ss}");
-            var files = Run(dir, nbThreads, scenes.ToArray());
+            var files = Run(dir, nbThreads, shuffle, scenes.ToArray());
             sw.Stop();
             Console.WriteLine();
             Console.WriteLine($"Time: {sw.ElapsedMilliseconds:###,###,##0} ms");
@@ -81,7 +82,7 @@ namespace ray_tracer_demos
             }
         }
 
-        public static List<string> Run(string dir, int nbThreads, params Type[] sceneTypes)
+        public static List<string> Run(string dir, int nbThreads, bool shuffle, params Type[] sceneTypes)
         {
             var files = new List<string>();
             RenderManager renderMgr = new RenderManager(dir);
@@ -94,7 +95,7 @@ namespace ray_tracer_demos
                 };
                 timer.Elapsed += (sender, args) => { Print(sceneType.Name, renderMgr); };
                 timer.Start();
-                var scene = renderMgr.Render(sceneType, nbThreads);
+                var scene = renderMgr.Render(sceneType, nbThreads, shuffle);
                 renderMgr.Wait();
                 timer.Stop();
 
