@@ -80,7 +80,7 @@ namespace ray_tracer.Shapes
             box = new Bounds {PMin = Helper.CreatePoint(minX, minY, minZ), PMax = Helper.CreatePoint(maxX, maxY, maxZ)};
         }
 
-        public void Add(params IShape[] shapes)
+        public Group Add(params IShape[] shapes)
         {
             box = null;
             foreach (var shape in shapes)
@@ -88,6 +88,8 @@ namespace ray_tracer.Shapes
                 Shapes.Add(shape);
                 shape.Parent = this;
             }
+
+            return this;
         }
 
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)

@@ -79,5 +79,13 @@ namespace ray_tracer
         
         public Tuple V(double x, double y, double z) => Helper.CreateVector(x, y, z);
         public Tuple P(double x, double y, double z) => Helper.CreatePoint(x, y, z);
+
+        public void AddAxis(double r = 0.01)
+        {
+            IShape Cyl(Color c) => new Cylinder {Material = new Material(c)}.Scale(sx: r, sz: r);
+            Add(Cyl(Red));
+            Add(Cyl(Green).Rotate(rz: Pi/2));
+            Add(Cyl(Blue).Rotate(rx: Pi/2));
+        }
     }
 }
