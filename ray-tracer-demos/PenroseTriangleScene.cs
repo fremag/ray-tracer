@@ -24,7 +24,7 @@ namespace ray_tracer_demos
 
         public override void InitWorld()
         {
-            Light(10, -20, -10);
+            Light(10, 15, -50);
             var length = 2;
             var diameter = 0.25;
             var r = diameter / 2;
