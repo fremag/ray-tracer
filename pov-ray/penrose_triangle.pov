@@ -3,15 +3,15 @@
 light_source {
   0*x                  // light's position (translated below)
   color rgb <1,1,1>    // light's color
-  translate <-20, 40, -20>
+  translate <-20, -10, -20>
 }
 
 
 camera{ //-------------------------- 
-  // orthographic
-   location  < 10, 10, -10>
+   //orthographic
+   location  < 0, 0, -20>
    right  x*image_width/image_height
-   //angle    5
+   angle    5
    look_at <0,0,0>
 } //----------
 
@@ -56,6 +56,6 @@ no_shadow
 
 object {
     Penrose_Triangle   
-//    rotate <-45, 0, -45>
-    translate -y/2
+    rotate <-45, 35, 0>
+    translate -L/2*y
 }                    

@@ -1,7 +1,12 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
-
 <details open>
+  <summary>Orthographic camera</summary>
+  <a href="https://en.wikipedia.org/wiki/Penrose_triangle">Penrose triangle</a>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/penrose_triangle.png"/>
+</details>
+
+<details>
   <summary>Perlin noise / pattern</summary>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/the_one_ring_perlin.png"/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/perlin_ring_expanse.png"/>

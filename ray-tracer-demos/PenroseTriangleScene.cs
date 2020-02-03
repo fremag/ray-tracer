@@ -14,28 +14,19 @@ namespace ray_tracer_demos
         
         public PenroseTriangleScene()
         {
-            CameraParameters.Add(new CameraParameters
+            CameraParameters.Add(new OrthographicCameraParameters(0, 3.5, 0, 3.5, 0, 0)
             {
-                Name = "Default", Width = 1600, Height = 1200,
-                CameraX =10, CameraY = 10, CameraZ = -10,
-                LookX = 0, LookY = 0, LookZ = 0,
-                FieldOfView = 2*Pi/360*5
-            });
-            //CameraParameters.Clear();
-            CameraParameters.Add(new OrthographicCameraParameters(0, 8, 0, 8, 0, 0)
-            {
-                Name = "Default", Width = 400, Height = 400,
-                CameraX = -2, CameraY = -2, CameraZ = -5,
+                Name = "Default", Width = 1000, Height = 1000,
+                CameraX = -2, CameraY = -1.5, CameraZ = -4,
                 LookX = 0, LookY = 0, LookZ = 1
             });
         }
 
         public override void InitWorld()
         {
-            //AddAxis(0.01);
-            Light(-10, 20, -10);
-            var length = 1;
-            var diameter = 0.15;
+            Light(10, -20, -10);
+            var length = 2;
+            var diameter = 0.25;
             var r = diameter / 2;
             var l = length - 2 * r;
 
@@ -48,7 +39,10 @@ namespace ray_tracer_demos
             .Add(Element().Rotate(0,0,0).Translate(0,l,0))
             .Add(ElementCut().Rotate(0, Pi/2, 0).Translate(l, l, 0));
 
-            Add(penroseTriangle.Translate(tx: -l/2, ty: -l/2));
+            Add(penroseTriangle
+                .Translate(tx: -l/2, ty: -l/2)
+                .RotateDeg(-35.5,45.5,0)
+                );
         }
     }
 }

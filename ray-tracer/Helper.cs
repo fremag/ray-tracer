@@ -259,6 +259,13 @@ namespace ray_tracer
             transformable.Transform = Translation(tx, ty, tz) * transformable.Transform;
         }
 
+        public static double DegToRad(double degrees) => Math.PI / 180 * degrees;
+        
+        public static T RotateDeg<T>(this T shape, double rx = 0, double ry = 0, double rz = 0) where T : ITransformable
+        {
+            return Rotate(shape, DegToRad(rx), DegToRad(ry), DegToRad(rz));
+        }
+
         public static T Rotate<T>(this T shape, double rx = 0, double ry = 0, double rz = 0) where T : ITransformable
         {
             TransformRotate(shape, rx, ry, rz);
@@ -290,8 +297,8 @@ namespace ray_tracer
             }
             else
             {
-                tMin = tMinNumerator * double.PositiveInfinity;
-                tMax = tMaxNumerator * double.PositiveInfinity;
+                tMin = tMinNumerator >= 0 ? double.PositiveInfinity : double.NegativeInfinity;
+                tMax = tMaxNumerator >= 0 ? double.PositiveInfinity : double.NegativeInfinity;
             }
 
             if (tMin > tMax)
@@ -398,7 +405,7 @@ namespace ray_tracer
             return false;
         }
 
-        private static Random rand = new Random(0); 
+        private static Random rand = new Random(0);
         public static Tuple RandomVector() => CreateVector(rand.NextDouble(), rand.NextDouble(), rand.NextDouble()).Normalize();
     }
 }

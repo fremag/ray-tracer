@@ -17,7 +17,7 @@ namespace ray_tracer_demos
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            int nbThreads = Environment.ProcessorCount*0+1;
+            int nbThreads = Environment.ProcessorCount*1+0;
             bool display = true;
             bool shuffle = !true;
             if (true)

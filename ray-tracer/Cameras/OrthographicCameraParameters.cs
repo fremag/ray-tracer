@@ -11,9 +11,11 @@ namespace ray_tracer.Cameras
             Right = Helper.CreateVector(rightX, rightY, rightZ);
         }
 
+        public Tuple Direction => Helper.CreateVector(LookX, LookY, LookZ);
+    
         public override ICamera BuildCamera()
         {
-            return new OrthographicCamera(Width, Height, Position, LookAt, Up, Right);
+            return new OrthographicCamera(Width, Height, Position, Direction, Up, Right);
         }
     }
 }
