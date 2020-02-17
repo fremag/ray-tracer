@@ -24,12 +24,12 @@ namespace ray_tracer_demos.Basic
             };
             var s2 = new Sphere
             {
-                Material = new Material(Color.White, transparency: 0.9, refractiveIndex: 1.5, reflective: 1, shininess: 300, specular: 0.9, ambient: 0, diffuse: 0.4)
+                Material = new Material(Red, transparency: 1, refractiveIndex: 1.5, reflective: 1, shininess: 300, specular: 0.9, ambient: 0, diffuse: 0.4)
             };
 
             Add(new[]
             {
-                floor,
+                //floor,
                 s2
             });
             Light(-100, 0, -50);
