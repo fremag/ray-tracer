@@ -12,15 +12,16 @@ namespace ray_tracer_demos
             CameraParameters.Add(new CameraParameters
             {
                 Name = "Default", Width = 1600, Height = 1200,
-                CameraX = 0, CameraY = 0, CameraZ = -8,
+                CameraX = 0, CameraY = 2, CameraZ = -5,
                 LookX = 0, LookY = 0, LookZ = 0
             });
         }
 
         public override void InitWorld()
         {
+            DefaultFloor(Brown, Yellow);
             Light(-10, 10, -10);
-            var blob = new Blob {Size = 1};
+            var blob = new Blob {Size = 0.5};
             blob.Points.Add(Helper.CreatePoint(0, 1, 0));
             blob.Points.Add(Helper.CreatePoint(0, 0, 0));
 //            blob.Points.Add(Helper.CreatePoint(1, -1, 0));

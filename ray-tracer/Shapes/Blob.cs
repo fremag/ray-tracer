@@ -134,15 +134,7 @@ namespace ray_tracer.Shapes
                 }
             }
 
-            try
-            {
-                polynomMap.Sort(this);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("No !");
-            }
-
+            polynomMap.Sort(this);
 
             // en dehors de toute zone d'influence le champ de potentiel est nul
             Poly currentPolynom = new Poly {A = 0.0, B = 0.0, C = 0.0};
@@ -229,4 +221,3 @@ namespace ray_tracer.Shapes
         }
     }
 }
-#endif
