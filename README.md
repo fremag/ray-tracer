@@ -2,8 +2,9 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
   <summary>Iso surface</summary>
-  <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a>
+  <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> / <a href="https://en.wikipedia.org/wiki/Metaballs">Metaballs</a>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_metaball.png"/>
+  Thanks to <a href="https://github.com/Scrawk/Marching-Cubes">Scrawk</a> for his code.
 
   <summary>Orthographic camera</summary>
   <a href="https://en.wikipedia.org/wiki/Penrose_triangle">Penrose triangle</a>
