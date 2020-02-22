@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 
 namespace ray_tracer.Shapes.IsoSurface
 {
-    public class MarchingCubes : Marching
+	public class MarchingCubes : Marching
     {
-        private Tuple[] EdgeVertex { get; set; }
+        private Tuple[] EdgeVertex { get; }
 
-        public MarchingCubes(double surface = 0.5f) : base(surface)
+        public MarchingCubes()
         {
             EdgeVertex = new Tuple[12];
         }
@@ -14,11 +15,11 @@ namespace ray_tracer.Shapes.IsoSurface
         /// <summary>
         /// MarchCube performs the Marching Cubes algorithm on a single cube
         /// </summary>
-        protected override void March(double x, double y, double z, double[] cube, IList<Tuple> vertList, IList<int> indexList)
+        protected override void March(double threshold, double cx, double cy, double cz, Voxel[] cube, IList<Tuple> vertList, IList<int> indexList)
         {
 			//Find which vertices are inside of the surface and which are outside
 			int flagIndex = 0;
-            for (int i = 0; i < 8; i++) if (cube[i] <= Surface) flagIndex |= 1 << i;
+            for (int i = 0; i < 8; i++) if (cube[i].Value <= threshold) flagIndex |= 1 << i;
 
             //Find which edges are intersected by the surface
             int edgeFlags = CubeEdgeFlags[flagIndex];
@@ -26,25 +27,34 @@ namespace ray_tracer.Shapes.IsoSurface
             //If the cube is entirely inside or outside of the surface, then there will be no intersections
             if (edgeFlags == 0) return;
 
-            //Find the point of intersection of the surface with each edge
+			double x0 = cube[0].X;
+			double y0 = cube[0].Y;
+			double z0 = cube[0].Z;
+
+			//Find the point of intersection of the surface with each edge
             for (int i = 0; i < 12; i++)
             {
                 //if there is an intersection on this edge
                 if ((edgeFlags & (1 << i)) != 0)
                 {
 					var index0 = EdgeConnection[i, 0];
-					double v1 = cube[index0];
-					double v2 = cube[EdgeConnection[i, 1]];
-					var offset = GetOffset(v1, v2);
+					var index1 = EdgeConnection[i, 1];
+					var voxel0 = cube[index0];
+					var voxel1 = cube[index1];
+					
+					double v0 = voxel0.Value;
+					double v1 = voxel1.Value;
+					var offset = GetOffset(v0, v1, threshold);
 
 					var dx = VertexOffset[index0, 0];
 					var dy = VertexOffset[index0, 1];
 					var dz = VertexOffset[index0, 2];
 
-					var xx = x + (dx + offset * EdgeDirection[i, 0]);
-					var yy = y + (dy + offset * EdgeDirection[i, 1]);
-					var zz = z + (dz + offset * EdgeDirection[i, 2]);
-					EdgeVertex[i] = Helper.CreatePoint(xx, yy, zz);
+					var xx = x0 + cx*(dx + offset * EdgeDirection[i, 0]);
+					var yy = y0 + cy*(dy + offset * EdgeDirection[i, 1]);
+					var zz = z0 + cz*(dz + offset * EdgeDirection[i, 2]);
+					const int nbDigits = 8;
+					EdgeVertex[i] = Helper.CreatePoint(Math.Round(xx, nbDigits), Math.Round(yy, nbDigits), Math.Round(zz, nbDigits));
 				}
             }
 
@@ -81,11 +91,19 @@ namespace ray_tracer.Shapes.IsoSurface
         /// edgeDirection lists the direction vector (vertex1-vertex0) for each edge in the cube.
         /// edgeDirection[12][3]
         /// </summary>
-        private static readonly double[,] EdgeDirection = new double[,]
-	    {
-	        {1.0f, 0.0f, 0.0f},{0.0f, 1.0f, 0.0f},{-1.0f, 0.0f, 0.0f},{0.0f, -1.0f, 0.0f},
-	        {1.0f, 0.0f, 0.0f},{0.0f, 1.0f, 0.0f},{-1.0f, 0.0f, 0.0f},{0.0f, -1.0f, 0.0f},
-	        {0.0f, 0.0f, 1.0f},{0.0f, 0.0f, 1.0f},{ 0.0f, 0.0f, 1.0f},{0.0f,  0.0f, 1.0f}
+        private static readonly double[,] EdgeDirection = {
+	        { 1,  0, 0},
+			{ 0,  1, 0},
+			{-1,  0, 0},
+			{ 0, -1, 0},
+	        { 1,  0, 0},
+			{ 0,  1, 0},
+			{-1,  0, 0},
+			{ 0, -1, 0},
+	        { 0,  0, 1},
+			{ 0,  0, 1},
+			{ 0,  0, 1},
+			{ 0,  0, 1}
 	    };
 
 
@@ -100,8 +118,7 @@ namespace ray_tracer.Shapes.IsoSurface
         /// For each entry in the table, if edge #n is intersected, then bit #n is set to 1.
         /// cubeEdgeFlags[256]
         /// </summary>
-        private static readonly int[] CubeEdgeFlags = new int[]
-	    {
+        private static readonly int[] CubeEdgeFlags = {
 		0x000, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c, 0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00, 
 		0x190, 0x099, 0x393, 0x29a, 0x596, 0x49f, 0x795, 0x69c, 0x99c, 0x895, 0xb9f, 0xa96, 0xd9a, 0xc93, 0xf99, 0xe90, 
 		0x230, 0x339, 0x033, 0x13a, 0x636, 0x73f, 0x435, 0x53c, 0xa3c, 0xb35, 0x83f, 0x936, 0xe3a, 0xf33, 0xc39, 0xd30, 
