@@ -21,7 +21,7 @@ namespace ray_tracer_demos
         {
             Light(-10, 10, -10);
 
-            const int n = 64;
+            const int n = 50;
             const double c = 2;
             var isoSurface = new IsoSurface
             {

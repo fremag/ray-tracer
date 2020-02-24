@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace ray_tracer.Shapes.IsoSurface
 {
@@ -56,9 +58,61 @@ namespace ray_tracer.Shapes.IsoSurface
                     }
                 }
             }
+
+            Compress(verts, indices);
         }
 
-         /// <summary>
+        private void Compress(IList<Tuple> rawVerts, IList<int> indices)
+        {
+            Stopwatch sw = Stopwatch.StartNew();
+            bool[] merged = new bool[rawVerts.Count];
+            
+            for (int i = 0; i < rawVerts.Count-1; i++)
+            {
+                if (merged[i])
+                {
+                    continue;
+                }
+
+                var p1 = rawVerts[i];
+                
+                for (int j = i+1; j < rawVerts.Count; j++)
+                {
+                    if (merged[j])
+                    {
+                        continue;
+                    }
+                    var p2 = rawVerts[j];
+                    var x = (p1.X-p2.X);
+                    var y = (p1.Y-p2.Y);
+                    var z = (p1.Z-p2.Z);
+                    var dist =  x * x + y * y + z * z;
+                    if ( dist < 1e-5)
+                    {
+                        merged[j] = true;
+                        //Console.WriteLine($"Merge ! {i} {j}");
+                        for (int k = 0; k < indices.Count; k++)
+                        {
+                            if (indices[k] == j)
+                            {
+                                indices[k] = i;
+                            }
+                        }
+                    }
+                }
+            }
+            Console.WriteLine("T: "+sw.ElapsedMilliseconds+"ms, Verts: "+rawVerts.Count+", Merged: "+merged.Count(b => b)+", N: "+indices.Distinct().Count() );
+        }
+
+        private double Dist(ref Tuple p1, ref Tuple p2)
+        {
+            var x = (p1.X-p2.X);
+            var y = (p1.Y-p2.Y);
+            var z = (p1.Z-p2.Z);
+            return x * x + y * y + z * z;
+        }
+
+        /// <summary>
         /// MarchCube performs the Marching algorithm on a single cube
         /// </summary>
         protected abstract void March(double threshold, double cx, double cy, double cz, Voxel[] cube, IList<Tuple> vertList, IList<int> indexList);
