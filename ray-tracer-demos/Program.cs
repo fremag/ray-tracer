@@ -26,7 +26,8 @@ namespace ray_tracer_demos
                 {
                     //typeof(PenroseTriangleScene),
                     //typeof(GlassSphereScene),
-                    typeof(IsoSurfaceScene),
+                    typeof(TestScene),
+//                    typeof(IsoSurfaceScene),
 //                    typeof(BlobScene),
 //                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),
