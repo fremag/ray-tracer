@@ -1,12 +1,22 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 <details open>
+  <summary>Christmas</summary>
+<img src="https://github.com/fremag/ray-tracer/blob/master/demos/christmas.png"/>
+<br/>
+<a href="https://forum.raytracerchallenge.com/thread/16/merry-christmas-scene-description?page=1&scrollTo=697">Reference:</a>
+<br/>
+<img src="https://i.imgur.com/QKBOAQW.jpg"/>
+  
+</details>
+<details>
   <summary>Iso surface</summary>
   <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> / <a href="https://en.wikipedia.org/wiki/Metaballs">Metaballs</a>
   <br/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_metaball.png"/>
   Thanks to <a href="https://github.com/Scrawk/Marching-Cubes">Scrawk</a> for his code.
-<br/>
+</details>
+<details>
   <summary>Orthographic camera</summary>
   <a href="https://en.wikipedia.org/wiki/Penrose_triangle">Penrose triangle</a>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/penrose_triangle.png"/>
