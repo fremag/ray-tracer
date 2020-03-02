@@ -38,24 +38,24 @@ namespace ray_tracer.Shapes.IsoSurface
 
             InitVoxels(func);
             
-            IList<int> indices = new List<int>(4*1024);
+            IList<Triplet> triplets = new List<Triplet>(4*1024);
             IList<Tuple> verts = new List<Tuple>(4*1024);
             var marching = new MarchingCubes();
-            marching.Generate(this, verts, indices);
+            marching.Generate(this, verts, triplets);
 
-            GenerateTriangles(indices, verts);
+            GenerateTriangles(triplets, verts);
         }
 
-        private void GenerateTriangles(IList<int> indices, IList<Tuple> verts)
+        private void GenerateTriangles(IList<Triplet> triplets, IList<Tuple> verts)
         {
-            for (int i = 0; i < indices.Count; i++)
+            for (int i = 0; i < triplets.Count; i++)
             {
-                int i1 = indices[i++];
-                int i2 = indices[i++];
-                int i3 = indices[i];
-                Tuple p1 = verts[i1];
-                Tuple p2 = verts[i2];
-                Tuple p3 = verts[i3];
+                int i0 = triplets[i].Index0;
+                int i1 = triplets[i].Index1;
+                int i2 = triplets[i].Index2;
+                Tuple p1 = verts[i0];
+                Tuple p2 = verts[i1];
+                Tuple p3 = verts[i2];
                 var triangle = new Triangle(p1, p2, p3);
                 Add(triangle);
             }
