@@ -13,12 +13,13 @@
   <summary>Iso surface</summary>
   <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> / <a href="https://en.wikipedia.org/wiki/Metaballs">Metaballs</a>
   <br/>
-  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_metaball.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_smooth.png"/>
+  <br/>
   Thanks to <a href="https://github.com/Scrawk/Marching-Cubes">Scrawk</a> for his code.
 </details>
 <details>
   <summary>Orthographic camera</summary>
-  <a href="https://en.wikipedia.org/wiki/Penrose_triangle">Penrose triangle</a>
+  <a href="https://en.wikipedia.org/wiki/Penrose_triangle">Penrose triangle</a><br/>
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/penrose_triangle.png"/>
 </details>
 
