@@ -18,7 +18,7 @@ namespace ray_tracer
         protected static readonly Color White = Color.White;
         protected static readonly Color Magenta = Color.Magenta;
         protected static readonly Color Yellow = Color.Yellow;
-        protected static readonly Color Brown = Color.Rgb(165, 42, 42);
+        protected static readonly Color Brown = Color.Brown;
         protected static readonly Color Cyan = Color.Cyan;
 
         public List<ICameraParameters> CameraParameters { get; set; } = new List<ICameraParameters>(); 

@@ -16,7 +16,7 @@ namespace ray_tracer.Shapes.IsoSurface
         /// <summary>
         /// MarchCube performs the Marching Cubes algorithm on a single cube
         /// </summary>
-        protected override void March(double threshold, double cx, double cy, double cz, Voxel[] cube, IList<Tuple> vertList, IList<Triplet> indexList)
+        protected override void March(double threshold, double cx, double cy, double cz, Voxel[] cube, TriangleMesh mesh)
         {
             //Find which vertices are inside of the surface and which are outside
             int flagIndex = 0;
@@ -70,12 +70,12 @@ namespace ray_tracer.Shapes.IsoSurface
             for (int i = 0; i < triangles.Length; i++)
             {
                 var triplet = triangles[i];
-                var idx = vertList.Count;
+                var idx = mesh.Vertices.Count;
 
-                indexList.Add(new Triplet(idx + WindingOrder[0], idx + WindingOrder[1], idx + WindingOrder[2]));
-                vertList.Add(EdgeVertex[triplet.Index0]);
-                vertList.Add(EdgeVertex[triplet.Index1]);
-                vertList.Add(EdgeVertex[triplet.Index2]);
+                mesh.Triplets.Add(new Triplet(idx + WindingOrder[0], idx + WindingOrder[1], idx + WindingOrder[2]));
+                mesh.Vertices.Add(EdgeVertex[triplet.Index0]);
+                mesh.Vertices.Add(EdgeVertex[triplet.Index1]);
+                mesh.Vertices.Add(EdgeVertex[triplet.Index2]);
             }
         }
 

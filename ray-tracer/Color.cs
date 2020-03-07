@@ -9,10 +9,25 @@ namespace ray_tracer
         public static readonly Color _Red = new Color(1,0,0);
         public static readonly Color _Green = new Color(0,1,0);
         public static readonly Color _Blue = new Color(0,0,1);
+        public static readonly Color Brown = Rgb(170, 110, 40);
+        public static readonly Color Maroon = Rgb(128, 0, 0);
+        public static readonly Color Olive = Rgb(128, 128, 0);
+        public static readonly Color Teal = Rgb(0, 128, 128);
+        public static readonly Color Navy = Rgb(0, 0, 128);
+        public static readonly Color Orange = Rgb(245, 130, 48);
+        public static readonly Color Lime = Rgb(210, 245, 60);
+        public static readonly Color Purple = Rgb(145, 30, 180);
+        public static readonly Color Grey = Rgb(128, 128, 128);
+        public static readonly Color Pink = Rgb(250, 190, 190);
+        public static readonly Color Apricot = Rgb(255, 215, 180);
+        public static readonly Color Beige = Rgb(255, 250, 200);
+        public static readonly Color Mint = Rgb(170, 255, 195);
+        public static readonly Color Lavender = Rgb(230, 190, 255);
 
         public double Red { get; }
         public double Green { get; }
         public double Blue { get; }
+
         public static readonly Color Yellow = _Green + _Red;
         public static readonly Color Magenta = _Blue + _Red;
         public static readonly Color Cyan = _Blue + _Green;

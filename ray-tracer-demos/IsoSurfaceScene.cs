@@ -11,24 +11,26 @@ namespace ray_tracer_demos
             CameraParameters.Clear();
             CameraParameters.Add(new CameraParameters
             {
-                Name = "Default", Width = 640, Height = 400,
-                CameraX = 0, CameraY = 0, CameraZ = -10,
-                LookX = 0, LookY = 0, LookZ = 0
+                Name = "Default", Width = 800, Height = 600,
+                CameraX = 0, CameraY = 2, CameraZ = -5,
+                LookX = 0, LookY = 2, LookZ = 0
             });
         }
 
         public override void InitWorld()
         {
             Light(-10, 10, -10);
-
-            const int n = 50;
+            
+            DefaultFloor();
+            
+            const int n = 35;
             const double c = 2;
             var isoSurface = new IsoSurface
             {
                 Threshold = 3,
                 XMin = -c, YMin = -c, ZMin = -c,
                 XMax = c, YMax = c,  ZMax = c,
-                Width = n, Height = n, Depth = n
+                Width = n, Height = n, Depth = n,
             };
 
             double SqrDist(double x0, double y0, double z0, double x1, double y1, double z1)
@@ -49,8 +51,24 @@ namespace ray_tracer_demos
             }
 
             isoSurface.Init(Func);
+            
+            var material = new Material(White)
+            {
+                Reflective = 0,
+                Ambient = 0.3,
+                Diffuse = 0.4,
+                Specular = 0.5,
+                Transparency = 0,
+                RefractiveIndex = 0.9
+            };
 
-            Add(isoSurface);
+            var shape1 = isoSurface.GetShape(true, 1e-9);
+            shape1.Material = material;
+            Add(shape1.Scale(0.75).Translate(ty: 2, tx: -1));
+            
+            var shape2 = isoSurface.GetShape(false, 1e-7);
+            shape2.Material = material;
+            Add(shape2.Scale(0.75).Translate(ty: 1, tx: 1));
         }
     }
 }

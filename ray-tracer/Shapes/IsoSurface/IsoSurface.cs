@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 
 namespace ray_tracer.Shapes.IsoSurface
 {
-    public class IsoSurface : Group 
+    public class IsoSurface
     {
         public Voxel[][][] Voxels { get; set; }
         public double XMin { get; set; }
@@ -30,35 +29,38 @@ namespace ray_tracer.Shapes.IsoSurface
                 {
                     Voxels[i][j] = new Voxel[Depth];
                 }
-            } 
-            
+            }
+
             Dx = (XMax - XMin) / Width;
             Dy = (YMax - YMin) / Height;
             Dz = (ZMax - ZMin) / Depth;
 
             InitVoxels(func);
-            
-            IList<Triplet> triplets = new List<Triplet>(4*1024);
-            IList<Tuple> verts = new List<Tuple>(4*1024);
-            var marching = new MarchingCubes();
-            marching.Generate(this, verts, triplets);
-
-            GenerateTriangles(triplets, verts);
         }
 
-        private void GenerateTriangles(IList<Triplet> triplets, IList<Tuple> verts)
+        public IShape GetShape(bool smooth, double compressDistance)
         {
-            for (int i = 0; i < triplets.Count; i++)
+            var marching = new MarchingCubes();
+            var mesh = new TriangleMesh();
+            marching.Generate(this, mesh);
+            var g = new Group();
+            mesh.Compress(compressDistance);
+            if (smooth)
             {
-                int i0 = triplets[i].Index0;
-                int i1 = triplets[i].Index1;
-                int i2 = triplets[i].Index2;
-                Tuple p1 = verts[i0];
-                Tuple p2 = verts[i1];
-                Tuple p3 = verts[i2];
-                var triangle = new Triangle(p1, p2, p3);
-                Add(triangle);
+                foreach (var shape in mesh.GenerateSmoothTriangles())
+                {
+                    g.Add(shape);
+                }
             }
+            else
+            {
+                foreach (var shape in mesh.GenerateTriangles())
+                {
+                    g.Add(shape);
+                }
+            }
+
+            return g;
         }
 
         private void InitVoxels(Func<double, double, double, double> func)
@@ -74,7 +76,7 @@ namespace ray_tracer.Shapes.IsoSurface
                         double z = ZMin + k * Dz;
 
                         var value = func(x, y, z);
-                        Voxels[i][j][k] = new Voxel { X = x, Y = y, Z = z, Value = value};
+                        Voxels[i][j][k] = new Voxel {X = x, Y = y, Z = z, Value = value};
                     }
                 }
             }
