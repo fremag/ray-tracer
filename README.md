@@ -1,7 +1,7 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details>
+<details open>
   <summary>Iso surface</summary>
   <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> / <a href="https://en.wikipedia.org/wiki/Metaballs">Metaballs</a>
   <br/>
