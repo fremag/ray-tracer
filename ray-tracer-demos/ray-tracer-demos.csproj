@@ -23,6 +23,15 @@
       <EmbeddedResource Include="Basic\teapot.obj">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </EmbeddedResource>
+    <EmbeddedResource Include="teapot-low.obj">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="teapot-lowtri.obj">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_teapot.obj">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     </ItemGroup>
 
 </Project>
