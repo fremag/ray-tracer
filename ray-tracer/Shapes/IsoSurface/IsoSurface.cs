@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ray_tracer.Shapes.IsoSurface
 {
@@ -38,28 +39,33 @@ namespace ray_tracer.Shapes.IsoSurface
             InitVoxels(func);
         }
 
-        public IShape GetShape(bool smooth, double compressDistance)
+        public IShape GetShape(bool smooth, double compressDistance, int nbSubGroup=10)
         {
             var marching = new MarchingCubes();
             var mesh = new TriangleMesh();
             marching.Generate(this, mesh);
             var g = new Group();
             mesh.Compress(compressDistance);
-            if (smooth)
+            int n = mesh.Triplets.Count / nbSubGroup;
+            int i = 0;
+            Group subGroup = new Group();
+            g.Add(subGroup);
+            IEnumerable<IShape> triangles = smooth ? mesh.GenerateSmoothTriangles() : mesh.GenerateTriangles();
+            foreach (var shape in triangles)
             {
-                foreach (var shape in mesh.GenerateSmoothTriangles())
+                if (i++ > n)
                 {
-                    g.Add(shape);
+                    subGroup = new Group();
+                    g.Add(subGroup);
+                    i = 0;
                 }
-            }
-            else
-            {
-                foreach (var shape in mesh.GenerateTriangles())
-                {
-                    g.Add(shape);
-                }
+                subGroup.Add(shape);
             }
 
+            if (subGroup.Count > 0)
+            {
+                g.Add(subGroup);
+            }
             return g;
         }
 
