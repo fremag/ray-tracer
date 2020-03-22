@@ -15,7 +15,7 @@ namespace ray_tracer.Shapes.IsoSurface
             var dMax = distMax * distMax;
             Stopwatch sw = Stopwatch.StartNew();
             bool[] merged = new bool[Vertices.Count];
-
+            
             for (int i = 0; i < Vertices.Count - 1; i++)
             {
                 if (merged[i])
@@ -156,6 +156,14 @@ namespace ray_tracer.Shapes.IsoSurface
             for (int i = 0; i < n; i++)
             {
                 var normal = normals[i].N;
+                if (
+                    double.IsNaN(normal.X)
+                    || double.IsNaN(normal.Y)
+                    || double.IsNaN(normal.Z))
+                {
+                    continue;
+                }
+                    
                 vx += normal.X;
                 vy += normal.Y;
                 vz += normal.Z;

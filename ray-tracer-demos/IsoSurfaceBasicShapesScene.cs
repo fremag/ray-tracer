@@ -33,10 +33,14 @@ namespace ray_tracer_demos
 
             DefaultFloor();
 
-            const int n = 4;
-            const double c = 2;
-            var sphere = InitSurface(true, n, c, new SphereField());
-            Add(sphere.Translate(1, 1));
+            var sphere = InitSurface(true, 20, 2, new SphereField());
+            Add(sphere.Scale(0.5).Translate(1, 1));
+            var cone = InitSurface(true, 30, 2, new ConeField());
+            Add(cone.Scale(0.5).Translate(-1, 1));
+            var cube = InitSurface(true, 30, 2, new CubeField());
+            Add(cube.Scale(0.5).Translate(-1, 2.5));
+            var cylinder = InitSurface(true, 30, 2, new CylinderField());
+            Add(cylinder.Scale(0.5).Translate(1, 2.5));
         }
 
         private IShape InitSurface(bool smooth, in int n, in double c, IScalarField field)
