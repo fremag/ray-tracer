@@ -20,7 +20,7 @@ namespace ray_tracer.Shapes.IsoSurface
         public int Depth { get; set; }
         public double Threshold { get; set; }
 
-        public void Init(Func<double, double, double, double> func)
+        public void Init(IScalarField field)
         {
             Voxels = new Voxel[Width][][];
             for (int i = 0; i < Width; i++)
@@ -36,28 +36,27 @@ namespace ray_tracer.Shapes.IsoSurface
             Dy = (YMax - YMin) / Height;
             Dz = (ZMax - ZMin) / Depth;
 
-            InitVoxels(func);
+            InitVoxels(field);
         }
 
-        public IShape GetShape(bool smooth, double compressDistance, int nbSubGroup=10)
+        public IShape GetShape(bool smooth, double compressDistance, int nbSubGroup=50)
         {
             var marching = new MarchingCubes();
             var mesh = new TriangleMesh();
             marching.Generate(this, mesh);
             var g = new Group();
             mesh.Compress(compressDistance);
-            int n = mesh.Triplets.Count / nbSubGroup;
-            int i = 0;
+            int n = 0;
             Group subGroup = new Group();
             g.Add(subGroup);
             IEnumerable<IShape> triangles = smooth ? mesh.GenerateSmoothTriangles() : mesh.GenerateTriangles();
             foreach (var shape in triangles)
             {
-                if (i++ > n)
+                if (n++ > nbSubGroup)
                 {
                     subGroup = new Group();
                     g.Add(subGroup);
-                    i = 0;
+                    n = 0;
                 }
                 subGroup.Add(shape);
             }
@@ -69,7 +68,7 @@ namespace ray_tracer.Shapes.IsoSurface
             return g;
         }
 
-        private void InitVoxels(Func<double, double, double, double> func)
+        private void InitVoxels(IScalarField field)
         {
             for (int i = 0; i < Width; i++)
             {
@@ -81,7 +80,7 @@ namespace ray_tracer.Shapes.IsoSurface
                         double y = YMin + j * Dy;
                         double z = ZMin + k * Dz;
 
-                        var value = func(x, y, z);
+                        var value = field.F(x, y, z);
                         Voxels[i][j][k] = new Voxel {X = x, Y = y, Z = z, Value = value};
                     }
                 }

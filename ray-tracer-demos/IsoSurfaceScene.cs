@@ -1,4 +1,3 @@
-using System;
 using ray_tracer;
 using ray_tracer.Cameras;
 using ray_tracer.Shapes.IsoSurface;
@@ -18,68 +17,76 @@ namespace ray_tracer_demos
             });
         }
 
+        private readonly Material material = new Material(White)
+        {
+            Reflective = 0,
+            Ambient = 0.3,
+            Diffuse = 0.4,
+            Specular = 0.5,
+            Transparency = 0,
+            RefractiveIndex = 0.9
+        };
+        
         public override void InitWorld()
         {
             Light(-10, 10, -10);
-            
+
             DefaultFloor();
-            
-            const int n = 40;
-            const double c = 2;
-            const int nbSubGroup = 100;
+
+            const int n = 50;
+            const double c = 3;
+            var shape1 = InitSurfaceSphereCube(true, n, c);
+            Add(shape1.Scale(0.75).Translate(tx: -1, ty: 1));
+
+            var shape2 = InitSurfaceSphereCube(false, n, c);
+            Add(shape2.Scale(0.75).Translate(tx: -1, ty: 2.5));
+
+            var shape3 = InitSurfaceConeCylinder(true, n, c);
+            Add(shape3.Scale(0.75).Translate(tx: 1.5));
+
+            var shape4 = InitSurfaceConeCylinder(false, n, c);
+            Add(shape4.Scale(0.75).Translate(tx: 1.5, ty: 2));
+        }
+
+        private IShape InitSurfaceConeCylinder(bool smooth, in int n, in double c)
+        {
             var isoSurface = new IsoSurface
             {
                 Threshold = 3,
                 XMin = -c, YMin = -c, ZMin = -c,
-                XMax = c, YMax = c,  ZMax = c,
+                XMax = c, YMax = c, ZMax = c,
                 Width = n, Height = n, Depth = n,
             };
 
-            double SqrDist(double x0, double y0, double z0, double x1, double y1, double z1)
-            {
-                var x2 = (x0 - x1) * (x0 - x1);
-                var y2 = (y0 - y1) * (y0 - y1);
-                var z2 = (z0 - z1) * (z0 - z1);
-                var r2 = x2 + y2 + z2;
-                return r2;
-            }
-            
-            double Cubic(double x0, double y0, double z0, double x1, double y1, double z1)
-            {
-                var x = Math.Abs(x0 - x1);
-                var y = Math.Abs(y0 - y1);
-                var z = Math.Abs(z0 - z1);
-                var v = Math.Max(x, Math.Max(y, z));
-                return v*v;
-            }
+            IScalarField field = new InvSqrSumField(
+                new ConeField().Translate(0,2,0)
+                , new CylinderField().Translate(0,1,0)
+            );
+            isoSurface.Init(field);
+            var shape = isoSurface.GetShape(smooth, 1e-9);
+            shape.Material = material;
+            return shape;
+        }
 
-            double Func(double x, double y, double z)
+        private IShape InitSurfaceSphereCube(bool smooth, in int n, in double c)
+        {
+            var isoSurface = new IsoSurface
             {
-                var v=  1/SqrDist(x, y, z, -1, 0, 0);
-                v +=  1/Cubic(x, y, z, 1, 0, 0);
-                v +=  1/SqrDist(x, y, z, 0, 1, 0);
-                return v;
-            }
-
-            isoSurface.Init(Func);
-            
-            var material = new Material(White)
-            {
-                Reflective = 0,
-                Ambient = 0.3,
-                Diffuse = 0.4,
-                Specular = 0.5,
-                Transparency = 0,
-                RefractiveIndex = 0.9
+                Threshold = 3,
+                XMin = -c, YMin = -c, ZMin = -c,
+                XMax = c, YMax = c, ZMax = c,
+                Width = n, Height = n, Depth = n,
             };
 
-            var shape1 = isoSurface.GetShape(true, 1e-9, nbSubGroup);
-            shape1.Material = material;
-            Add(shape1.Scale(0.75).Rotate(ry: -Pi/4).Translate(ty: 2, tx: -1));
-            
-            var shape2 = isoSurface.GetShape(false, 1e-7, nbSubGroup);
-            shape2.Material = material;
-            Add(shape2.Scale(0.75).Rotate(ry: -Pi/4).Translate(ty: 1, tx: 1));
+            IScalarField field = new InvSqrSumField(
+                new SphereField().Translate(0,1,0)
+                , new CubeField().Translate(-1,0,0)
+                , new SphereField().Translate(1,0,0)
+            );
+            isoSurface.Init(field);
+            var shape = isoSurface.GetShape(smooth, 1e-10);
+            shape.Material = material;
+            return shape;
         }
     }
 }

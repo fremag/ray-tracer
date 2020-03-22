@@ -47,17 +47,17 @@ namespace ray_tracer.Shapes.IsoSurface
                     merged[j] = true;
                     foreach (var t in Triplets)
                     {
-                        if (t.Index0 == j)
+                        if (t.Index0 == j && t.Index1 != i && t.Index2 != i)
                         {
                             t.Index0 = i;
                         }
 
-                        if (t.Index1 == j)
+                        if (t.Index1 == j && t.Index0 != i && t.Index2 != i)
                         {
                             t.Index1 = i;
                         }
 
-                        if (t.Index2 == j)
+                        if (t.Index2 == j && t.Index0 != i && t.Index1 != i)
                         {
                             t.Index2 = i;
                         }
@@ -141,7 +141,7 @@ namespace ray_tracer.Shapes.IsoSurface
 
                 yield return new SmoothTriangle(p0, p1, p2, n0, n1, n2)
                 {
-                   // Material = materials[i % materials.Length]
+                    Material = materials[i % materials.Length]
                 };
             }
         }
