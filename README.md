@@ -8,7 +8,7 @@
   <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_smooth.png"/>
   <br/>
   <br/>
-  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_basic_shapes.png.png"/>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/isosurface_basic_shapes.png"/>
   <br/>
   Thanks to <a href="https://github.com/Scrawk/Marching-Cubes">Scrawk</a> for his code.
 </details>
