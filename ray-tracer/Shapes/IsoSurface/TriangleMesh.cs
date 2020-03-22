@@ -65,10 +65,10 @@ namespace ray_tracer.Shapes.IsoSurface
                 }
             }
 
-            int n1 = Triplets.Count;
-            Triplets = Triplets.Distinct().ToList();
-            int n2 = Triplets.Count;
-            Console.WriteLine($"[Compress] n1: {n1}, n2: {n2}, t: {sw.ElapsedMilliseconds} ms");
+            int n1 = Vertices.Count;
+            int n2 = merged.Count(m => ! m);
+            
+            Console.WriteLine($"[Compress] n1: {n1}, n2 : {n2}, t: {sw.ElapsedMilliseconds} ms");
         }
 
         public IEnumerable<Triangle> GenerateTriangles()
@@ -81,6 +81,10 @@ namespace ray_tracer.Shapes.IsoSurface
                 Tuple p1 = Vertices[i0];
                 Tuple p2 = Vertices[i1];
                 Tuple p3 = Vertices[i2];
+                if (p1.Equals(p2) || p1.Equals(p3) || p2.Equals(p3))
+                {
+                    continue;
+                }
                 var triangle = new Triangle(p1, p2, p3);
                 yield return triangle;
             }
@@ -103,6 +107,12 @@ namespace ray_tracer.Shapes.IsoSurface
                 Tuple p2 = Vertices[i1];
                 Tuple p3 = Vertices[i2];
                 var triangle = new Triangle(p1, p2, p3);
+                if (double.IsNaN(triangle.N.X)
+                    || double.IsNaN(triangle.N.Y)
+                    || double.IsNaN(triangle.N.Z))
+                {
+                    continue;
+                }
                 normals[i0].Add(triangle);
                 normals[i1].Add(triangle);
                 normals[i2].Add(triangle);
@@ -138,6 +148,10 @@ namespace ray_tracer.Shapes.IsoSurface
                 Tuple p0 = Vertices[i0];
                 Tuple p1 = Vertices[i1];
                 Tuple p2 = Vertices[i2];
+                if (p0.Equals(p1) || p1.Equals(p2) || p2.Equals(p0))
+                {
+                    continue;
+                }
 
                 yield return new SmoothTriangle(p0, p1, p2, n0, n1, n2)
                 {
@@ -146,16 +160,16 @@ namespace ray_tracer.Shapes.IsoSurface
             }
         }
 
-        private Tuple Average(List<Triangle> normals)
+        private Tuple Average(List<Triangle> triangles)
         {
             double vx = 0;
             double vy = 0;
             double vz = 0;
 
-            var n = normals.Count;
+            var n = triangles.Count;
             for (int i = 0; i < n; i++)
             {
-                var normal = normals[i].N;
+                var normal = triangles[i].N;
                 if (
                     double.IsNaN(normal.X)
                     || double.IsNaN(normal.Y)

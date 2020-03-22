@@ -38,9 +38,9 @@ namespace ray_tracer_demos
             var cone = InitSurface(true, 30, 2, new ConeField());
             Add(cone.Scale(0.5).Translate(-1, 1));
             var cube = InitSurface(true, 30, 2, new CubeField());
-            Add(cube.Scale(0.5).Translate(-1, 2.5));
+            Add(cube.Scale(0.5).Translate(-1, 2));
             var cylinder = InitSurface(true, 30, 2, new CylinderField());
-            Add(cylinder.Scale(0.5).Translate(1, 2.5));
+            Add(cylinder.Scale(0.5).Translate(1, 2));
         }
 
         private IShape InitSurface(bool smooth, in int n, in double c, IScalarField field)

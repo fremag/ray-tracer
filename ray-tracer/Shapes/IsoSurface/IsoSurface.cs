@@ -47,11 +47,13 @@ namespace ray_tracer.Shapes.IsoSurface
             var g = new Group();
             mesh.Compress(compressDistance);
             int n = 0;
+            int nbTriangles = 0;
             Group subGroup = new Group();
             g.Add(subGroup);
             IEnumerable<IShape> triangles = smooth ? mesh.GenerateSmoothTriangles() : mesh.GenerateTriangles();
             foreach (var shape in triangles)
             {
+                nbTriangles++;
                 if (n++ > nbSubGroup)
                 {
                     subGroup = new Group();
@@ -65,6 +67,7 @@ namespace ray_tracer.Shapes.IsoSurface
             {
                 g.Add(subGroup);
             }
+            Console.WriteLine($"Triplets: {mesh.Triplets.Count}, Triangles: {nbTriangles}");
             return g;
         }
 
