@@ -47,6 +47,14 @@ namespace ray_tracer
             return shape;
         }
 
+        protected void SafeAdd(params IShape[] shapes)
+        {
+            lock (World)
+            {
+                Add(shapes);
+            }
+        }
+
         protected void Add(params IShape[] shapes)
         {
             World.Add(shapes);
