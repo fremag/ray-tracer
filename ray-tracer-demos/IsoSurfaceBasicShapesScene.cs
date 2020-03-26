@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using ray_tracer;
 using ray_tracer.Cameras;
 using ray_tracer.Shapes.IsoSurface;
@@ -26,21 +28,36 @@ namespace ray_tracer_demos
             Transparency = 0,
             RefractiveIndex = 0.9
         };
-        
+
         public override void InitWorld()
         {
             Light(-10, 10, -10);
 
             DefaultFloor();
 
-            var sphere = InitSurface(true, 20, 2, new SphereField());
-            Add(sphere.Scale(0.5).Translate(1, 1));
-            var cone = InitSurface(true, 30, 2, new ConeField());
-            Add(cone.Scale(0.5).Translate(-1, 1));
-            var cube = InitSurface(true, 30, 2, new CubeField());
-            Add(cube.Scale(0.5).Translate(-1, 2));
-            var cylinder = InitSurface(true, 30, 2, new CylinderField());
-            Add(cylinder.Scale(0.5).Translate(1, 2));
+            var lambda1 = new Action(() =>
+            {
+                var sphere = InitSurface(true, 60, 2, new SphereField());
+                SafeAdd(sphere.Scale(0.5).Translate(1, 1));
+            });
+
+            var lambda2 = new Action(() =>
+            {
+                var cone = InitSurface(true, 60, 2, new ConeField());
+                SafeAdd(cone.Scale(0.5).Translate(-1, 1));
+            });
+            var lambda3 = new Action(() =>
+            {
+                var cube = InitSurface(true, 60, 2, new CubeField());
+                SafeAdd(cube.Scale(0.5).Translate(-1, 2));
+            });
+            var lambda4 = new Action(() =>
+            {
+                var cylinder = InitSurface(true, 60, 2, new CylinderField());
+                SafeAdd(cylinder.Scale(0.5).Translate(1, 2));
+            });
+            var actions = new[] {lambda1, lambda2, lambda3, lambda4};
+            Parallel.ForEach(actions, action => action());
         }
 
         private IShape InitSurface(bool smooth, in int n, in double c, IScalarField field)

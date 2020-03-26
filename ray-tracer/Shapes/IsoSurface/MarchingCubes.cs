@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace ray_tracer.Shapes.IsoSurface
@@ -60,8 +58,7 @@ namespace ray_tracer.Shapes.IsoSurface
                     var xx = x0 + cx * (dx + offset * EdgeDirection[i, 0]);
                     var yy = y0 + cy * (dy + offset * EdgeDirection[i, 1]);
                     var zz = z0 + cz * (dz + offset * EdgeDirection[i, 2]);
-                    const int nbDigits = 8;
-                    EdgeVertex[i] = Helper.CreatePoint(Math.Round(xx, nbDigits), Math.Round(yy, nbDigits), Math.Round(zz, nbDigits));
+                    EdgeVertex[i] = Helper.CreatePoint(xx, yy, zz);
                 }
             }
 
@@ -70,12 +67,21 @@ namespace ray_tracer.Shapes.IsoSurface
             for (int i = 0; i < triangles.Length; i++)
             {
                 var triplet = triangles[i];
-                var idx = mesh.Vertices.Count;
 
+                var p1 = EdgeVertex[triplet.Index0];
+                var p2 = EdgeVertex[triplet.Index1];
+                var p3 = EdgeVertex[triplet.Index2];
+                if (p1.Equals(p2) || p1.Equals(p3) || p2.Equals(p3))
+                {
+                    continue;
+                }
+
+                var idx = mesh.Vertices.Count;
                 mesh.Triplets.Add(new Triplet(idx + WindingOrder[0], idx + WindingOrder[1], idx + WindingOrder[2]));
-                mesh.Vertices.Add(EdgeVertex[triplet.Index0]);
-                mesh.Vertices.Add(EdgeVertex[triplet.Index1]);
-                mesh.Vertices.Add(EdgeVertex[triplet.Index2]);
+                
+                mesh.Vertices.Add(p1);
+                mesh.Vertices.Add(p2);
+                mesh.Vertices.Add(p3);
             }
         }
 
