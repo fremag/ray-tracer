@@ -325,7 +325,6 @@ namespace ray_tracer.tests
             {
                 Transform = Helper.Translation(0, -1, 0)
             };
-            floor.Material.Reflective = 0.5;
             floor.Material.Transparency = 0.5;
             floor.Material.RefractiveIndex = 1.5;
             w.Shapes.Add(floor);
@@ -341,9 +340,9 @@ namespace ray_tracer.tests
             var xs = new Intersections {new Intersection(sqrt2, floor)};
             var comps = xs[0].Compute(r, xs);
             var color = w.ShadeHit(comps);
-            Check.That(color.Red).IsCloseTo(0.93391, 1e-5);
-            Check.That(color.Green).IsCloseTo(0.69643, 1e-5);
-            Check.That(color.Blue).IsCloseTo(0.69243, 1e-5);
+            Check.That(color.Red).IsCloseTo(0.93643, 1e-5);
+            Check.That(color.Green).IsCloseTo(0.68643, 1e-5);
+            Check.That(color.Blue).IsCloseTo(0.68643, 1e-5);
         }
     }
 }
