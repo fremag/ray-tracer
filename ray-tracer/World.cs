@@ -62,8 +62,17 @@ namespace ray_tracer
             var reflected = ReflectedColor(intersectionData, remaining);
             var refracted = RefractedColor(intersectionData, remaining);
 
-            var color = surface + reflected + refracted;
-            return color;
+            if (material.Reflective > 0 && material.Transparency > 0)
+            {
+                var reflectance = intersectionData.Schlick();
+                var color = surface + reflected * reflectance + refracted * (1 - reflectance);
+                return color;
+            }
+            else
+            {
+                var color = surface + reflected + refracted;
+                return color;
+            }
         }
 
         public Color ColorAt(Ray ray, int remaining = 5)

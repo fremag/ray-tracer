@@ -93,7 +93,7 @@ namespace ray_tracer.tests.Shapes
         }
 
         [Fact]
-        public void RayHitsCsgObject()
+        public void RayHitsCsgObjectTest()
         {
             var sphere1 = new Sphere();
             var sphere2 = new Sphere();
@@ -108,6 +108,23 @@ namespace ray_tracer.tests.Shapes
             Check.That(xs[0].Object).IsEqualTo(sphere1);
             Check.That(xs[1].T).IsEqualTo(6.5);
             Check.That(xs[1].Object).IsEqualTo(sphere2);
+        }
+
+        [Fact]
+        public void DivideTest()
+        {
+            var sphere1 = new Sphere().Translate(-1.5);
+            var sphere2 = new Sphere().Translate( 1.5);
+            var left = new Group().Add(sphere1, sphere2);
+            var sphere3 = new Sphere().Translate(tz: -1.5);
+            var sphere4 = new Sphere().Translate(tz:  1.5);
+            var right = new Group().Add(sphere3, sphere4);
+            var diff = new CsgDifference(left, right);
+            diff.Divide(1);
+            Check.That(((Group) left[0])[0]).IsSameReferenceAs(sphere1);
+            Check.That(((Group) left[1])[0]).IsSameReferenceAs(sphere2);
+            Check.That(((Group) right[0])[0]).IsSameReferenceAs(sphere3);
+            Check.That(((Group) right[1])[0]).IsSameReferenceAs(sphere4);
         }
     }
 }

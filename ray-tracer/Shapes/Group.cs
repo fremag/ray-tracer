@@ -135,5 +135,63 @@ namespace ray_tracer.Shapes
             return false;
         }
 
+        public void Partition(IList<IShape> left, IList<IShape> right)
+        {
+            var split = Box.Split();
+            var sides = split.GetEnumerator();
+            sides.MoveNext();
+            var leftSide = sides.Current;
+            sides.MoveNext();
+            var rightSide = sides.Current;
+            List<IShape> remainingShapes = new List<IShape>();
+            foreach (var shape in Shapes)
+            {
+                if (leftSide.Contains(shape.TransformedBox))
+                {
+                    left.Add(shape);
+                }
+                else if (rightSide.Contains(shape.TransformedBox))
+                {
+                    right.Add(shape);
+                }
+                else
+                {
+                    remainingShapes.Add(shape);
+                }
+            }
+            
+            Shapes.Clear();
+            Shapes.AddRange(remainingShapes);
+        }
+        
+        public override IShape Divide(int threshold)
+        {
+            if (threshold <= Shapes.Count)
+            {
+                var left = new List<IShape>();
+                var right = new List<IShape>();
+                Partition(left, right);
+                if (left.Count > 0)
+                {
+                    var g = new Group();
+                    g.Shapes.AddRange(left);
+                    Add(g);
+                }
+
+                if (right.Count > 0)
+                {
+                    var g = new Group();
+                    g.Shapes.AddRange(right);
+                    Add(g);
+                }
+            }
+
+            foreach (var child in Shapes)
+            {
+                child.Divide(threshold);
+            }
+
+            return this;
+        }
     }
 }

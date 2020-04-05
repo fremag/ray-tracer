@@ -13,6 +13,17 @@ namespace ray_tracer
         public abstract void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections);
         public abstract Tuple NormalAtLocal(Tuple worldPoint, Intersection hit=null);
         public abstract Bounds Box { get; }
+        private Bounds transformedBox;
+        public Bounds TransformedBox {
+            get {
+                if (transformedBox == null)
+                {
+                    transformedBox = Box.Transform(Transform);
+                }
+
+                return transformedBox;
+            }
+        }
         
         public virtual bool Contains(IShape shape)
         {
@@ -67,6 +78,11 @@ namespace ray_tracer
             }
 
             return n;
+        }
+
+        public virtual IShape Divide(int threshold)
+        {
+            return this;
         }
     }
 }

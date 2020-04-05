@@ -9,8 +9,10 @@ namespace ray_tracer
         Tuple NormalAt(Tuple worldPoint, Intersection hit=null);
         Tuple WorldToObject(Tuple point);
         Tuple NormalToWorld(Tuple normal);
-        Bounds Box { get; }
         bool Contains(IShape shape);
         bool HasShadow { get; }
+        Bounds Box { get; }
+        Bounds TransformedBox { get; }
+        IShape Divide(int threshold);
     }
 }

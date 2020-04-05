@@ -79,5 +79,12 @@ namespace ray_tracer.Shapes
                  intersections.AddRange(result);
             }
         }
+
+        public override IShape Divide(int threshold)
+        {
+            Right.Divide(threshold);
+            Left.Divide(threshold);
+            return this;
+        }
     }
 }

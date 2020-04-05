@@ -19,17 +19,19 @@ namespace ray_tracer_demos
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             bool display = true;
             bool shuffle = true;
-            bool threading = !true;
+            bool threading = true;
             int nbThreads = threading ? Environment.ProcessorCount : 1;
             if (true)
             {
                 Run(new List<Type>
                 {
                     //typeof(PenroseTriangleScene),
-                    //typeof(GlassSphereScene),
+//                    typeof(WorldReflectionRefractionScene),
+//                    typeof(GlassSphereScene),
 //                    typeof(TestScene),
 //                    typeof(IsoSurfaceScene),
-                    typeof(IsoSurfaceBasicShapesScene),
+//                    typeof(IsoSurfaceBasicShapesScene),
+                    typeof(DragonVolumeHierarchy),
 //                    typeof(Teapot_low),
 //                    typeof(ChristmasScene),
 //                    typeof(BlobScene),
