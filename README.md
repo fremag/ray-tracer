@@ -8,6 +8,12 @@
 Reference:
 <br/>
 <img src="http://www.raytracerchallenge.com/bonus/images/bbox/bounding-boxes.jpg"/>
+<table>
+<tr><th> BVH   </th><th> #Tri. Inters.  </th><th> # Box Inters.  </th><th> Time (s) </th></tr> 
+<tr> <td>Yes   </td><td>  7512 M        </td><td>   2.6 M        </td><td>   15     </td></tr>
+<tr> <td>No    </td><td>   347 M        </td><td>  14.3 M        </td><td>  325     </td></tr>
+<tr><th> Ratio </th><th>   x 22         </th><th>  x 1/ 5.5      </th><th>  x 22    </th></tr>
+</table>
 </details>
 
 <details>
