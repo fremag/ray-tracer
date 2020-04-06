@@ -1,7 +1,16 @@
 # ray-tracer
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
-<details open>
+<details>
+  <summary>Bonus chapter: <a href="http://www.raytracerchallenge.com/bonus/bounding-boxes.html">Bounding Volume hierarchy</a></summary>
+<img src="https://github.com/fremag/ray-tracer/blob/master/demos/dragon_volume_hierarchy.png"/>
+<br/>
+Reference:
+<br/>
+<img src="http://www.raytracerchallenge.com/bonus/images/bbox/bounding-boxes.jpg"/>
+</details>
+
+<details>
   <summary>Iso surface</summary>
   <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> / <a href="https://en.wikipedia.org/wiki/Metaballs">Metaballs</a>
   <br/>

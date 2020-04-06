@@ -25,6 +25,7 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
+//                    typeof(TransparentBoxScene),
                     //typeof(PenroseTriangleScene),
 //                    typeof(WorldReflectionRefractionScene),
 //                    typeof(GlassSphereScene),
