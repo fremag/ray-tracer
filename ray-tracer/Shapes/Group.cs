@@ -99,8 +99,9 @@ namespace ray_tracer.Shapes
                 return;
             }
 
-            foreach (var shape in Shapes)
+            for (var i = 0; i < Shapes.Count; i++)
             {
+                var shape = Shapes[i];
                 shape.Intersect(ref origin, ref direction, intersections);
             }
         }

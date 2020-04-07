@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using ray_tracer;
 using ray_tracer.Cameras;
 using ray_tracer.Shapes.IsoSurface;
@@ -33,19 +35,26 @@ namespace ray_tracer_demos
 
             DefaultFloor();
 
-            const int n = 50;
+            const int n = 100;
             const double c = 3;
-            var shape1 = InitSurfaceSphereCube(true, n, c);
-            Add(shape1.Scale(0.75).Translate(tx: -1, ty: 1));
+            IShape shape1 = null;
+            IShape shape2 = null;
+            IShape shape3 = null;
+            IShape shape4 = null;
 
-            var shape2 = InitSurfaceSphereCube(false, n, c);
-            Add(shape2.Scale(0.75).Translate(tx: -1, ty: 2.5));
+            Action[] actions = {
+                () => shape1 = InitSurfaceSphereCube(true, n, c).Scale(0.75).Translate(tx: -1, ty: 1),
+                () => shape2 = InitSurfaceSphereCube(false, n, c).Scale(0.75).Translate(tx: -1, ty: 2.5),
+                () => shape3 = InitSurfaceConeCylinder(true, n, c).Scale(0.75).Translate(tx: 1.5),
+                () => shape4 = InitSurfaceConeCylinder(false, n, c).Scale(0.75).Translate(tx: 1.5, ty: 2)
 
-            var shape3 = InitSurfaceConeCylinder(true, n, c);
-            Add(shape3.Scale(0.75).Translate(tx: 1.5));
-
-            var shape4 = InitSurfaceConeCylinder(false, n, c);
-            Add(shape4.Scale(0.75).Translate(tx: 1.5, ty: 2));
+            };
+            Parallel.ForEach(actions, action => action());
+            
+            SafeAdd(shape1.Divide(5));
+            SafeAdd(shape2.Divide(5));
+            SafeAdd(shape3.Divide(5));
+            SafeAdd(shape4.Divide(5));
         }
 
         private IShape InitSurfaceConeCylinder(bool smooth, in int n, in double c)

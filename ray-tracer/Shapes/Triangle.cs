@@ -68,7 +68,7 @@ namespace ray_tracer.Shapes
             intersections.Add(new Intersection(t, this, u, v));
         }
 #else        
-        public override Intersections IntersectLocal(ref Tuple origin, ref Tuple direction)
+        public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             ref var rayDir = ref direction;
 
@@ -79,7 +79,7 @@ namespace ray_tracer.Shapes
             var det = E1.X * dirCrossE2_X + E1.Y * dirCrossE2_Y + E1.Z * dirCrossE2_Z;
             if (Math.Abs(det) < Helper.Epsilon)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var f = 1.0 / det;
@@ -90,7 +90,7 @@ namespace ray_tracer.Shapes
             var u = f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
             if (u < 0 || u > 1)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var originCrossE1_X = p1ToOrigin_Y * E1.Z - p1ToOrigin_Z * E1.Y;
@@ -100,11 +100,12 @@ namespace ray_tracer.Shapes
             var v = f * (rayDir.X * originCrossE1_X + rayDir.Y * originCrossE1_Y + rayDir.Z * originCrossE1_Z);
             if (v < 0 || (u + v) > 1)
             {
-                return Intersections.Empty;
+                return;
             }
 
             var t = f * (E2.X * originCrossE1_X + E2.Y * originCrossE1_Y + E2.Z * originCrossE1_Z);
-            return new Intersections {new Intersection(t, this, u, v)};
+            var intersection =  new Intersection(t, this, u, v);
+            intersections.Add(intersection);
         }
 #endif
         public override Tuple NormalAtLocal(Tuple worldPoint, Intersection hit = null)
