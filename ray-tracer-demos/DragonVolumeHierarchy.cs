@@ -18,10 +18,17 @@ namespace ray_tracer_demos
             });
         }
 
-        private IShape GetDragon()
+        private IShape GetDragon(bool basicGroup = true)
         {
             ObjFileReader dragonReader = new ObjFileReader("dragon.obj", true);
-            var dragon = dragonReader.ObjToGroup();
+            Group rawTriangles = dragonReader.DefaultGroup;
+            IShape dragon = rawTriangles;
+            if (!basicGroup)
+            {
+                dragon = new TriangleGroup(rawTriangles);
+            }
+
+            dragon.Divide(16);
             dragon.Scale(0.268);
             return dragon;
         }
@@ -32,10 +39,9 @@ namespace ray_tracer_demos
 
         private void AddDragon(double scale, double angleY, Color color, double diffuse, double transparency, double tx, double ty, double tz, bool addBox = true)
         {
-            var dragon = GetDragon();
+            var dragon = GetDragon(false);
             dragon.Material = new Material(color, ambient: 0.1, diffuse: 0.6, specular: 0.3, shininess: 15);
             dragon.Scale(scale).Rotate(ry: angleY);
-            dragon.Divide(15);
             Add(dragon.Translate(tx, ty, tz));
             if (addBox)
             {
@@ -50,6 +56,7 @@ namespace ray_tracer_demos
 
         public override void InitWorld()
         {
+
             Light(-10, 100, -100);
             Light(0, 100, 0, White * 0.1);
             Light(100, 10, -25, White * 0.2);
@@ -60,7 +67,10 @@ namespace ray_tracer_demos
             AddDragon(0.75, -0.4, new Color(0.9, 0.5, 0.1), 0.2, 0.8, -2, 0.75,-1);
             AddDragon(0.5, -0.2, new Color(1, 0.9, 0.1), 0.1, 0.9, -4, 0,-2);
             AddDragon(0.5, 3.3, new Color(0.9, 1, 0.1), 0.1, 0.9, 4, 0,-2);
+
+//            Light(0, 100, 0, White);
             AddDragon(1, Pi, new Color(1, 1, 1), 0, 0, 0, 0.5, -4, false);
+            
         }
     }
 }
