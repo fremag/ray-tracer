@@ -122,14 +122,22 @@ namespace ray_tracer.Shapes
             float originX = (float)origin.X;
             float originY = (float)origin.Y;
             float originZ = (float)origin.Z;
-            Span<float> u = stackalloc float[count];
-            Span<float> f = stackalloc float[count];
-            Span<float> p1ToOrigin_X = stackalloc float[count];
-            Span<float> p1ToOrigin_Y = stackalloc float[count];
-            Span<float> p1ToOrigin_Z = stackalloc float[count];
-
-            for (int i = 0; i < count; i+= Size)
+            var u = stackalloc float[count];
+            var f = stackalloc float[count];
+            var p1ToOrigin_X = stackalloc float[count];
+            var p1ToOrigin_Y = stackalloc float[count];
+            var p1ToOrigin_Z = stackalloc float[count];
+            bool skipAll = true;
+            for (int i = 0; i < count; i++)
             {
+                if (Math.Abs(det[i]) < Helper.Epsilon)
+                {
+                    skip[i] = true;
+                    continue;
+                }
+
+                skipAll = false;
+                skip[i] = false;
                 f[i] = 1.0f / det[i];
                 p1ToOrigin_X[i] = originX - p1_X[i];
                 p1ToOrigin_Y[i] = originY - p1_Y[i];
@@ -141,14 +149,19 @@ namespace ray_tracer.Shapes
                 u[i] = f[i] *uu;
             }
 
-            bool skipAll = true;
+            if (skipAll)
+            {
+                return;
+            }
+
+            skipAll = true;
             var v = stackalloc float[count];
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
             var originCrossE1_Z = stackalloc float[count];
             for (int i = 0; i < count; i++)
             {
-                if (double.IsNaN(u[i]) || u[i] < 0 || u[i] > 1)
+                if (u[i] < 0 || u[i] > 1)
                 {
                     skip[i] = true;
                     continue;
