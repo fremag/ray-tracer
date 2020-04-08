@@ -140,17 +140,28 @@ namespace ray_tracer.Shapes
             var p1ToOrigin_Z = stackalloc float[count];
             bool skipAll = true;
             bool* skip = stackalloc bool[count];
-            
+            Vector256<float> epsPos = Vector256.Create((float)Helper.Epsilon);
+            Vector256<float> epsNeg = Vector256.Create((float)Helper.Epsilon);
+            Vector256<float> ones = Vector256.Create(1f);
+
             for (int i = 0; i < count; i++)
             {
-                if (Math.Abs(det[i]) < Helper.Epsilon)
+                skip[i] = det[i] > -Helper.Epsilon && det[i] < Helper.Epsilon;
+                skipAll &= skip[i];
+            }
+            
+            if (skipAll)
+            {
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                if (skip[i]) 
                 {
-                    skip[i] = true;
                     continue;
                 }
 
-                skipAll = false;
-                skip[i] = false;
                 f[i] = 1.0f / det[i];
                 p1ToOrigin_X[i] = originX - p1_X[i];
                 p1ToOrigin_Y[i] = originY - p1_Y[i];
@@ -160,26 +171,21 @@ namespace ray_tracer.Shapes
                 uu += p1ToOrigin_Y[i] * dirCrossE2_Y[i];
                 uu += p1ToOrigin_Z[i] * dirCrossE2_Z[i];
                 u[i] = f[i] *uu;
+                skip[i] = u[i] < 0 || u[i] > 1;
             }
 
-            if (skipAll)
-            {
-                return;
-            }
-
-            skipAll = true;
             var v = stackalloc float[count];
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
             var originCrossE1_Z = stackalloc float[count];
+            skipAll = true;
+
             for (int i = 0; i < count; i++)
             {
-                if (u[i] < 0 || u[i] > 1)
+                if (skip[i])
                 {
-                    skip[i] = true;
                     continue;
                 }
-
                 skipAll = false;
                 originCrossE1_X[i] = p1ToOrigin_Y[i] * e1_Z[i] - p1ToOrigin_Z[i] * e1_Y[i];
                 originCrossE1_Y[i] = p1ToOrigin_Z[i] * e1_X[i] - p1ToOrigin_X[i] * e1_Z[i];
@@ -187,7 +193,6 @@ namespace ray_tracer.Shapes
 
                 v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
             }
-
             if (skipAll)
             {
                 return;
