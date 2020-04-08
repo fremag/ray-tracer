@@ -4,6 +4,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace ray_tracer.Shapes
 {
@@ -87,38 +89,47 @@ namespace ray_tracer.Shapes
         public unsafe void IntersectAll(ref Tuple origin, ref Tuple rayDir, Intersections intersections)
         {
             var count = p1_X.Length;
-            
-            bool* skip = stackalloc bool[count];
-            Span<float> dirCrossE2_X = stackalloc float[count];
-            Span<float> dirCrossE2_Y = stackalloc float[count];
-            Span<float> dirCrossE2_Z = stackalloc float[count];
-            Span<float> det = stackalloc float[count];
-            
-            var rayDirX = (float)rayDir.X;
-            var rayDirY = (float)rayDir.Y;
-            var rayDirZ = (float)rayDir.Z;
+            float* dirCrossE2_X = stackalloc float[count];
+            float* dirCrossE2_Y = stackalloc float[count];
+            float* dirCrossE2_Z = stackalloc float[count];
+            float* det = stackalloc float[count];
 
-            for (int i = 0; i < count; i+= Size)
+            var rayDirX = (float) rayDir.X;
+            var rayDirY = (float) rayDir.Y;
+            var rayDirZ = (float) rayDir.Z;
+            Vector256<float> vRayDirX = Vector256.Create(rayDirX);
+            Vector256<float> vRayDirY = Vector256.Create(rayDirY);
+            Vector256<float> vRayDirZ = Vector256.Create(rayDirZ);
+
+            fixed (float* ptre1x = e1_X)
+            fixed (float* ptre1y = e1_Y)
+            fixed (float* ptre1z = e1_Z)
+            fixed (float* ptre2x = e2_X)
+            fixed (float* ptre2y = e2_Y)
+            fixed (float* ptre2z = e2_Z)
             {
-                var e1x = new Vector<float>(e1_X, i); 
-                var e1y = new Vector<float>(e1_Y, i); 
-                var e1z = new Vector<float>(e1_Z, i);
+                for (int i = 0; i < count; i += Size)
+                {
+                    Vector256<float> e1x = Avx.LoadVector256(ptre1x + i);
+                    Vector256<float> e1y = Avx.LoadVector256(ptre1y + i);
+                    Vector256<float> e1z = Avx.LoadVector256(ptre1z + i);
 
-                var e2x = new Vector<float>(e2_X, i); 
-                var e2y = new Vector<float>(e2_Y, i); 
-                var e2z = new Vector<float>(e2_Z, i);
+                    Vector256<float> e2x = Avx.LoadVector256(ptre2x + i);
+                    Vector256<float> e2y = Avx.LoadVector256(ptre2y + i);
+                    Vector256<float> e2z = Avx.LoadVector256(ptre2z + i);
 
-                var crossX = rayDirY * e2z - rayDirZ * e2y;
-                var crossY = rayDirZ * e2x - rayDirX * e2z;
-                var crossZ = rayDirX * e2y - rayDirY * e2x;
+                    var crossX = Avx.Subtract(Avx.Multiply(vRayDirY, e2z), Avx.Multiply(vRayDirZ, e2y));
+                    var crossY = Avx.Subtract(Avx.Multiply(vRayDirZ, e2x), Avx.Multiply(vRayDirX, e2z));
+                    var crossZ = Avx.Subtract(Avx.Multiply(vRayDirX, e2y), Avx.Multiply(vRayDirY, e2x));
 
-                var vDet = e1x * crossX + e1y * crossY + e1z * crossZ;
-                vDet.CopyTo(det.Slice(i));
-                crossX.CopyTo(dirCrossE2_X.Slice(i));
-                crossY.CopyTo(dirCrossE2_Y.Slice(i));
-                crossZ.CopyTo(dirCrossE2_Z.Slice(i));
+                    var vDet = Avx.Add(Avx.Multiply(e1x, crossX), Avx.Add( Avx.Multiply(e1y, crossY), Avx.Multiply(e1z, crossZ)));
+                    Avx.Store(det+i, vDet);
+                    Avx.Store(dirCrossE2_X+i, crossX);
+                    Avx.Store(dirCrossE2_Y+i, crossY);
+                    Avx.Store(dirCrossE2_Z+i, crossZ);
+                }
             }
-
+            
             float originX = (float)origin.X;
             float originY = (float)origin.Y;
             float originZ = (float)origin.Z;
@@ -128,6 +139,8 @@ namespace ray_tracer.Shapes
             var p1ToOrigin_Y = stackalloc float[count];
             var p1ToOrigin_Z = stackalloc float[count];
             bool skipAll = true;
+            bool* skip = stackalloc bool[count];
+            
             for (int i = 0; i < count; i++)
             {
                 if (Math.Abs(det[i]) < Helper.Epsilon)
