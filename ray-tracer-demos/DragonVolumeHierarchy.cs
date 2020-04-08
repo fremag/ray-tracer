@@ -56,7 +56,6 @@ namespace ray_tracer_demos
 
         public override void InitWorld()
         {
-
             Light(-10, 100, -100);
             Light(0, 100, 0, White * 0.1);
             Light(100, 10, -25, White * 0.2);
@@ -67,10 +66,7 @@ namespace ray_tracer_demos
             AddDragon(0.75, -0.4, new Color(0.9, 0.5, 0.1), 0.2, 0.8, -2, 0.75,-1);
             AddDragon(0.5, -0.2, new Color(1, 0.9, 0.1), 0.1, 0.9, -4, 0,-2);
             AddDragon(0.5, 3.3, new Color(0.9, 1, 0.1), 0.1, 0.9, 4, 0,-2);
-
-//            Light(0, 100, 0, White);
             AddDragon(1, Pi, new Color(1, 1, 1), 0, 0, 0, 0.5, -4, false);
-            
         }
     }
 }

@@ -1,4 +1,4 @@
-#define OLD
+#define OPTIM
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,19 +24,19 @@ namespace ray_tracer.Shapes
 
             leftGroup?.Intersect(ref origin, ref direction, intersections);
             rightGroup?.Intersect(ref origin, ref direction, intersections);
-#if OLD
-            for (int i = 0; i < Triangles.Count; i++)
-            {
-                var tri = Triangles[i];
-                tri.Intersect(ref origin, ref direction, intersections);
-            }
-#else
+#if OPTIM
             if (!cached)
             {
                 BuildCaches();
                 cached = true;
             }
             IntersectAll(ref origin, ref direction, intersections);
+#else
+            for (int i = 0; i < Triangles.Count; i++)
+            {
+                var tri = Triangles[i];
+                tri.Intersect(ref origin, ref direction, intersections);
+            }
 #endif            
         }
 
@@ -83,6 +83,7 @@ namespace ray_tracer.Shapes
         public unsafe void IntersectAll(ref Tuple origin, ref Tuple rayDir, Intersections intersections)
         {
             var count = Triangles.Count;
+            var skip = stackalloc bool[count];
             var dirCrossE2_X = stackalloc float[count];
             var dirCrossE2_Y = stackalloc float[count];
             var dirCrossE2_Z = stackalloc float[count];
@@ -109,13 +110,17 @@ namespace ray_tracer.Shapes
             var p1ToOrigin_X = stackalloc float[count];
             var p1ToOrigin_Y = stackalloc float[count];
             var p1ToOrigin_Z = stackalloc float[count];
+            bool skipAll = true;
             for (int i = 0; i < count; i++)
             {
                 if (Math.Abs(det[i]) < Helper.Epsilon)
                 {
+                    skip[i] = true;
                     continue;
                 }
 
+                skipAll = false;
+                skip[i] = false;
                 f[i] = 1.0f / det[i];
                 p1ToOrigin_X[i] = originX - p1_X[i];
                 p1ToOrigin_Y[i] = originY - p1_Y[i];
@@ -127,6 +132,12 @@ namespace ray_tracer.Shapes
                 u[i] = f[i] *uu;
             }
 
+            if (skipAll)
+            {
+                return;
+            }
+
+            skipAll = true;
             var v = stackalloc float[count];
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
@@ -135,9 +146,11 @@ namespace ray_tracer.Shapes
             {
                 if (u[i] < 0 || u[i] > 1)
                 {
+                    skip[i] = true;
                     continue;
                 }
 
+                skipAll = false;
                 originCrossE1_X[i] = p1ToOrigin_Y[i] * e1_Z[i] - p1ToOrigin_Z[i] * e1_Y[i];
                 originCrossE1_Y[i] = p1ToOrigin_Z[i] * e1_X[i] - p1ToOrigin_X[i] * e1_Z[i];
                 originCrossE1_Z[i] = p1ToOrigin_X[i] * e1_Y[i] - p1ToOrigin_Y[i] * e1_X[i];
@@ -145,9 +158,14 @@ namespace ray_tracer.Shapes
                 v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
             }
 
+            if (skipAll)
+            {
+                return;
+            }
+            
             for (int i = 0; i < count; i++)
             {
-                if (v[i] < 0 || (u[i] + v[i]) > 1)
+                if (skip[i] || v[i] < 0 || (u[i] + v[i]) > 1)
                 {
                     continue;
                 }
