@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace ray_tracer.Shapes
 {
@@ -51,17 +52,18 @@ namespace ray_tracer.Shapes
         float[] e2_Z;
         private void BuildCaches()
         {
-            p1_X = new float[Triangles.Count]; 
-            p1_Y = new float[Triangles.Count]; 
-            p1_Z = new float[Triangles.Count]; 
+            int size = Triangles.Count + Size - Triangles.Count % Size; 
+            p1_X = new float[size]; 
+            p1_Y = new float[size]; 
+            p1_Z = new float[size]; 
             
-            e1_X = new float[Triangles.Count]; 
-            e1_Y = new float[Triangles.Count]; 
-            e1_Z = new float[Triangles.Count];
+            e1_X = new float[size]; 
+            e1_Y = new float[size]; 
+            e1_Z = new float[size];
             
-            e2_X = new float[Triangles.Count]; 
-            e2_Y = new float[Triangles.Count]; 
-            e2_Z = new float[Triangles.Count];
+            e2_X = new float[size]; 
+            e2_Y = new float[size]; 
+            e2_Z = new float[size];
             
             for (var i = 0; i < Triangles.Count; i++)
             {
@@ -80,47 +82,54 @@ namespace ray_tracer.Shapes
             }
         }
 
+        static readonly int Size = Vector<float>.Count;
+
         public unsafe void IntersectAll(ref Tuple origin, ref Tuple rayDir, Intersections intersections)
         {
-            var count = Triangles.Count;
-            var skip = stackalloc bool[count];
-            var dirCrossE2_X = stackalloc float[count];
-            var dirCrossE2_Y = stackalloc float[count];
-            var dirCrossE2_Z = stackalloc float[count];
-            var det = stackalloc float[count];
+            var count = p1_X.Length;
+            
+            bool* skip = stackalloc bool[count];
+            Span<float> dirCrossE2_X = stackalloc float[count];
+            Span<float> dirCrossE2_Y = stackalloc float[count];
+            Span<float> dirCrossE2_Z = stackalloc float[count];
+            Span<float> det = stackalloc float[count];
             
             var rayDirX = (float)rayDir.X;
             var rayDirY = (float)rayDir.Y;
             var rayDirZ = (float)rayDir.Z;
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count; i+= Size)
             {
-                dirCrossE2_X[i] = rayDirY * e2_Z[i] - rayDirZ * e2_Y[i];
-                dirCrossE2_Y[i] = rayDirZ * e2_X[i] - rayDirX * e2_Z[i];
-                dirCrossE2_Z[i] = rayDirX * e2_Y[i] - rayDirY * e2_X[i];
+                var e1x = new Vector<float>(e1_X, i); 
+                var e1y = new Vector<float>(e1_Y, i); 
+                var e1z = new Vector<float>(e1_Z, i);
 
-                det[i] = e1_X[i] * dirCrossE2_X[i] + e1_Y[i] * dirCrossE2_Y[i] + e1_Z[i] * dirCrossE2_Z[i];
+                var e2x = new Vector<float>(e2_X, i); 
+                var e2y = new Vector<float>(e2_Y, i); 
+                var e2z = new Vector<float>(e2_Z, i);
+
+                var crossX = rayDirY * e2z - rayDirZ * e2y;
+                var crossY = rayDirZ * e2x - rayDirX * e2z;
+                var crossZ = rayDirX * e2y - rayDirY * e2x;
+
+                var vDet = e1x * crossX + e1y * crossY + e1z * crossZ;
+                vDet.CopyTo(det.Slice(i));
+                crossX.CopyTo(dirCrossE2_X.Slice(i));
+                crossY.CopyTo(dirCrossE2_Y.Slice(i));
+                crossZ.CopyTo(dirCrossE2_Z.Slice(i));
             }
 
             float originX = (float)origin.X;
             float originY = (float)origin.Y;
             float originZ = (float)origin.Z;
-            var u = stackalloc float[count];
-            var f = stackalloc float[count];
-            var p1ToOrigin_X = stackalloc float[count];
-            var p1ToOrigin_Y = stackalloc float[count];
-            var p1ToOrigin_Z = stackalloc float[count];
-            bool skipAll = true;
-            for (int i = 0; i < count; i++)
-            {
-                if (Math.Abs(det[i]) < Helper.Epsilon)
-                {
-                    skip[i] = true;
-                    continue;
-                }
+            Span<float> u = stackalloc float[count];
+            Span<float> f = stackalloc float[count];
+            Span<float> p1ToOrigin_X = stackalloc float[count];
+            Span<float> p1ToOrigin_Y = stackalloc float[count];
+            Span<float> p1ToOrigin_Z = stackalloc float[count];
 
-                skipAll = false;
-                skip[i] = false;
+            for (int i = 0; i < count; i+= Size)
+            {
                 f[i] = 1.0f / det[i];
                 p1ToOrigin_X[i] = originX - p1_X[i];
                 p1ToOrigin_Y[i] = originY - p1_Y[i];
@@ -132,19 +141,14 @@ namespace ray_tracer.Shapes
                 u[i] = f[i] *uu;
             }
 
-            if (skipAll)
-            {
-                return;
-            }
-
-            skipAll = true;
+            bool skipAll = true;
             var v = stackalloc float[count];
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
             var originCrossE1_Z = stackalloc float[count];
             for (int i = 0; i < count; i++)
             {
-                if (u[i] < 0 || u[i] > 1)
+                if (double.IsNaN(u[i]) || u[i] < 0 || u[i] > 1)
                 {
                     skip[i] = true;
                     continue;
@@ -163,7 +167,7 @@ namespace ray_tracer.Shapes
                 return;
             }
             
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Triangles.Count; i++)
             {
                 if (skip[i] || v[i] < 0 || (u[i] + v[i]) > 1)
                 {

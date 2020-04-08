@@ -13,13 +13,33 @@ namespace ray_tracer_demos
 {
     public static class Program
     {
+        static void _Main()
+        {
+            var c = Vector<float>.Count;
+            Console.WriteLine(c);
+            const int N = 20;
+            int fill = N % c;
+            int size = N + fill;
+            float[] a = Enumerable.Range(0, size).Select(i => (float)i).ToArray();
+            float[] b = Enumerable.Range(0, size).Select(i => (float)i+1).ToArray();
+            float[] result = new float[size];
+
+            var i = 0;
+            for (i = 0; i < size; i += c) {
+                var va = new Vector<float>(a, i);
+                var vb = new Vector<float>(b, i);
+                var vc = va + vb; 
+                vc.CopyTo(result, i);
+            }
+        }
+        
         static void Main()
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             bool display =  true;
-            bool shuffle = true;
-            bool threading = true;
+            bool shuffle =  true;
+            bool threading =  true;
             int nbThreads = threading ? Environment.ProcessorCount : 1;
             if (true)
             {
