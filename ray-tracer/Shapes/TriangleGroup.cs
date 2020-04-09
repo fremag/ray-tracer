@@ -74,12 +74,12 @@ namespace ray_tracer.Shapes
 
             leftGroup?.IntersectLocal(ref origin, ref direction, intersections);
             rightGroup?.IntersectLocal(ref origin, ref direction, intersections);
-#if OPTIM
             if (!Triangles.Any())
             {
                 return;
             }
             
+#if OPTIM
             if (!cached)
             {
                 BuildCaches();
