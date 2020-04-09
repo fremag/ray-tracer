@@ -152,7 +152,6 @@ namespace ray_tracer.Shapes
                 return;
             }
 
-
             float originX = (float) origin.X;
             float originY = (float) origin.Y;
             float originZ = (float) origin.Z;
@@ -168,43 +167,53 @@ namespace ray_tracer.Shapes
             Vector256<float> vOne = Vector256.Create(1f);
             Vector256<float> vZero = Vector256.Create(0f);
 
-            skipAll = true;
-            for (int i = 0; i < count; i++)
+            fixed (float* ptrp1x = p1_X)
+            fixed (float* ptrp1y = p1_Y)
+            fixed (float* ptrp1z = p1_Z)
             {
-                if (float.IsNaN(skip[i]))
+                for (int i = 0; i < count; i += Size)
                 {
-                    continue;
-                }
+                    Vector256<float> vSkip = Avx.LoadVector256(skip + i);
+                    var skipVector = ! Avx.TestZ(vSkip, vSkip);
+                    if (skipVector)
+                    {
+                        continue;
+                    }
 
-                f[i] = 1.0f / det[i];
-                p1ToOrigin_X[i] = originX - p1_X[i];
-                p1ToOrigin_Y[i] = originY - p1_Y[i];
-                p1ToOrigin_Z[i] = originZ - p1_Z[i];
+                    Vector256<float> p1x = Avx.LoadVector256(ptrp1x + i);
+                    Vector256<float> p1y = Avx.LoadVector256(ptrp1y + i);
+                    Vector256<float> p1z = Avx.LoadVector256(ptrp1z + i);
+                    
+                    var vp1ToOrigin_X = Avx.Subtract(vOriginX, p1x);
+                    var vp1ToOrigin_Y = Avx.Subtract(vOriginY, p1y);
+                    var vp1ToOrigin_Z = Avx.Subtract(vOriginZ, p1z);
+                    
+                    var vdirCrossE2_X = Avx.LoadVector256(dirCrossE2_X + i);
+                    var vdirCrossE2_Y = Avx.LoadVector256(dirCrossE2_Y + i);
+                    var vdirCrossE2_Z = Avx.LoadVector256(dirCrossE2_Z + i);
+                    
+                    var uuX = Avx.Multiply(vp1ToOrigin_X, vdirCrossE2_X);
+                    var uuY = Avx.Multiply(vp1ToOrigin_Y, vdirCrossE2_Y);
+                    var uuZ = Avx.Multiply(vp1ToOrigin_Z, vdirCrossE2_Z);
+                    var uu = Avx.Add(uuX, Avx.Add(uuY, uuZ));
 
-                float uu = p1ToOrigin_X[i] * dirCrossE2_X[i];
-                uu += p1ToOrigin_Y[i] * dirCrossE2_Y[i];
-                uu += p1ToOrigin_Z[i] * dirCrossE2_Z[i];
-                u[i] = f[i] * uu;
-            }
+                    Vector256<float> vDet = Avx.LoadVector256(det + i);
+                    var vF = Avx.Divide(vOne, vDet);
+                    var vU = Avx.Multiply(vF, uu);
 
-            for (int i = 0; i < count; i++)
-            {
-                if (u[i] < 0 || u[i] > 1)
-                {
-                    skip[i] = float.NaN;
-                }
-                else
-                {
-                    skip[i] = 0f;
-                    skipAll = false;
+                    var vCmpZero = Avx.Compare(vU, vZero, FloatComparisonMode.OrderedLessThanNonSignaling);
+                    var vCmpOne = Avx.Compare(vU, vOne, FloatComparisonMode.OrderedGreaterThanNonSignaling);
+                    vSkip = Avx.Or(vCmpOne, vCmpZero);
+                    
+                    Avx.Store(skip+i, vSkip);
+                    Avx.Store(f+i, vF);
+                    Avx.Store(u+i, vU);
+                    Avx.Store(p1ToOrigin_X + i, vp1ToOrigin_X);
+                    Avx.Store(p1ToOrigin_Y + i, vp1ToOrigin_Y);
+                    Avx.Store(p1ToOrigin_Z + i, vp1ToOrigin_Z);
                 }
             }
             
-            if (skipAll)
-            {
-                return;
-            }
-
             var v = stackalloc float[count];
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
