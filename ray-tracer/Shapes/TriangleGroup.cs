@@ -190,17 +190,14 @@ namespace ray_tracer.Shapes
                 return;
             }
 
-            var originX = (float) origin.X;
-            var originY = (float) origin.Y;
-            var originZ = (float) origin.Z;
             var u = stackalloc float[count];
             var f = stackalloc float[count];
             var p1ToOrigin_X = stackalloc float[count];
             var p1ToOrigin_Y = stackalloc float[count];
             var p1ToOrigin_Z = stackalloc float[count];
-            var vOriginX = Vector256.Create(originX);
-            var vOriginY = Vector256.Create(originY);
-            var vOriginZ = Vector256.Create(originZ);
+            var vOriginX = Vector256.Create((float) origin.X);
+            var vOriginY = Vector256.Create((float) origin.Y);
+            var vOriginZ = Vector256.Create((float) origin.Z);
 
             var vOne = Vector256.Create(1f);
             var vZero = Vector256.Create(0f);
