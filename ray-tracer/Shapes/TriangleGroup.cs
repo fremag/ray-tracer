@@ -97,7 +97,13 @@ namespace ray_tracer.Shapes
 
         private void BuildCaches()
         {
-            int size = Triangles.Count + Size - Triangles.Count % Size; 
+            int size = Triangles.Count;
+            int remains = Triangles.Count % Size;
+            if (remains != 0)
+            {
+                size +=Size - remains;
+            }
+
             p1_X = new float[size]; 
             p1_Y = new float[size]; 
             p1_Z = new float[size]; 

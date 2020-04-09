@@ -29,6 +29,7 @@ namespace ray_tracer_demos
                 Run(new List<Type>
                 {
                     typeof(DragonVolumeHierarchyScene),
+                    typeof(ChristmasScene),
 //                    typeof(TransparentBoxScene),
 //                    typeof(PenroseTriangleScene),
 //                    typeof(WorldReflectionRefractionScene),
@@ -37,7 +38,6 @@ namespace ray_tracer_demos
 //                    typeof(IsoSurfaceScene),
 //                    typeof(IsoSurfaceBasicShapesScene),
 //                    typeof(Teapot_low),
-                    typeof(ChristmasScene),
 //                    typeof(BlobScene),
 //                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),
