@@ -245,12 +245,18 @@ namespace ray_tracer.Shapes
                     var vz2 = Avx.Multiply(p1ToOriginY, e1x);
                     var vZ = Avx.Subtract(vz1, vz2);
                     Avx.Store(originCrossE1_Z + i, vZ);
-                }
-            }
 
-            for (int i = 0; i < count; i++)
-            {
-                v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
+                    var vOriginCrossE1_X = Avx.LoadVector256(originCrossE1_X + i);
+                    var vOriginCrossE1_Y = Avx.LoadVector256(originCrossE1_Y + i);
+                    var vOriginCrossE1_Z = Avx.LoadVector256(originCrossE1_Z + i);
+                    
+                    var vf = Avx.LoadVector256(f + i);
+                    var vvX = Avx.Multiply(vRayDirX, vOriginCrossE1_X);
+                    var vvY = Avx.Multiply(vRayDirY, vOriginCrossE1_Y);
+                    var vvZ = Avx.Multiply(vRayDirZ, vOriginCrossE1_Z);
+                    var vv = Avx.Multiply(vf, Avx.Add(vvX, Avx.Add(vvY, vvZ)));
+                    Avx.Store(v + i, vv);
+                }
             }
             
             for (int i = 0; i < Triangles.Count; i++)
