@@ -218,12 +218,34 @@ namespace ray_tracer.Shapes
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
             var originCrossE1_Z = stackalloc float[count];
-
-            for (int i = 0; i < count; i++)
+            fixed (float* ptre1x = e1_X)
+            fixed (float* ptre1y = e1_Y)
+            fixed (float* ptre1z = e1_Z)
             {
-                originCrossE1_X[i] = p1ToOrigin_Y[i] * e1_Z[i] - p1ToOrigin_Z[i] * e1_Y[i];
-                originCrossE1_Y[i] = p1ToOrigin_Z[i] * e1_X[i] - p1ToOrigin_X[i] * e1_Z[i];
-                originCrossE1_Z[i] = p1ToOrigin_X[i] * e1_Y[i] - p1ToOrigin_Y[i] * e1_X[i];
+                for (int i = 0; i < count; i += Size)
+                {
+                    Vector256<float> e1x = Avx.LoadVector256(ptre1x + i);
+                    Vector256<float> e1y = Avx.LoadVector256(ptre1y + i);
+                    Vector256<float> e1z = Avx.LoadVector256(ptre1z + i);
+                    Vector256<float> p1ToOriginX = Avx.LoadVector256(p1ToOrigin_X + i);
+                    Vector256<float> p1ToOriginY = Avx.LoadVector256(p1ToOrigin_Y + i);
+                    Vector256<float> p1ToOriginZ = Avx.LoadVector256(p1ToOrigin_Z + i);
+
+                    var vx1 = Avx.Multiply(p1ToOriginY, e1z);
+                    var vx2 = Avx.Multiply(p1ToOriginZ, e1y);
+                    var vX = Avx.Subtract(vx1, vx2);
+                    Avx.Store(originCrossE1_X + i, vX);
+
+                    var vy1 = Avx.Multiply(p1ToOriginZ, e1x);
+                    var vy2 = Avx.Multiply(p1ToOriginX, e1z);
+                    var vY = Avx.Subtract(vy1, vy2);
+                    Avx.Store(originCrossE1_Y + i, vY);
+
+                    var vz1 = Avx.Multiply(p1ToOriginX, e1y);
+                    var vz2 = Avx.Multiply(p1ToOriginY, e1x);
+                    var vZ = Avx.Subtract(vz1, vz2);
+                    Avx.Store(originCrossE1_Z + i, vZ);
+                }
             }
 
             for (int i = 0; i < count; i++)
