@@ -130,6 +130,32 @@ namespace ray_tracer.Shapes
                 }
             }
             
+            bool skipAll = true;
+            float* skip = stackalloc float[count];
+            float Epsilon = (float) Helper.Epsilon;
+            Vector128<float> epsPos = Vector128.Create(Epsilon);
+            Vector128<float> epsNeg = Vector128.Create(-Epsilon);
+
+            for (int i = 0; i < count; i+= 4)
+            {
+                Vector128<float> vDet = Sse.LoadVector128(det + i);
+
+                var v1 = Sse.CompareGreaterThan(vDet, epsNeg);
+                var v2 = Sse.CompareLessThan(vDet, epsPos);
+                var result = Sse.And(v1, v2);
+
+                for (int j = 0; j < 4; j++)
+                {
+                    skip[i+j] = det[i+j] > -Epsilon && det[i+j] < Epsilon ? float.NaN : 1f;
+                    skipAll &= ! float.IsNaN(skip[i+j]);
+                }
+            }
+
+            if (skipAll)
+            {
+                return;
+            }
+
             float originX = (float)origin.X;
             float originY = (float)origin.Y;
             float originZ = (float)origin.Z;
@@ -138,26 +164,11 @@ namespace ray_tracer.Shapes
             var p1ToOrigin_X = stackalloc float[count];
             var p1ToOrigin_Y = stackalloc float[count];
             var p1ToOrigin_Z = stackalloc float[count];
-            bool skipAll = true;
-            bool* skip = stackalloc bool[count];
-            Vector256<float> epsPos = Vector256.Create((float)Helper.Epsilon);
-            Vector256<float> epsNeg = Vector256.Create((float)Helper.Epsilon);
             Vector256<float> ones = Vector256.Create(1f);
-
+            skipAll = true;
             for (int i = 0; i < count; i++)
             {
-                skip[i] = det[i] > -Helper.Epsilon && det[i] < Helper.Epsilon;
-                skipAll &= skip[i];
-            }
-            
-            if (skipAll)
-            {
-                return;
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                if (skip[i]) 
+                if (float.IsNaN(skip[i])) 
                 {
                     continue;
                 }
@@ -171,7 +182,19 @@ namespace ray_tracer.Shapes
                 uu += p1ToOrigin_Y[i] * dirCrossE2_Y[i];
                 uu += p1ToOrigin_Z[i] * dirCrossE2_Z[i];
                 u[i] = f[i] *uu;
-                skip[i] = u[i] < 0 || u[i] > 1;
+                if (u[i] < 0 || u[i] > 1)
+                {
+                    skip[i] = float.NaN;
+                }
+                else
+                {
+                    skip[i] = 0;
+                    skipAll = false;
+                } 
+            }
+            if (skipAll)
+            {
+                return;
             }
 
             var v = stackalloc float[count];
@@ -182,7 +205,7 @@ namespace ray_tracer.Shapes
 
             for (int i = 0; i < count; i++)
             {
-                if (skip[i])
+                if (float.IsNaN(skip[i])) 
                 {
                     continue;
                 }
@@ -200,7 +223,7 @@ namespace ray_tracer.Shapes
             
             for (int i = 0; i < Triangles.Count; i++)
             {
-                if (skip[i] || v[i] < 0 || (u[i] + v[i]) > 1)
+                if (float.IsNaN(skip[i]) || v[i] < 0 || (u[i] + v[i]) > 1)
                 {
                     continue;
                 }
