@@ -2,8 +2,16 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details>
-  <summary>Bonus chapter: <a href="http://www.raytracerchallenge.com/bonus/bounding-boxes.html">Bounding Volume hierarchy</a></summary>
-<img src="https://github.com/fremag/ray-tracer/blob/master/demos/dragon_volume_hierarchy.png"/>
+<summary>Triangle optimizations</summary>
+ <table>
+ <tr><th> Scene   </th><th>Standard</th><th> Vector3  </th><th> Inline  </th><th> AVX 256 </th></tr> 
+ <tr> <td>Dragons   </td><td>22 s</td><td>    17 s      </td><td>     7 s      </td><td>   3 s    </td></tr>
+ <tr> <td>Christmas    </td><td>11 s</td><td>      9 s     </td><td>     4 s     </td><td>  3 s    </td></tr>
+ </table>
+</details>
+
+<details>
+ <summary>Bonus chapter: <a href="http://www.raytracerchallenge.com/bonus/bounding-boxes.html">Bounding Volume hierarchy</a></summary><img src="https://github.com/fremag/ray-tracer/blob/master/demos/dragon_volume_hierarchy.png"/>
 <br/>
 Reference:
 <br/>
