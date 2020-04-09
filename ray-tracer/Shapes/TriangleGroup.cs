@@ -218,24 +218,17 @@ namespace ray_tracer.Shapes
             var originCrossE1_X = stackalloc float[count];
             var originCrossE1_Y = stackalloc float[count];
             var originCrossE1_Z = stackalloc float[count];
-            skipAll = true;
 
             for (int i = 0; i < count; i++)
             {
-                if (float.IsNaN(skip[i])) 
-                {
-                    continue;
-                }
-                skipAll = false;
                 originCrossE1_X[i] = p1ToOrigin_Y[i] * e1_Z[i] - p1ToOrigin_Z[i] * e1_Y[i];
                 originCrossE1_Y[i] = p1ToOrigin_Z[i] * e1_X[i] - p1ToOrigin_X[i] * e1_Z[i];
                 originCrossE1_Z[i] = p1ToOrigin_X[i] * e1_Y[i] - p1ToOrigin_Y[i] * e1_X[i];
-
-                v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
             }
-            if (skipAll)
+
+            for (int i = 0; i < count; i++)
             {
-                return;
+                v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
             }
             
             for (int i = 0; i < Triangles.Count; i++)
