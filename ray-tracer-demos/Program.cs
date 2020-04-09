@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime;
+using System.Runtime.Intrinsics.X86;
 using System.Timers;
 using ray_tracer;
 using ray_tracer_demos.Basic;
@@ -13,39 +14,21 @@ namespace ray_tracer_demos
 {
     public static class Program
     {
-        static void _Main()
-        {
-            var c = Vector<float>.Count;
-            Console.WriteLine(c);
-            const int N = 20;
-            int fill = N % c;
-            int size = N + fill;
-            float[] a = Enumerable.Range(0, size).Select(i => (float)i).ToArray();
-            float[] b = Enumerable.Range(0, size).Select(i => (float)i+1).ToArray();
-            float[] result = new float[size];
-
-            var i = 0;
-            for (i = 0; i < size; i += c) {
-                var va = new Vector<float>(a, i);
-                var vb = new Vector<float>(b, i);
-                var vc = va + vb; 
-                vc.CopyTo(result, i);
-            }
-        }
         
         static void Main()
         {
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
-            bool display =  true;
-            bool shuffle =  true;
-            bool threading =  true;
+            Console.WriteLine($"Avx2: {Avx2.IsSupported}");
+            bool display = true;
+            bool shuffle = true;
+            bool threading = true;
             int nbThreads = threading ? Environment.ProcessorCount : 1;
             if (true)
             {
                 Run(new List<Type>
                 {
-                    typeof(DragonVolumeHierarchy),
+                    typeof(DragonVolumeHierarchyScene),
 //                    typeof(TransparentBoxScene),
 //                    typeof(PenroseTriangleScene),
 //                    typeof(WorldReflectionRefractionScene),
@@ -54,7 +37,7 @@ namespace ray_tracer_demos
 //                    typeof(IsoSurfaceScene),
 //                    typeof(IsoSurfaceBasicShapesScene),
 //                    typeof(Teapot_low),
-//                    typeof(ChristmasScene),
+                    typeof(ChristmasScene),
 //                    typeof(BlobScene),
 //                    typeof(CloverWireScene),
 //                    typeof(WireFrameScene),

@@ -11,13 +11,57 @@ namespace ray_tracer.Shapes
 {
     public class TriangleGroup : AbstractShape
     {
+        static readonly int Size = Vector256<float>.Count;
+        public IShape this[int i] => Triangles[i];
+        public int Count => Triangles.Count;
+        private List<Triangle> Triangles { get; } = new List<Triangle>();
+
         private readonly ConcurrentDictionary<long, bool> cacheContains = new ConcurrentDictionary<long, bool>();
         private TriangleGroup leftGroup;
         private TriangleGroup rightGroup;
+        private Material material;
         
-        private Bounds box = null;
-        private bool cached = false;
-        
+        private Bounds box;
+        private bool cached;
+        private float[] p1_X, p1_Y, p1_Z; 
+        private float[] e1_X, e1_Y, e1_Z; 
+        private float[] e2_X, e2_Y, e2_Z;
+
+        public TriangleGroup()
+        {
+        }
+
+        public TriangleGroup(Group group)
+        {
+            Triangles.Capacity = group.Count;
+            for (int i = 0; i < group.Count; i++)
+            {
+                var shape = group[i];
+                if (shape is Triangle tri)
+                {
+                    Add(tri);
+                }
+            }
+        }
+
+        public TriangleGroup(List<Triangle> triangles, bool keepParent)
+        {
+            for (int i = 0; i < triangles.Count; i++)
+            {
+                var triangle = triangles[i];
+                Add(triangle, keepParent);
+            }
+        }
+
+        public void Add(Triangle triangle, bool keepParent=false)
+        {
+            Triangles.Add(triangle);
+            if (!keepParent)
+            {
+                triangle.Parent = this;
+            }
+        }
+
         public override void IntersectLocal(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             if (!Box.IntersectLocal(ref origin, ref direction))
@@ -25,9 +69,14 @@ namespace ray_tracer.Shapes
                 return;
             }
 
-            leftGroup?.Intersect(ref origin, ref direction, intersections);
-            rightGroup?.Intersect(ref origin, ref direction, intersections);
+            leftGroup?.IntersectLocal(ref origin, ref direction, intersections);
+            rightGroup?.IntersectLocal(ref origin, ref direction, intersections);
 #if OPTIM
+            if (!Triangles.Any())
+            {
+                return;
+            }
+            
             if (!cached)
             {
                 BuildCaches();
@@ -43,15 +92,6 @@ namespace ray_tracer.Shapes
 #endif            
         }
 
-        float[] p1_X; 
-        float[] p1_Y; 
-        float[] p1_Z; 
-        float[] e1_X; 
-        float[] e1_Y; 
-        float[] e1_Z; 
-        float[] e2_X; 
-        float[] e2_Y; 
-        float[] e2_Z;
         private void BuildCaches()
         {
             int size = Triangles.Count + Size - Triangles.Count % Size; 
@@ -70,36 +110,34 @@ namespace ray_tracer.Shapes
             for (var i = 0; i < Triangles.Count; i++)
             {
                 var tri = Triangles[i];
-                p1_X[i] = (float)tri.P1.X;
-                p1_Y[i] = (float)tri.P1.Y;
-                p1_Z[i] = (float)tri.P1.Z;
+                var transformedP1 = Vector4.Transform(tri.P1.vector, tri.Transform.matrix); 
+                var transformedE1 = Vector4.Transform(tri.E1.vector, tri.Transform.matrix);
+                var transformedE2 = Vector4.Transform(tri.E2.vector, tri.Transform.matrix);
+                p1_X[i] = transformedP1.X;
+                p1_Y[i] = transformedP1.Y;
+                p1_Z[i] = transformedP1.Z;
                 
-                e1_X[i] = (float)tri.E1.X;
-                e1_Y[i] = (float)tri.E1.Y;
-                e1_Z[i] = (float)tri.E1.Z;
+                e1_X[i] = transformedE1.X;
+                e1_Y[i] = transformedE1.Y;
+                e1_Z[i] = transformedE1.Z;
                 
-                e2_X[i] = (float)tri.E2.X;
-                e2_Y[i] = (float)tri.E2.Y;
-                e2_Z[i] = (float)tri.E2.Z;
+                e2_X[i] = transformedE2.X;
+                e2_Y[i] = transformedE2.Y;
+                e2_Z[i] = transformedE2.Z;
             }
         }
-
-        static readonly int Size = Vector<float>.Count;
 
         public unsafe void IntersectAll(ref Tuple origin, ref Tuple rayDir, Intersections intersections)
         {
             var count = p1_X.Length;
-            float* dirCrossE2_X = stackalloc float[count];
-            float* dirCrossE2_Y = stackalloc float[count];
-            float* dirCrossE2_Z = stackalloc float[count];
-            float* det = stackalloc float[count];
+            var dirCrossE2_X = stackalloc float[count];
+            var dirCrossE2_Y = stackalloc float[count];
+            var dirCrossE2_Z = stackalloc float[count];
+            var det = stackalloc float[count];
 
-            var rayDirX = (float) rayDir.X;
-            var rayDirY = (float) rayDir.Y;
-            var rayDirZ = (float) rayDir.Z;
-            Vector256<float> vRayDirX = Vector256.Create(rayDirX);
-            Vector256<float> vRayDirY = Vector256.Create(rayDirY);
-            Vector256<float> vRayDirZ = Vector256.Create(rayDirZ);
+            var vRayDirX = Vector256.Create((float) rayDir.X);
+            var vRayDirY = Vector256.Create((float) rayDir.Y);
+            var vRayDirZ = Vector256.Create((float) rayDir.Z);
 
             fixed (float* ptre1x = e1_X)
             fixed (float* ptre1y = e1_Y)
@@ -108,15 +146,15 @@ namespace ray_tracer.Shapes
             fixed (float* ptre2y = e2_Y)
             fixed (float* ptre2z = e2_Z)
             {
-                for (int i = 0; i < count; i += Size)
+                for (var i = 0; i < count; i += Size)
                 {
-                    Vector256<float> e1x = Avx.LoadVector256(ptre1x + i);
-                    Vector256<float> e1y = Avx.LoadVector256(ptre1y + i);
-                    Vector256<float> e1z = Avx.LoadVector256(ptre1z + i);
+                    var e1x = Avx.LoadVector256(ptre1x + i);
+                    var e1y = Avx.LoadVector256(ptre1y + i);
+                    var e1z = Avx.LoadVector256(ptre1z + i);
 
-                    Vector256<float> e2x = Avx.LoadVector256(ptre2x + i);
-                    Vector256<float> e2y = Avx.LoadVector256(ptre2y + i);
-                    Vector256<float> e2z = Avx.LoadVector256(ptre2z + i);
+                    var e2x = Avx.LoadVector256(ptre2x + i);
+                    var e2y = Avx.LoadVector256(ptre2y + i);
+                    var e2z = Avx.LoadVector256(ptre2z + i);
 
                     var crossX = Avx.Subtract(Avx.Multiply(vRayDirY, e2z), Avx.Multiply(vRayDirZ, e2y));
                     var crossY = Avx.Subtract(Avx.Multiply(vRayDirZ, e2x), Avx.Multiply(vRayDirX, e2z));
@@ -130,15 +168,15 @@ namespace ray_tracer.Shapes
                 }
             }
 
-            bool skipAll = true;
-            float* skip = stackalloc float[count];
-            float Epsilon = (float) Helper.Epsilon;
-            Vector256<float> epsPos = Vector256.Create(Epsilon);
-            Vector256<float> epsNeg = Vector256.Create(-Epsilon);
+            var skipAll = true;
+            var skip = stackalloc float[count];
+            var epsilon = (float) Helper.Epsilon;
+            var epsPos = Vector256.Create(epsilon);
+            var epsNeg = Vector256.Create(-epsilon);
 
-            for (int i = 0; i < count; i += Size)
+            for (var i = 0; i < count; i += Size)
             {
-                Vector256<float> vDet = Avx.LoadVector256(det + i);
+                var vDet = Avx.LoadVector256(det + i);
 
                 var v1 = Avx.Compare(vDet, epsNeg, FloatComparisonMode.OrderedLessThanNonSignaling);
                 var v2 = Avx.Compare(vDet, epsPos, FloatComparisonMode.OrderedGreaterThanNonSignaling);
@@ -152,37 +190,45 @@ namespace ray_tracer.Shapes
                 return;
             }
 
-            float originX = (float) origin.X;
-            float originY = (float) origin.Y;
-            float originZ = (float) origin.Z;
+            var originX = (float) origin.X;
+            var originY = (float) origin.Y;
+            var originZ = (float) origin.Z;
             var u = stackalloc float[count];
             var f = stackalloc float[count];
             var p1ToOrigin_X = stackalloc float[count];
             var p1ToOrigin_Y = stackalloc float[count];
             var p1ToOrigin_Z = stackalloc float[count];
-            Vector256<float> vOriginX = Vector256.Create(originX);
-            Vector256<float> vOriginY = Vector256.Create(originY);
-            Vector256<float> vOriginZ = Vector256.Create(originZ);
+            var vOriginX = Vector256.Create(originX);
+            var vOriginY = Vector256.Create(originY);
+            var vOriginZ = Vector256.Create(originZ);
 
-            Vector256<float> vOne = Vector256.Create(1f);
-            Vector256<float> vZero = Vector256.Create(0f);
+            var vOne = Vector256.Create(1f);
+            var vZero = Vector256.Create(0f);
+            
+            var v = stackalloc float[count];
+            var originCrossE1_X = stackalloc float[count];
+            var originCrossE1_Y = stackalloc float[count];
+            var originCrossE1_Z = stackalloc float[count];
 
             fixed (float* ptrp1x = p1_X)
             fixed (float* ptrp1y = p1_Y)
             fixed (float* ptrp1z = p1_Z)
+            fixed (float* ptre1x = e1_X)
+            fixed (float* ptre1y = e1_Y)
+            fixed (float* ptre1z = e1_Z)
             {
-                for (int i = 0; i < count; i += Size)
+                for (var i = 0; i < count; i += Size)
                 {
-                    Vector256<float> vSkip = Avx.LoadVector256(skip + i);
+                    var vSkip = Avx.LoadVector256(skip + i);
                     var skipVector = ! Avx.TestZ(vSkip, vSkip);
                     if (skipVector)
                     {
                         continue;
                     }
 
-                    Vector256<float> p1x = Avx.LoadVector256(ptrp1x + i);
-                    Vector256<float> p1y = Avx.LoadVector256(ptrp1y + i);
-                    Vector256<float> p1z = Avx.LoadVector256(ptrp1z + i);
+                    var p1x = Avx.LoadVector256(ptrp1x + i);
+                    var p1y = Avx.LoadVector256(ptrp1y + i);
+                    var p1z = Avx.LoadVector256(ptrp1z + i);
                     
                     var vp1ToOrigin_X = Avx.Subtract(vOriginX, p1x);
                     var vp1ToOrigin_Y = Avx.Subtract(vOriginY, p1y);
@@ -197,7 +243,7 @@ namespace ray_tracer.Shapes
                     var uuZ = Avx.Multiply(vp1ToOrigin_Z, vdirCrossE2_Z);
                     var uu = Avx.Add(uuX, Avx.Add(uuY, uuZ));
 
-                    Vector256<float> vDet = Avx.LoadVector256(det + i);
+                    var vDet = Avx.LoadVector256(det + i);
                     var vF = Avx.Divide(vOne, vDet);
                     var vU = Avx.Multiply(vF, uu);
 
@@ -211,25 +257,13 @@ namespace ray_tracer.Shapes
                     Avx.Store(p1ToOrigin_X + i, vp1ToOrigin_X);
                     Avx.Store(p1ToOrigin_Y + i, vp1ToOrigin_Y);
                     Avx.Store(p1ToOrigin_Z + i, vp1ToOrigin_Z);
-                }
-            }
-            
-            var v = stackalloc float[count];
-            var originCrossE1_X = stackalloc float[count];
-            var originCrossE1_Y = stackalloc float[count];
-            var originCrossE1_Z = stackalloc float[count];
-            fixed (float* ptre1x = e1_X)
-            fixed (float* ptre1y = e1_Y)
-            fixed (float* ptre1z = e1_Z)
-            {
-                for (int i = 0; i < count; i += Size)
-                {
-                    Vector256<float> e1x = Avx.LoadVector256(ptre1x + i);
-                    Vector256<float> e1y = Avx.LoadVector256(ptre1y + i);
-                    Vector256<float> e1z = Avx.LoadVector256(ptre1z + i);
-                    Vector256<float> p1ToOriginX = Avx.LoadVector256(p1ToOrigin_X + i);
-                    Vector256<float> p1ToOriginY = Avx.LoadVector256(p1ToOrigin_Y + i);
-                    Vector256<float> p1ToOriginZ = Avx.LoadVector256(p1ToOrigin_Z + i);
+
+                    var e1x = Avx.LoadVector256(ptre1x + i);
+                    var e1y = Avx.LoadVector256(ptre1y + i);
+                    var e1z = Avx.LoadVector256(ptre1z + i);
+                    var p1ToOriginX = Avx.LoadVector256(p1ToOrigin_X + i);
+                    var p1ToOriginY = Avx.LoadVector256(p1ToOrigin_Y + i);
+                    var p1ToOriginZ = Avx.LoadVector256(p1ToOrigin_Z + i);
 
                     var vx1 = Avx.Multiply(p1ToOriginY, e1z);
                     var vx2 = Avx.Multiply(p1ToOriginZ, e1y);
@@ -259,7 +293,7 @@ namespace ray_tracer.Shapes
                 }
             }
             
-            for (int i = 0; i < Triangles.Count; i++)
+            for (var i = 0; i < Triangles.Count; i++)
             {
                 if (float.IsNaN(skip[i]) || v[i] < 0 || (u[i] + v[i]) > 1)
                 {
@@ -362,9 +396,6 @@ namespace ray_tracer.Shapes
             return this;
         }
         
-        
-        private Material material;
-
         public override Material Material
         {
             get => material;
@@ -437,49 +468,6 @@ namespace ray_tracer.Shapes
             }
 
             box = new Bounds {PMin = Helper.CreatePoint(minX, minY, minZ), PMax = Helper.CreatePoint(maxX, maxY, maxZ)};
-        }
-        
-        public IShape this[int i] => Triangles[i];
-        public int Count => Triangles.Count;
-        
-        private List<Triangle> Triangles { get; } = new List<Triangle>();
-
-        public TriangleGroup()
-        {
-        }
-
-        public TriangleGroup(Group group)
-        {
-            Triangles.Capacity = group.Count;
-            for (int i = 0; i < group.Count; i++)
-            {
-                var shape = group[i];
-                if (shape is Triangle tri)
-                {
-                    Add(tri);
-                }
-            }
-        }
-
-        private TriangleGroup(List<Triangle> triangles, bool keepParent)
-        {
-            for (int i = 0; i < triangles.Count; i++)
-            {
-                var triangle = triangles[i];
-                if (keepParent)
-                {
-                    Add(triangle, keepParent);
-                }
-            }
-        }
-
-        public void Add(Triangle triangle, bool keepParent=false)
-        {
-            Triangles.Add(triangle);
-            if (!keepParent)
-            {
-                triangle.Parent = this;
-            }
         }
     }
 }

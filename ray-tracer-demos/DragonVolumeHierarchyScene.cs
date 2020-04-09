@@ -4,9 +4,9 @@ using ray_tracer.Shapes;
 
 namespace ray_tracer_demos
 {
-    public class DragonVolumeHierarchy : AbstractScene
+    public class DragonVolumeHierarchyScene : AbstractScene
     {
-        public DragonVolumeHierarchy()
+        public DragonVolumeHierarchyScene()
         {
             CameraParameters.Clear();
             CameraParameters.Add(new CameraParameters
