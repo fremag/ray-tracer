@@ -133,22 +133,18 @@ namespace ray_tracer.Shapes
             bool skipAll = true;
             float* skip = stackalloc float[count];
             float Epsilon = (float) Helper.Epsilon;
-            Vector128<float> epsPos = Vector128.Create(Epsilon);
-            Vector128<float> epsNeg = Vector128.Create(-Epsilon);
+            Vector256<float> epsPos = Vector256.Create(Epsilon);
+            Vector256<float> epsNeg = Vector256.Create(-Epsilon);
 
-            for (int i = 0; i < count; i+= 4)
+            for (int i = 0; i < count; i+= Size)
             {
-                Vector128<float> vDet = Sse.LoadVector128(det + i);
+                Vector256<float> vDet = Avx.LoadVector256(det + i);
 
-                var v1 = Sse.CompareGreaterThan(vDet, epsNeg);
-                var v2 = Sse.CompareLessThan(vDet, epsPos);
-                var result = Sse.And(v1, v2);
-
-                for (int j = 0; j < 4; j++)
-                {
-                    skip[i+j] = det[i+j] > -Epsilon && det[i+j] < Epsilon ? float.NaN : 1f;
-                    skipAll &= ! float.IsNaN(skip[i+j]);
-                }
+                var v1 = Avx.Compare(vDet, epsNeg, FloatComparisonMode.OrderedLessThanNonSignaling);
+                var v2 = Avx.Compare(vDet, epsPos, FloatComparisonMode.OrderedGreaterThanNonSignaling);
+                var result = Avx.And(v1, v2);
+                Avx.Store(skip+i, result);
+                skipAll &= !Avx.TestZ(result, result);
             }
 
             if (skipAll)
@@ -188,7 +184,7 @@ namespace ray_tracer.Shapes
                 }
                 else
                 {
-                    skip[i] = 0;
+                    skip[i] = 0f;
                     skipAll = false;
                 } 
             }
