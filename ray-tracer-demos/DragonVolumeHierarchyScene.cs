@@ -26,7 +26,8 @@ namespace ray_tracer_demos
             IShape dragon = rawTriangles;
             if (!basicGroup)
             {
-                dragon = new TriangleGroupAvx(rawTriangles);
+                //dragon = new TriangleGroupAvx(rawTriangles);
+                dragon = new TriangleGroupGpu(rawTriangles);
             }
 
             dragon.Divide(16);
