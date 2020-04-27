@@ -4,17 +4,30 @@ using System.Numerics;
 
 namespace ray_tracer.Shapes.TriangleGroup
 {
-    public struct TriangleData
+    public readonly struct TriangleData
     {
-        public float p1_X { get; set; }
-        public float p1_Y { get; set; }
-        public float p1_Z { get; set; }
-        public float e1_X { get; set; }
-        public float e1_Y { get; set; }
-        public float e1_Z { get; set; }
-        public float e2_X { get; set; }
-        public float e2_Y { get; set; }
-        public float e2_Z { get; set; }
+        public float p1_X { get; }
+        public float p1_Y { get; }
+        public float p1_Z { get; }
+        public float e1_X { get; }
+        public float e1_Y { get; }
+        public float e1_Z { get; }
+        public float e2_X { get; }
+        public float e2_Y { get; }
+        public float e2_Z { get; }
+
+        public TriangleData(float p1X, float p1Y, float p1Z, float e1X, float e1Y, float e1Z, float e2X, float e2Y, float e2Z)
+        {
+            p1_X = p1X;
+            p1_Y = p1Y;
+            p1_Z = p1Z;
+            e1_X = e1X;
+            e1_Y = e1Y;
+            e1_Z = e1Z;
+            e2_X = e2X;
+            e2_Y = e2Y;
+            e2_Z = e2Z;
+        }
     }
 
     public struct TriangleResult
@@ -64,17 +77,17 @@ namespace ray_tracer.Shapes.TriangleGroup
                 var transformedE2 = Vector4.Transform(tri.E2.vector, tri.Transform.matrix);
 
                 var triangleData = new TriangleData
-                {
-                    p1_X = transformedP1.X,
-                    p1_Y = transformedP1.Y,
-                    p1_Z = transformedP1.Z,
-                    e1_X = transformedE1.X,
-                    e1_Y = transformedE1.Y,
-                    e1_Z = transformedE1.Z,
-                    e2_X = transformedE2.X,
-                    e2_Y = transformedE2.Y,
-                    e2_Z = transformedE2.Z
-                };
+                (
+                    transformedP1.X,
+                    transformedP1.Y,
+                    transformedP1.Z,
+                    transformedE1.X,
+                    transformedE1.Y,
+                    transformedE1.Z,
+                    transformedE2.X,
+                    transformedE2.Y,
+                    transformedE2.Z
+                );
 
                 TriangleData[i] = triangleData;
             }
@@ -119,11 +132,8 @@ namespace ray_tracer.Shapes.TriangleGroup
                 float p1ToOrigin_Y = originY - dataTriangle.p1_Y;
                 float p1ToOrigin_Z = originZ - dataTriangle.p1_Z;
 
-                float uu = p1ToOrigin_X * dirCrossE2_X;
-                uu += p1ToOrigin_Y * dirCrossE2_Y;
-                uu += p1ToOrigin_Z * dirCrossE2_Z;
-                result.u = result.f * uu;
-
+                result.u = result.f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
+                 
                 result.originCrossE1_X = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
                 result.originCrossE1_Y = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
                 result.originCrossE1_Z = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
@@ -145,7 +155,7 @@ namespace ray_tracer.Shapes.TriangleGroup
                 var t = result.f * (dataTriangle.e2_X * result.originCrossE1_X + dataTriangle.e2_Y * result.originCrossE1_Y + dataTriangle.e2_Z * result.originCrossE1_Z);
                 var intersection = new Intersection(t, Triangles[i], result.u, result.v);
                 intersections.Add(intersection);
-            }            
+            }
         }
 
         protected override AbstractTriangleGroup GetSubGroup(List<Triangle> triangles, bool keepParent)
