@@ -87,11 +87,19 @@ namespace ray_tracer.Shapes.TriangleGroup
             var dirCrossE2_X = stackalloc float[count];
             var dirCrossE2_Y = stackalloc float[count];
             var dirCrossE2_Z = stackalloc float[count];
-            var det = stackalloc float[count];
 
             var rayDirX = (float) direction.X;
             var rayDirY = (float) direction.Y;
             var rayDirZ = (float) direction.Z;
+            float originX = (float) origin.X;
+            float originY = (float) origin.Y;
+            float originZ = (float) origin.Z;
+            var u = stackalloc float[count];
+            var f = stackalloc float[count];
+            var v = stackalloc float[count];
+            var originCrossE1_X = stackalloc float[count];
+            var originCrossE1_Y = stackalloc float[count];
+            var originCrossE1_Z = stackalloc float[count];
 
             for (int i = 0; i < count; i++)
             {
@@ -100,75 +108,31 @@ namespace ray_tracer.Shapes.TriangleGroup
                 dirCrossE2_Y[i] = rayDirZ * dataTriangle.e2_X - rayDirX * dataTriangle.e2_Z;
                 dirCrossE2_Z[i] = rayDirX * dataTriangle.e2_Y - rayDirY * dataTriangle.e2_X;
 
-                det[i] = dataTriangle.e1_X * dirCrossE2_X[i] + dataTriangle.e1_Y * dirCrossE2_Y[i] + dataTriangle.e1_Z * dirCrossE2_Z[i];
-            }
+                float det = dataTriangle.e1_X * dirCrossE2_X[i] + dataTriangle.e1_Y * dirCrossE2_Y[i] + dataTriangle.e1_Z * dirCrossE2_Z[i];
 
-            float originX = (float) origin.X;
-            float originY = (float) origin.Y;
-            float originZ = (float) origin.Z;
-            var u = stackalloc float[count];
-            var f = stackalloc float[count];
-            var p1ToOrigin_X = stackalloc float[count];
-            var p1ToOrigin_Y = stackalloc float[count];
-            var p1ToOrigin_Z = stackalloc float[count];
-            bool skipAll = true;
-            for (int i = 0; i < count; i++)
-            {
-                if (Math.Abs(det[i]) < Helper.Epsilon)
-                {
-                    skip[i] = true;
-                    continue;
-                }
+                f[i] = 1.0f / det;
+                
+                float p1ToOrigin_X = originX - dataTriangle.p1_X;
+                float p1ToOrigin_Y = originY - dataTriangle.p1_Y;
+                float p1ToOrigin_Z = originZ - dataTriangle.p1_Z;
 
-                skipAll = false;
-                skip[i] = false;
-                f[i] = 1.0f / det[i];
-                var dataTriangle = TriangleData[i];
-                p1ToOrigin_X[i] = originX - dataTriangle.p1_X;
-                p1ToOrigin_Y[i] = originY - dataTriangle.p1_Y;
-                p1ToOrigin_Z[i] = originZ - dataTriangle.p1_Z;
-
-                float uu = p1ToOrigin_X[i] * dirCrossE2_X[i];
-                uu += p1ToOrigin_Y[i] * dirCrossE2_Y[i];
-                uu += p1ToOrigin_Z[i] * dirCrossE2_Z[i];
+                float uu = p1ToOrigin_X * dirCrossE2_X[i];
+                uu += p1ToOrigin_Y * dirCrossE2_Y[i];
+                uu += p1ToOrigin_Z * dirCrossE2_Z[i];
                 u[i] = f[i] * uu;
-            }
 
-            if (skipAll)
-            {
-                return;
-            }
-
-            skipAll = true;
-            var v = stackalloc float[count];
-            var originCrossE1_X = stackalloc float[count];
-            var originCrossE1_Y = stackalloc float[count];
-            var originCrossE1_Z = stackalloc float[count];
-            for (int i = 0; i < count; i++)
-            {
-                if (u[i] < 0 || u[i] > 1)
-                {
-                    skip[i] = true;
-                    continue;
-                }
-
-                skipAll = false;
-                var dataTriangle = TriangleData[i];
-                originCrossE1_X[i] = p1ToOrigin_Y[i] * dataTriangle.e1_Z - p1ToOrigin_Z[i] * dataTriangle.e1_Y;
-                originCrossE1_Y[i] = p1ToOrigin_Z[i] * dataTriangle.e1_X - p1ToOrigin_X[i] * dataTriangle.e1_Z;
-                originCrossE1_Z[i] = p1ToOrigin_X[i] * dataTriangle.e1_Y - p1ToOrigin_Y[i] * dataTriangle.e1_X;
+                originCrossE1_X[i] = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
+                originCrossE1_Y[i] = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
+                originCrossE1_Z[i] = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
 
                 v[i] = f[i] * (rayDirX * originCrossE1_X[i] + rayDirY * originCrossE1_Y[i] + rayDirZ * originCrossE1_Z[i]);
-            }
 
-            if (skipAll)
-            {
-                return;
+                skip[i] = MathF.Abs(det) < Helper.Epsilon || u[i] < 0 || u[i] > 1 || v[i] < 0 || (u[i] + v[i]) > 1;
             }
 
             for (int i = 0; i < count; i++)
             {
-                if (skip[i] || v[i] < 0 || (u[i] + v[i]) > 1)
+                if (skip[i])
                 {
                     continue;
                 }
