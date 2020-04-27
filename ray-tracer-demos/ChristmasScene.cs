@@ -3,6 +3,7 @@ using ray_tracer;
 using ray_tracer.Cameras;
 using ray_tracer.Patterns;
 using ray_tracer.Shapes;
+using ray_tracer.Shapes.TriangleGroup;
 
 namespace ray_tracer_demos
 {
@@ -79,7 +80,7 @@ namespace ray_tracer_demos
             var material = new Material(new Color(0.26, 0.36, 0.16)) {Specular = 0.1};
             for (var y = 0; y < segments; y++)
             {
-                var subGroup = new TriangleGroup();
+                var subGroup = new TriangleGroupAvx();
                 for (var i = 0; i < perSegment; i++)
                 {
                     var yBase = segSize * y + rand.NextDouble() * segSize;

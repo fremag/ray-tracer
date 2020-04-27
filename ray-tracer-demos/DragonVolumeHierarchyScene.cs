@@ -1,6 +1,7 @@
 using ray_tracer;
 using ray_tracer.Cameras;
 using ray_tracer.Shapes;
+using ray_tracer.Shapes.TriangleGroup;
 
 namespace ray_tracer_demos
 {
@@ -25,7 +26,7 @@ namespace ray_tracer_demos
             IShape dragon = rawTriangles;
             if (!basicGroup)
             {
-                dragon = new TriangleGroup(rawTriangles);
+                dragon = new TriangleGroupAvx(rawTriangles);
             }
 
             dragon.Divide(16);
@@ -39,7 +40,7 @@ namespace ray_tracer_demos
 
         private void AddDragon(double scale, double angleY, Color color, double diffuse, double transparency, double tx, double ty, double tz, bool addBox = true)
         {
-            var dragon = GetDragon(false);
+            var dragon = GetDragon(!false);
             dragon.Material = new Material(color, ambient: 0.1, diffuse: 0.6, specular: 0.3, shininess: 15);
             dragon.Scale(scale).Rotate(ry: angleY);
             Add(dragon.Translate(tx, ty, tz));

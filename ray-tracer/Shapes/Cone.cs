@@ -75,7 +75,7 @@ namespace ray_tracer.Shapes
                 return Helper.CreateVector(0, -1, 0);
             }
 
-            double y = Math.Sqrt(worldPoint.X * worldPoint.X + worldPoint.Z * worldPoint.Z);
+            double y = Math.Sqrt(dist);
             if (worldPoint.Y > 0)
             {
                 y *= -1;
