@@ -44,7 +44,7 @@ namespace ray_tracer.Shapes.TriangleGroup
     public class TriangleGroupGpu : AbstractTriangleGroup
     {
         private bool cached = false;
-        private TriangleData[] TriangleData { get; set; }
+        private TriangleData[] triangleData;
 
         public TriangleGroupGpu()
         {
@@ -67,7 +67,7 @@ namespace ray_tracer.Shapes.TriangleGroup
                 size += Size - remains;
             }
 
-            TriangleData = new TriangleData[size];
+            triangleData = new TriangleData[size];
 
             for (var i = 0; i < Triangles.Count; i++)
             {
@@ -76,7 +76,7 @@ namespace ray_tracer.Shapes.TriangleGroup
                 var transformedE1 = Vector4.Transform(tri.E1.vector, tri.Transform.matrix);
                 var transformedE2 = Vector4.Transform(tri.E2.vector, tri.Transform.matrix);
 
-                var triangleData = new TriangleData
+                var data = new TriangleData
                 (
                     transformedP1.X,
                     transformedP1.Y,
@@ -89,7 +89,7 @@ namespace ray_tracer.Shapes.TriangleGroup
                     transformedE2.Z
                 );
 
-                TriangleData[i] = triangleData;
+                triangleData[i] = data;
             }
         }
 
@@ -117,31 +117,7 @@ namespace ray_tracer.Shapes.TriangleGroup
 
             for (int i = 0; i < count; i++)
             {
-                TriangleData dataTriangle = TriangleData[i];
-                var result = triangleResult[i];
-                
-                float dirCrossE2_X = rayDirY * dataTriangle.e2_Z - rayDirZ * dataTriangle.e2_Y;
-                float dirCrossE2_Y = rayDirZ * dataTriangle.e2_X - rayDirX * dataTriangle.e2_Z;
-                float dirCrossE2_Z = rayDirX * dataTriangle.e2_Y - rayDirY * dataTriangle.e2_X;
-
-                float det = dataTriangle.e1_X * dirCrossE2_X + dataTriangle.e1_Y * dirCrossE2_Y + dataTriangle.e1_Z * dirCrossE2_Z;
-
-                result.f = 1.0f / det;
-                
-                float p1ToOrigin_X = originX - dataTriangle.p1_X;
-                float p1ToOrigin_Y = originY - dataTriangle.p1_Y;
-                float p1ToOrigin_Z = originZ - dataTriangle.p1_Z;
-
-                result.u = result.f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
-                 
-                result.originCrossE1_X = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
-                result.originCrossE1_Y = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
-                result.originCrossE1_Z = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
-
-                result.v = result.f * (rayDirX * result.originCrossE1_X + rayDirY * result.originCrossE1_Y + rayDirZ * result.originCrossE1_Z);
-
-                result.skip = MathF.Abs(det) < Helper.Epsilon || result.u < 0 || result.u > 1 || result.v < 0 || (result.u + result.v) > 1;
-                triangleResult[i] = result;
+                Compute(i, ref triangleData, ref triangleResult, originX, originY, originZ, rayDirX, rayDirY, rayDirZ);
             }
 
             for (int i = 0; i < count; i++)
@@ -151,11 +127,40 @@ namespace ray_tracer.Shapes.TriangleGroup
                     continue;
                 }
                 var result = triangleResult[i];
-                var dataTriangle = TriangleData[i];
+                var dataTriangle = triangleData[i];
                 var t = result.f * (dataTriangle.e2_X * result.originCrossE1_X + dataTriangle.e2_Y * result.originCrossE1_Y + dataTriangle.e2_Z * result.originCrossE1_Z);
                 var intersection = new Intersection(t, Triangles[i], result.u, result.v);
                 intersections.Add(intersection);
             }
+        }
+
+        private unsafe void Compute(in int i, ref TriangleData[] triangleDatas, ref TriangleResult* triangleResult, in float originX, in float originY, in float originZ, in float rayDirX, in float rayDirY, in float rayDirZ)
+        {
+            var result = triangleResult[i];
+            var dataTriangle = triangleDatas[i];
+            
+            float dirCrossE2_X = rayDirY * dataTriangle.e2_Z - rayDirZ * dataTriangle.e2_Y;
+            float dirCrossE2_Y = rayDirZ * dataTriangle.e2_X - rayDirX * dataTriangle.e2_Z;
+            float dirCrossE2_Z = rayDirX * dataTriangle.e2_Y - rayDirY * dataTriangle.e2_X;
+
+            float det = dataTriangle.e1_X * dirCrossE2_X + dataTriangle.e1_Y * dirCrossE2_Y + dataTriangle.e1_Z * dirCrossE2_Z;
+
+            result.f = 1.0f / det;
+                
+            float p1ToOrigin_X = originX - dataTriangle.p1_X;
+            float p1ToOrigin_Y = originY - dataTriangle.p1_Y;
+            float p1ToOrigin_Z = originZ - dataTriangle.p1_Z;
+
+            result.u = result.f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
+                 
+            result.originCrossE1_X = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
+            result.originCrossE1_Y = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
+            result.originCrossE1_Z = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
+
+            result.v = result.f * (rayDirX * result.originCrossE1_X + rayDirY * result.originCrossE1_Y + rayDirZ * result.originCrossE1_Z);
+
+            result.skip = MathF.Abs(det) < Helper.Epsilon || result.u < 0 || result.u > 1 || result.v < 0 || (result.u + result.v) > 1;
+            triangleResult[i] = result;
         }
 
         protected override AbstractTriangleGroup GetSubGroup(List<Triangle> triangles, bool keepParent)
