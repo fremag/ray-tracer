@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.Intrinsics;
 
 namespace ray_tracer.Shapes.TriangleGroup
 {
     public abstract class AbstractTriangleGroupOptim : AbstractTriangleGroup
     {
+        protected static readonly int Size = Vector256<float>.Count;
         private bool cached;
         protected float[] p1_X, p1_Y, p1_Z;
         protected float[] e1_X, e1_Y, e1_Z;

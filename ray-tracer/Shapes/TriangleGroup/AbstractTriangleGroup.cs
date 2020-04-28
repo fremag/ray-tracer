@@ -2,13 +2,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics;
 
 namespace ray_tracer.Shapes.TriangleGroup
 {
     public abstract class AbstractTriangleGroup : AbstractShape
     {
-        protected static readonly int Size = Vector256<float>.Count;
         private readonly ConcurrentDictionary<long, bool> cacheContains = new ConcurrentDictionary<long, bool>();
         private AbstractTriangleGroup leftGroup;
         private AbstractTriangleGroup rightGroup;

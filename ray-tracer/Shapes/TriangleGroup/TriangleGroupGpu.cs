@@ -1,17 +1,22 @@
+#define GPU
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
+using ILGPU;
+using ILGPU.Runtime;
 
 namespace ray_tracer.Shapes.TriangleGroup
 {
     public readonly struct RayData
     {
-        public float X { get; } 
-        public float Y{ get; }
-        public float Z{ get; } 
-        public float DirX{ get; } 
-        public float DirY{ get; } 
-        public float DirZ{ get; }
+        public float X { get; }
+        public float Y { get; }
+        public float Z { get; }
+        public float DirX { get; }
+        public float DirY { get; }
+        public float DirZ { get; }
 
         public RayData(float x, float y, float z, float dirX, float dirY, float dirZ)
         {
@@ -52,7 +57,7 @@ namespace ray_tracer.Shapes.TriangleGroup
 
     public struct TriangleResult
     {
-        public bool skip{ get; set; }
+        public int skip { get; set; }
         public float u { get; set; }
         public float f { get; set; }
         public float v { get; set; }
@@ -63,9 +68,25 @@ namespace ray_tracer.Shapes.TriangleGroup
 
     public class TriangleGroupGpu : AbstractTriangleGroup
     {
+        private static Accelerator cuda;
+        private static Context context;
+        private static Action<Index1, ArrayView<TriangleData>, ArrayView<TriangleResult>, RayData> kernel;
+
+        static TriangleGroupGpu()
+        {
+            context = new Context();
+            var cudaId = Accelerator.Accelerators.FirstOrDefault(acceleratorId => acceleratorId.AcceleratorType == AcceleratorType.Cuda);
+            cuda = Accelerator.Create(context, cudaId);
+
+            kernel = cuda.LoadAutoGroupedStreamKernel<Index1, ArrayView<TriangleData>, ArrayView<TriangleResult>, RayData>(ComputeKernel);
+        }
+
         private bool cached = false;
         private TriangleData[] triangleData;
-        
+        MemoryBuffer<TriangleData> dataBuffer;
+        MemoryBuffer<TriangleResult> resultBuffer;
+        private readonly object objLock = new object();
+
         public TriangleGroupGpu()
         {
         }
@@ -81,15 +102,9 @@ namespace ray_tracer.Shapes.TriangleGroup
         private void BuildCaches()
         {
             int size = Triangles.Count;
-            int remains = Triangles.Count % Size;
-            if (remains != 0)
-            {
-                size += Size - remains;
-            }
-
             triangleData = new TriangleData[size];
 
-            for (var i = 0; i < Triangles.Count; i++)
+            for (var i = 0; i < size; i++)
             {
                 var tri = Triangles[i];
                 var transformedP1 = Vector4.Transform(tri.P1.vector, tri.Transform.matrix);
@@ -111,6 +126,10 @@ namespace ray_tracer.Shapes.TriangleGroup
 
                 triangleData[i] = data;
             }
+
+            dataBuffer = cuda.Allocate<TriangleData>(size);
+            dataBuffer.CopyFrom(cuda.DefaultStream, triangleData, 0, 0, size);
+            resultBuffer = cuda.Allocate<TriangleResult>(size);
         }
 
         protected override void IntersectTriangles(ref Tuple origin, ref Tuple direction, Intersections intersections)
@@ -123,21 +142,47 @@ namespace ray_tracer.Shapes.TriangleGroup
 
             IntersectAll(ref origin, ref direction, intersections);
         }
-        
+
+        private Stopwatch sw = new Stopwatch();
+
         private unsafe void IntersectAll(ref Tuple origin, ref Tuple direction, Intersections intersections)
         {
             var count = Triangles.Count;
-            var triangleResult = stackalloc TriangleResult[count];
             var ray = new RayData((float) origin.X, (float) origin.Y, (float) origin.Z, (float) direction.X, (float) direction.Y, (float) direction.Z);
+            sw.Restart();
+#if GPU
+            TriangleResult[] triangleResult;
+            lock (objLock)
+            {
+                kernel(dataBuffer.Length, dataBuffer.View, resultBuffer, ray);
+                cuda.Synchronize();
+                triangleResult = resultBuffer.GetAsArray();
+            }
 
+            sw.Stop();
+            for (int i = 0; i < count; i++)
+            {
+                if (triangleResult[i].skip == 0)
+                {
+                    continue;
+                }
+
+                var result = triangleResult[i];
+                var dataTriangle = triangleData[i];
+                var t = result.f * (dataTriangle.e2_X * result.originCrossE1_X + dataTriangle.e2_Y * result.originCrossE1_Y + dataTriangle.e2_Z * result.originCrossE1_Z);
+                var intersection = new Intersection(t, Triangles[i], result.u, result.v);
+                intersections.Add(intersection);
+            }
+#else
+            TriangleResult* triangleResult = stackalloc TriangleResult[count];
             for (int i = 0; i < count; i++)
             {
                 Compute(i, ref triangleData, ref triangleResult, ref ray);
             }
-
+            sw.Stop();
             for (int i = 0; i < count; i++)
             {
-                if (triangleResult[i].skip)
+                if (triangleResult[i].skip == 0)
                 {
                     continue;
                 }
@@ -147,13 +192,16 @@ namespace ray_tracer.Shapes.TriangleGroup
                 var intersection = new Intersection(t, Triangles[i], result.u, result.v);
                 intersections.Add(intersection);
             }
+#endif
+            var t0 = (float) sw.ElapsedTicks / Stopwatch.Frequency;
+            Console.WriteLine(t0 * 1e6);
         }
 
         private static unsafe void Compute(in int i, ref TriangleData[] triangleDatas, ref TriangleResult* triangleResult, ref RayData ray)
         {
             var result = triangleResult[i];
             var dataTriangle = triangleDatas[i];
-            
+
             float dirCrossE2_X = ray.DirY * dataTriangle.e2_Z - ray.DirZ * dataTriangle.e2_Y;
             float dirCrossE2_Y = ray.DirZ * dataTriangle.e2_X - ray.DirX * dataTriangle.e2_Z;
             float dirCrossE2_Z = ray.DirX * dataTriangle.e2_Y - ray.DirY * dataTriangle.e2_X;
@@ -161,20 +209,49 @@ namespace ray_tracer.Shapes.TriangleGroup
             float det = dataTriangle.e1_X * dirCrossE2_X + dataTriangle.e1_Y * dirCrossE2_Y + dataTriangle.e1_Z * dirCrossE2_Z;
 
             result.f = 1.0f / det;
-                
+
             float p1ToOrigin_X = ray.X - dataTriangle.p1_X;
             float p1ToOrigin_Y = ray.Y - dataTriangle.p1_Y;
             float p1ToOrigin_Z = ray.Z - dataTriangle.p1_Z;
 
             result.u = result.f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
-                 
+
             result.originCrossE1_X = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
             result.originCrossE1_Y = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
             result.originCrossE1_Z = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
 
             result.v = result.f * (ray.DirX * result.originCrossE1_X + ray.DirY * result.originCrossE1_Y + ray.DirZ * result.originCrossE1_Z);
 
-            result.skip = MathF.Abs(det) < Helper.Epsilon || result.u < 0 || result.u > 1 || result.v < 0 || (result.u + result.v) > 1;
+            result.skip = MathF.Abs(det) < Helper.Epsilon || result.u < 0 || result.u > 1 || result.v < 0 || (result.u + result.v) > 1 ? 0 : 1;
+            triangleResult[i] = result;
+        }
+
+        private static void ComputeKernel(Index1 i, ArrayView<TriangleData> triangleDatas, ArrayView<TriangleResult> triangleResult, RayData ray)
+        {
+            var result = triangleResult[i];
+            var dataTriangle = triangleDatas[i];
+
+            float dirCrossE2_X = ray.DirY * dataTriangle.e2_Z - ray.DirZ * dataTriangle.e2_Y;
+            float dirCrossE2_Y = ray.DirZ * dataTriangle.e2_X - ray.DirX * dataTriangle.e2_Z;
+            float dirCrossE2_Z = ray.DirX * dataTriangle.e2_Y - ray.DirY * dataTriangle.e2_X;
+
+            float det = dataTriangle.e1_X * dirCrossE2_X + dataTriangle.e1_Y * dirCrossE2_Y + dataTriangle.e1_Z * dirCrossE2_Z;
+
+            result.f = 1.0f / det;
+
+            float p1ToOrigin_X = ray.X - dataTriangle.p1_X;
+            float p1ToOrigin_Y = ray.Y - dataTriangle.p1_Y;
+            float p1ToOrigin_Z = ray.Z - dataTriangle.p1_Z;
+
+            result.u = result.f * (p1ToOrigin_X * dirCrossE2_X + p1ToOrigin_Y * dirCrossE2_Y + p1ToOrigin_Z * dirCrossE2_Z);
+
+            result.originCrossE1_X = p1ToOrigin_Y * dataTriangle.e1_Z - p1ToOrigin_Z * dataTriangle.e1_Y;
+            result.originCrossE1_Y = p1ToOrigin_Z * dataTriangle.e1_X - p1ToOrigin_X * dataTriangle.e1_Z;
+            result.originCrossE1_Z = p1ToOrigin_X * dataTriangle.e1_Y - p1ToOrigin_Y * dataTriangle.e1_X;
+
+            result.v = result.f * (ray.DirX * result.originCrossE1_X + ray.DirY * result.originCrossE1_Y + ray.DirZ * result.originCrossE1_Z);
+
+            result.skip = MathF.Abs(det) < Helper.Epsilon || result.u < 0 || result.u > 1 || result.v < 0 || (result.u + result.v) > 1 ? 0 : 1;
             triangleResult[i] = result;
         }
 

@@ -20,16 +20,16 @@ namespace ray_tracer_demos
             GCSettings.LatencyMode = GCLatencyMode.Batch;
             Console.WriteLine($"IsHardwareAccelerated: {Vector.IsHardwareAccelerated}");
             Console.WriteLine($"Avx2: {Avx2.IsSupported}");
-            bool display = true;
+            bool display = ! true;
             bool shuffle = true;
-            bool threading = true;
+            bool threading = !true;
             int nbThreads = threading ? Environment.ProcessorCount : 1;
             if (true)
             {
                 Run(new List<Type>
                 {
                     typeof(DragonVolumeHierarchyScene),
-                    typeof(ChristmasScene),
+                    // typeof(ChristmasScene),
 //                    typeof(TransparentBoxScene),
 //                    typeof(PenroseTriangleScene),
 //                    typeof(WorldReflectionRefractionScene),

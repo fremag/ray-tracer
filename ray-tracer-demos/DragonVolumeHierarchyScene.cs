@@ -30,7 +30,7 @@ namespace ray_tracer_demos
                 dragon = new TriangleGroupGpu(rawTriangles);
             }
 
-            dragon.Divide(16);
+            dragon.Divide(1024);
             dragon.Scale(0.268);
             return dragon;
         }
