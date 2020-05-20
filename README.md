@@ -2,6 +2,12 @@
 [The Ray Tracer Challenge](https://pragprog.com/book/jbtracer/the-ray-tracer-challenge)
 
 <details>
+<summary>Ambiguous cylinder</summary>
+  <img src="https://github.com/fremag/ray-tracer/blob/master/demos/ambiguous_cylinder.png"/>
+Thanks to TJ Wei for his <a href="https://www.youtube.com/watch?v=vUz4kov3K1c">video</a>
+</details>
+
+<details>
 <summary>Triangle optimizations</summary>
  <table>
  <tr><th> Scene   </th><th>Standard</th><th> Vector3  </th><th> Inline  </th><th> AVX 256 </th></tr> 
