@@ -4,7 +4,7 @@ namespace ray_tracer
 {
     public abstract class AbstractShape : IShape
     {
-        private static int id = 0;
+        private static int id = -1;
         public int Id { get; } = Interlocked.Increment(ref id); 
         public Matrix Transform { get; set; } = Matrix.Identity;
         public IShape Parent { get; set; }

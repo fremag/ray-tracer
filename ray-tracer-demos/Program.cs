@@ -28,7 +28,8 @@ namespace ray_tracer_demos
             {
                 Run(new List<Type>
                 {
-                    typeof(AmbiguousCylinderScene),
+//                    typeof(AmbiguousCylinderScene),
+//                    typeof(FresnelDemo),
 //                    typeof(DragonVolumeHierarchyScene),
                     // typeof(ChristmasScene),
 //                    typeof(TransparentBoxScene),
@@ -53,8 +54,10 @@ namespace ray_tracer_demos
 //                    typeof(PrismMeshScene),
 //                    typeof(CylinderScene),
 //                    typeof(CylinderAltitudeScene),
-//                    typeof(MengerCastleScene),
+                    //typeof(MengerCastleScene),
+//                    typeof(CsgTestScene),
 //                   typeof(TeapotScene),
+                   typeof(MengerSpongeScene),
 //                   typeof(PikachuScene),
 //                    typeof(CubeScene),
 //                typeof(SquareMeshScene),
